@@ -1,7 +1,6 @@
 use std::fs::File;
 use image::ColorType;
 use image::png::PNGEncoder;
-use std::io::Write;
 
 fn main() {
     let image_width = 256;
