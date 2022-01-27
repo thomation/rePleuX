@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Vec3 {
     e: (f64, f64, f64),
 }
@@ -34,6 +35,11 @@ impl Vec3 {
         }
     }
 }
+impl std::cmp::PartialEq for Vec3 {
+    fn eq(&self, rhs: &Self) -> bool {
+        self.e == rhs.e
+    }
+}
 impl std::ops::Add for Vec3 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
@@ -44,7 +50,7 @@ impl std::ops::Add for Vec3 {
 }
 impl std::ops::AddAssign for Vec3 {
     fn add_assign(&mut self, rhs: Self) {
-        self.e.0 += rhs.e.0; 
+        self.e.0 += rhs.e.0;
         self.e.1 += rhs.e.1;
         self.e.2 += rhs.e.2;
     }
@@ -56,17 +62,16 @@ fn test_vec3_create() {
     assert_eq!(v.y(), 2.1);
     assert_eq!(v.z(), 3.3);
     assert_eq!(v.length_squared(), 1.1 * 1.1 + 2.1 * 2.1 + 3.3 * 3.3);
-
 }
 #[test]
 fn test_vec3_add() {
     let u = Vec3::new(-1.1, -2.1, -3.3);
     let v = Vec3::new(1.1, 2.1, 3.3);
     let w = u + v;
-    assert_eq!(w.length(), 0.0);
+    assert_eq!(w, Vec3::new(0.0, 0.0, 0.0));
     let mut x = Vec3::new(1.0, 2.0, 3.0);
     x += Vec3::new(0.1, 0.2, 0.3);
-    assert_eq!(x.length_squared(), 1.1 * 1.1 + 2.2 * 2.2 + 3.3 * 3.3);
+    assert_eq!(x, Vec3::new(1.1, 2.2, 3.3));
 }
 
 #[test]
@@ -74,7 +79,7 @@ fn test_vec3_complex() {
     let i = Vec3::new(1.0, 0.0, 0.0);
     let j = Vec3::new(0.0, 1.0, 0.0);
     let k = Vec3::cross(&i, &j);
-    assert_eq!(k.z(), 1.0);
+    assert_eq!(k, Vec3::new(0.0, 0.0, 1.0));
     assert_eq!(
         Vec3::dot(&Vec3::new(1.0, 2.0, 3.0), &Vec3::new(1.0, 2.0, 3.0)),
         14.0
