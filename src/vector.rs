@@ -55,6 +55,21 @@ impl std::ops::AddAssign for Vec3 {
         self.e.2 += rhs.e.2;
     }
 }
+impl std::ops::Sub for Vec3 {
+    type Output = Self;
+    fn sub(self, rhs: Self) -> Self {
+        Vec3 {
+            e: (self.e.0 - rhs.e.0, self.e.1 - rhs.e.1, self.e.2 - rhs.e.2),
+        }
+    }
+}
+impl std::ops::SubAssign for Vec3 {
+    fn sub_assign(&mut self, rhs: Self) {
+        self.e.0 -= rhs.e.0;
+        self.e.1 -= rhs.e.1;
+        self.e.2 -= rhs.e.2;
+    }
+}
 #[test]
 fn test_vec3_create() {
     let v = Vec3::new(1.1, 2.1, 3.3);
@@ -73,7 +88,15 @@ fn test_vec3_add() {
     x += Vec3::new(0.1, 0.2, 0.3);
     assert_eq!(x, Vec3::new(1.1, 2.2, 3.3));
 }
-
+#[test]
+fn test_vec3_sub() {
+    let u = Vec3::new(1.1, 2.2, 3.3);
+    let v = Vec3::new(0.1, 0.2, 0.3);
+    let mut w = u - v;
+    assert_eq!(w, Vec3::new(1.0, 2.0, 3.0));
+    w -= Vec3::new(0.1, 0.2, 0.3);
+    assert_eq!(w, Vec3::new(0.9, 1.8, 2.7));
+}
 #[test]
 fn test_vec3_complex() {
     let i = Vec3::new(1.0, 0.0, 0.0);
