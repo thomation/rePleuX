@@ -3,6 +3,8 @@ pub struct Vec3 {
     e: [f64; 3],
 }
 pub type Color3 = Vec3;
+pub type Point3 = Vec3;
+
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { e: [x, y, z] }
@@ -33,6 +35,10 @@ impl Vec3 {
                 p[0] * q[1] - p[1] * q[0],
             ],
         }
+    }
+    pub fn unit(v: &Self) -> Self {
+        let l = v.length();
+        Vec3 { e:[v[0] / l, v[1] / l, v[2] / l]}
     }
 }
 impl std::cmp::PartialEq for Vec3 {
@@ -193,4 +199,7 @@ fn test_vec3_complex() {
         Vec3::dot(&Vec3::new(1.0, 2.0, 3.0), &Vec3::new(1.0, 2.0, 3.0)),
         14.0
     );
+    let u = Vec3::new(1.1, 2.2, 3.3);
+    assert_eq!(Vec3::unit(&u), Vec3::new(1.1 / u.length(), 2.2 / u.length(), 3.3 / u.length()));
+    assert_eq!(Vec3::unit(&u).length(), 1.0);
 }
