@@ -47,19 +47,21 @@ impl std::ops::Index<usize> for Vec3 {
     }
 }
 impl std::ops::IndexMut<usize> for Vec3 {
-    fn index_mut(&mut self, i: usize) -> &mut f64{
+    fn index_mut(&mut self, i: usize) -> &mut f64 {
         &mut self.e[i]
+    }
+}
+impl std::ops::Neg for Vec3 {
+    type Output = Self;
+    fn neg(self) -> Self{
+        Vec3 {e:[-self[0], - self[1], - self[2]]}
     }
 }
 impl std::ops::Add for Vec3 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
         Vec3 {
-            e: [
-                self[0] + rhs[0],
-                self[1] + rhs[1],
-                self[2] + rhs[2],
-            ],
+            e: [self[0] + rhs[0], self[1] + rhs[1], self[2] + rhs[2]],
         }
     }
 }
@@ -73,9 +75,7 @@ impl std::ops::AddAssign for Vec3 {
 impl std::ops::Sub for Vec3 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
-        Vec3 {
-            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
-        }
+        self + (- rhs)
     }
 }
 impl std::ops::SubAssign for Vec3 {
