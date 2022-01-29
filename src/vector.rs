@@ -70,6 +70,37 @@ impl std::ops::SubAssign for Vec3 {
         self.e.2 -= rhs.e.2;
     }
 }
+impl std::ops::Mul<Self> for Vec3 {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self {
+        Vec3 {
+            e: (self.e.0 * rhs.e.0, self.e.1 * rhs.e.1, self.e.2 * rhs.e.2),
+        }
+    }
+}
+impl std::ops::MulAssign<Self> for Vec3 {
+    fn mul_assign(&mut self, rhs: Self) {
+        self.e.0 *= rhs.e.0;
+        self.e.1 *= rhs.e.1;
+        self.e.2 *= rhs.e.2;
+    }
+}
+impl std::ops::Mul<f64> for Vec3 {
+    type Output = Self;
+    fn mul(self, rhs: f64) -> Self {
+        Vec3 {
+            e: (self.e.0 * rhs, self.e.1 * rhs, self.e.2 * rhs),
+        }
+    }
+}
+impl std::ops::MulAssign<f64> for Vec3 {
+    fn mul_assign(&mut self, rhs: f64) {
+        self.e.0 *= rhs;
+        self.e.1 *= rhs;
+        self.e.2 *= rhs;
+    }
+}
+
 #[test]
 fn test_vec3_create() {
     let v = Vec3::new(1.1, 2.1, 3.3);
@@ -96,6 +127,19 @@ fn test_vec3_sub() {
     assert_eq!(w, Vec3::new(1.0, 2.0, 3.0));
     w -= Vec3::new(0.1, 0.2, 0.3);
     assert_eq!(w, Vec3::new(0.9, 1.8, 2.7));
+}
+#[test]
+fn test_vec3_mul() {
+    let mut u = Vec3::new (1.1, 2.2, 3.3);
+    u *= 10.0;
+    assert_eq!(u, Vec3::new(11.0, 22.0, 33.0));
+    let v = Vec3::new (0.1, 0.2, 0.3);
+    let mut w = u * v;
+    assert_eq!(w, Vec3::new(1.1, 4.4, 9.9));
+    w *= Vec3::new(10.0, 5.0, 1.0);
+    assert_eq!(w, Vec3::new(11.0, 22.0, 9.9));
+    let x = w * 0.1;
+    assert_eq!(x, Vec3::new(1.1, 2.2, 9.9 * 0.1));
 }
 #[test]
 fn test_vec3_complex() {
