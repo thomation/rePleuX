@@ -1,23 +1,23 @@
 #[derive(Debug)]
 pub struct Vec3 {
-    e: (f64, f64, f64),
+    e: [f64; 3],
 }
 pub type Color3 = Vec3;
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
-        Vec3 { e: (x, y, z) }
+        Vec3 { e: [x, y, z] }
     }
     pub fn x(&self) -> f64 {
-        self.e.0
+        self[0]
     }
     pub fn y(&self) -> f64 {
-        self.e.1
+        self[1]
     }
     pub fn z(&self) -> f64 {
-        self.e.2
+        self[2]
     }
     pub fn length_squared(&self) -> f64 {
-        self.e.0 * self.e.0 + self.e.1 * self.e.1 + self.e.2 * self.e.2
+        self[0] * self[0] + self[1] * self[1] + self[2] * self[2]
     }
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
@@ -27,11 +27,11 @@ impl Vec3 {
     }
     pub fn cross(p: &Self, q: &Self) -> Self {
         Vec3 {
-            e: (
-                p.e.1 * q.e.2 - p.e.2 * q.e.1,
-                p.e.2 * q.e.0 - p.e.0 * q.e.2,
-                p.e.0 * q.e.1 - p.e.1 * q.e.0,
-            ),
+            e: [
+                p[1] * q[2] - p[2] * q[1],
+                p[2] * q[0] - p[0] * q[2],
+                p[0] * q[1] - p[1] * q[0],
+            ],
         }
     }
 }
@@ -40,71 +40,86 @@ impl std::cmp::PartialEq for Vec3 {
         self.e == rhs.e
     }
 }
+impl std::ops::Index<usize> for Vec3 {
+    type Output = f64;
+    fn index(&self, i: usize) -> &f64 {
+        &self.e[i]
+    }
+}
+impl std::ops::IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, i: usize) -> &mut f64{
+        &mut self.e[i]
+    }
+}
 impl std::ops::Add for Vec3 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
         Vec3 {
-            e: (self.e.0 + rhs.e.0, self.e.1 + rhs.e.1, self.e.2 + rhs.e.2),
+            e: [
+                self[0] + rhs[0],
+                self[1] + rhs[1],
+                self[2] + rhs[2],
+            ],
         }
     }
 }
 impl std::ops::AddAssign for Vec3 {
     fn add_assign(&mut self, rhs: Self) {
-        self.e.0 += rhs.e.0;
-        self.e.1 += rhs.e.1;
-        self.e.2 += rhs.e.2;
+        self[0] += rhs[0];
+        self[1] += rhs[1];
+        self[2] += rhs[2];
     }
 }
 impl std::ops::Sub for Vec3 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
         Vec3 {
-            e: (self.e.0 - rhs.e.0, self.e.1 - rhs.e.1, self.e.2 - rhs.e.2),
+            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
         }
     }
 }
 impl std::ops::SubAssign for Vec3 {
     fn sub_assign(&mut self, rhs: Self) {
-        self.e.0 -= rhs.e.0;
-        self.e.1 -= rhs.e.1;
-        self.e.2 -= rhs.e.2;
+        self[0] -= rhs[0];
+        self[1] -= rhs[1];
+        self[2] -= rhs[2];
     }
 }
 impl std::ops::Mul<Self> for Vec3 {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self {
         Vec3 {
-            e: (self.e.0 * rhs.e.0, self.e.1 * rhs.e.1, self.e.2 * rhs.e.2),
+            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]],
         }
     }
 }
 impl std::ops::MulAssign<Self> for Vec3 {
     fn mul_assign(&mut self, rhs: Self) {
-        self.e.0 *= rhs.e.0;
-        self.e.1 *= rhs.e.1;
-        self.e.2 *= rhs.e.2;
+        self[0] *= rhs[0];
+        self[1] *= rhs[1];
+        self[2] *= rhs[2];
     }
 }
 impl std::ops::Mul<f64> for Vec3 {
     type Output = Self;
     fn mul(self, rhs: f64) -> Self {
         Vec3 {
-            e: (self.e.0 * rhs, self.e.1 * rhs, self.e.2 * rhs),
+            e: [self[0] * rhs, self[1] * rhs, self[2] * rhs],
         }
     }
 }
 impl std::ops::MulAssign<f64> for Vec3 {
     fn mul_assign(&mut self, rhs: f64) {
-        self.e.0 *= rhs;
-        self.e.1 *= rhs;
-        self.e.2 *= rhs;
+        self[0] *= rhs;
+        self[1] *= rhs;
+        self[2] *= rhs;
     }
 }
 impl std::ops::Mul<Vec3> for f64 {
     type Output = Vec3;
     fn mul(self, rhs: Vec3) -> Vec3 {
         Vec3 {
-            e: (self * rhs.e.0, self * rhs.e.1, self * rhs.e.2),
+            e: [self * rhs[0], self * rhs[1], self * rhs[2]],
         }
     }
 }
@@ -163,7 +178,7 @@ fn test_vec3_mul() {
 }
 #[test]
 fn test_vec3_div() {
-    let mut u = Vec3::new (1.11, 2.22, 3.33);
+    let mut u = Vec3::new(1.11, 2.22, 3.33);
     u /= 10.0;
     assert_eq!(u, Vec3::new(1.11 / 10.0, 2.22 / 10.0, 3.33 / 10.0));
     assert_eq!(u / 2.0, Vec3::new(1.11 / 20.0, 2.22 / 20.0, 3.33 / 20.0));
