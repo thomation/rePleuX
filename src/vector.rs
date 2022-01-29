@@ -100,7 +100,14 @@ impl std::ops::MulAssign<f64> for Vec3 {
         self.e.2 *= rhs;
     }
 }
-
+impl std::ops::Mul<Vec3> for f64 {
+    type Output = Vec3;
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            e: (self * rhs.e.0, self * rhs.e.1, self * rhs.e.2),
+        }
+    }
+}
 #[test]
 fn test_vec3_create() {
     let v = Vec3::new(1.1, 2.1, 3.3);
@@ -130,16 +137,17 @@ fn test_vec3_sub() {
 }
 #[test]
 fn test_vec3_mul() {
-    let mut u = Vec3::new (1.1, 2.2, 3.3);
+    let mut u = Vec3::new(1.1, 2.2, 3.3);
     u *= 10.0;
     assert_eq!(u, Vec3::new(11.0, 22.0, 33.0));
-    let v = Vec3::new (0.1, 0.2, 0.3);
+    let v = Vec3::new(0.1, 0.2, 0.3);
     let mut w = u * v;
     assert_eq!(w, Vec3::new(1.1, 4.4, 9.9));
     w *= Vec3::new(10.0, 5.0, 1.0);
     assert_eq!(w, Vec3::new(11.0, 22.0, 9.9));
     let x = w * 0.1;
     assert_eq!(x, Vec3::new(1.1, 2.2, 9.9 * 0.1));
+    assert_eq!(0.2 * x, Vec3::new(1.1 * 0.2, 2.2 * 0.2, 9.9 * 0.1 * 0.2));
 }
 #[test]
 fn test_vec3_complex() {
