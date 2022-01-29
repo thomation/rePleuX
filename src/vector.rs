@@ -108,6 +108,18 @@ impl std::ops::Mul<Vec3> for f64 {
         }
     }
 }
+impl std::ops::Div<f64> for Vec3 {
+    type Output = Self;
+    fn div(self, rhs: f64) -> Self {
+        self * (1.0 / rhs)
+    }
+}
+impl std::ops::DivAssign<f64> for Vec3 {
+    fn div_assign(&mut self, rhs: f64) {
+        *self *= 1.0 / rhs;
+    }
+}
+// The comparing of f64 is not accurate, so the assert may be failed in your computer.
 #[test]
 fn test_vec3_create() {
     let v = Vec3::new(1.1, 2.1, 3.3);
@@ -148,6 +160,13 @@ fn test_vec3_mul() {
     let x = w * 0.1;
     assert_eq!(x, Vec3::new(1.1, 2.2, 9.9 * 0.1));
     assert_eq!(0.2 * x, Vec3::new(1.1 * 0.2, 2.2 * 0.2, 9.9 * 0.1 * 0.2));
+}
+#[test]
+fn test_vec3_div() {
+    let mut u = Vec3::new (1.11, 2.22, 3.33);
+    u /= 10.0;
+    assert_eq!(u, Vec3::new(1.11 / 10.0, 2.22 / 10.0, 3.33 / 10.0));
+    assert_eq!(u / 2.0, Vec3::new(1.11 / 20.0, 2.22 / 20.0, 3.33 / 20.0));
 }
 #[test]
 fn test_vec3_complex() {
