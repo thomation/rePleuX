@@ -2,6 +2,7 @@ use std::fs::File;
 use image::ColorType;
 use image::png::PNGEncoder;
 mod vector;
+mod ray;
 
 fn main() {
     let image_width = 256;
