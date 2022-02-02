@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -148,6 +148,8 @@ fn test_vec3_create() {
     assert_eq!(v.y(), 2.1);
     assert_eq!(v.z(), 3.3);
     assert_eq!(v.length_squared(), 1.1 * 1.1 + 2.1 * 2.1 + 3.3 * 3.3);
+    let u = v.clone();
+    assert_eq!(u, v);
 }
 #[test]
 fn test_vec3_add() {

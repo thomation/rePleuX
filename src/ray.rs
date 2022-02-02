@@ -18,7 +18,10 @@ impl Ray {
     }
     fn at(&self, t: f64) -> vector::Point3 {
         // self.origin() + self.dir() * t
-        vector::Point3::new(self.origin().x() + self.dir().x() * t, self.origin().y() + self.dir().y() * t, self.origin().z() + self.dir().z() * t)
+        // vector::Point3::new(self.origin().x() + self.dir().x() * t, self.origin().y() + self.dir().y() * t, self.origin().z() + self.dir().z() * t)
+        let o = self.origin().clone();
+        let d = self.dir().clone();
+        o + d * t
     }
 }
 #[test]
