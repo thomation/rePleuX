@@ -1,22 +1,22 @@
 use crate::vector;
-struct Ray {
+pub struct Ray {
     origin: vector::Point3,
     dir: vector::Vec3,
 }
 impl Ray {
-    fn new(origin: vector::Point3, dir: vector::Vec3) -> Ray {
+    pub fn new(origin: vector::Point3, dir: vector::Vec3) -> Ray {
         Ray {
             origin: origin,
             dir: dir,
         }
     }
-    fn origin(&self) -> &vector::Point3 {
+    pub fn origin(&self) -> &vector::Point3 {
         &self.origin
     }
-    fn dir(&self) -> &vector::Vec3 {
+    pub fn dir(&self) -> &vector::Vec3 {
         &self.dir
     }
-    fn at(&self, t: f64) -> vector::Point3 {
+    pub fn at(&self, t: f64) -> vector::Point3 {
         // self.origin() + self.dir() * t
         // vector::Point3::new(self.origin().x() + self.dir().x() * t, self.origin().y() + self.dir().y() * t, self.origin().z() + self.dir().z() * t)
         let o = self.origin().clone();
