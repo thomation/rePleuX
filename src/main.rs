@@ -6,7 +6,7 @@ mod ray;
 
 fn ray_color(ray: &ray::Ray) -> vector::Color3
 {
-    let unit = vector::Vec3::unit(ray.dir());
+    let unit = vector::Vec3::unit(&ray.dir());
     let t = (unit.y() + 1.0) * 0.5;
     vector::Color3::new(0.5, 0.7, 1.0) * t + vector::Color3::new(1.0, 1.0, 1.0) * (1.0 - t)
 }
