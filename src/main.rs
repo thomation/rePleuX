@@ -1,11 +1,10 @@
-use std::fs::File;
-use image::ColorType;
 use image::png::PNGEncoder;
-mod vector;
+use image::ColorType;
+use std::fs::File;
 mod ray;
+mod vector;
 
-fn ray_color(ray: &ray::Ray) -> vector::Color3
-{
+fn ray_color(ray: &ray::Ray) -> vector::Color3 {
     let unit = vector::Vec3::unit(&ray.dir());
     let t = (unit.y() + 1.0) * 0.5;
     vector::Color3::new(0.5, 0.7, 1.0) * t + vector::Color3::new(1.0, 1.0, 1.0) * (1.0 - t)
@@ -24,16 +23,23 @@ fn main() {
     let origin = vector::Point3::new(0.0, 0.0, 0.0);
     let horizontal = vector::Vec3::new(viewport_width, 0.0, 0.0);
     let vertical = vector::Vec3::new(0.0, viewport_height, 0.0);
-    let lower_left_corner = origin.clone() - horizontal.clone() / 2.0 - vertical.clone() / 2.0 - vector::Vec3::new(0.0, 0.0, focal_lenght);
-
+    let lower_left_corner_view = -horizontal.clone() / 2.0
+        - vertical.clone() / 2.0
+        - vector::Vec3::new(0.0, 0.0, focal_lenght);
+    let lower_left_corner_world = origin.clone() + lower_left_corner_view;
     // Render
     let channel = 3;
     let mut pixels = vec![0; image_width * image_height * channel];
-    for h in 0..image_height{
+    for h in 0..image_height {
         for w in 0..image_width {
+            // Screen Coordinate
             let u = w as f64 / (image_width as f64 - 1.0);
             let v = (image_height - h - 1) as f64 / (image_height as f64 - 1.0);
-            let ray = ray::Ray::new(origin.clone(), lower_left_corner.clone() + horizontal.clone() * u + vertical.clone() * v - origin.clone());
+            // World Coordinate
+            let p = lower_left_corner_world.clone() + horizontal.clone() * u + vertical.clone() * v;
+
+            let dir = p - origin.clone();
+            let ray = ray::Ray::new(origin.clone(), dir);
             let color = ray_color(&ray);
             pixels[w * channel + h * image_width * channel] = (color.x() * 255.999) as u8;
             pixels[1 + w * channel + h * image_width * channel] = (color.y() * 255.999) as u8;
@@ -42,5 +48,12 @@ fn main() {
     }
     let output = File::create("target/output.png").expect("cannot create output.png");
     let encorder = PNGEncoder::new(output);
-    encorder.encode(&pixels, image_width as u32, image_height as u32, ColorType::RGB(8)).expect("encode png fail");
+    encorder
+        .encode(
+            &pixels,
+            image_width as u32,
+            image_height as u32,
+            ColorType::RGB(8),
+        )
+        .expect("encode png fail");
 }
