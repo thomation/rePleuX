@@ -1,10 +1,10 @@
 use crate::vector;
 pub struct Ray {
     origin: vector::Point3,
-    dir: vector::Vec3,
+    dir: vector::Dir3,
 }
 impl Ray {
-    pub fn new(origin: vector::Point3, dir: vector::Vec3) -> Ray {
+    pub fn new(origin: vector::Point3, dir: vector::Dir3) -> Ray {
         Ray {
             origin: origin,
             dir: dir,
@@ -13,7 +13,7 @@ impl Ray {
     pub fn origin(&self) -> vector::Point3 {
         self.origin.clone()
     }
-    pub fn dir(&self) -> vector::Vec3 {
+    pub fn dir(&self) -> vector::Dir3 {
         self.dir.clone()
     }
     pub fn at(&self, t: f64) -> vector::Point3 {
