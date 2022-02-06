@@ -4,7 +4,19 @@ use std::fs::File;
 mod ray;
 mod vector;
 
+fn hit_sphere(center: &vector::Point3, radius: f64, ray: &ray::Ray) -> bool {
+    let oc = ray.origin() - center.clone();
+    let rd = ray.dir();
+    let a = vector::Vec3::dot(&rd, &rd);
+    let b = vector::Vec3::dot(&oc, &rd) * 2.0;
+    let c = vector::Vec3::dot(&oc, &oc) - radius * radius;
+    let discriminant = b * b - a * c * 4.0;
+    discriminant > 0.0
+}
 fn ray_color(ray: &ray::Ray) -> vector::Color3 {
+    if hit_sphere(&vector::Point3::new(0.0, 0.0, -1.0), 0.5, ray) {
+        return vector::Color3::new(1.0, 0.0, 0.0);
+    }
     let unit = vector::Vec3::unit(&ray.dir());
     let t = (unit.y() + 1.0) * 0.5;
     vector::Color3::new(0.5, 0.7, 1.0) * t + vector::Color3::new(1.0, 1.0, 1.0) * (1.0 - t)
