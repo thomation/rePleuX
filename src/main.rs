@@ -6,14 +6,14 @@ mod vector;
 fn hit_sphere(center: &vector::Point3, radius: f64, ray: &ray::Ray) -> Option<f64> {
     let oc = ray.origin() - center.clone();
     let rd = ray.dir();
-    let a = vector::Vec3::dot(&rd, &rd);
-    let b = vector::Vec3::dot(&oc, &rd) * 2.0;
+    let a = rd.length_squared();
+    let half_b = vector::Vec3::dot(&oc, &rd);
     let c = vector::Vec3::dot(&oc, &oc) - radius * radius;
-    let discriminant = b * b - a * c * 4.0;
+    let discriminant = half_b * half_b - a * c;
     if discriminant < 0.0 {
         return None;
     }
-    Option::Some((- b - discriminant.sqrt()) * 0.5 / a)
+    Option::Some((- half_b - discriminant.sqrt()) / a)
 }
 fn ray_color(ray: &ray::Ray) -> vector::Color3 {
     let center = vector::Point3::new(0.0, 0.0, -1.0);
