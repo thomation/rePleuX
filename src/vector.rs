@@ -25,6 +25,10 @@ impl Vec3 {
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
+    pub fn normalize(&mut self) {
+        let u = Vec3::unit(self);
+        self.e = u.e;
+    }
     pub fn dot(p: &Self, q: &Self) -> f64 {
         p.x() * q.x() + p.y() * q.y() + p.z() * q.z()
     }
