@@ -1,28 +1,16 @@
 use image::png::PNGEncoder;
 use image::ColorType;
 use std::fs::File;
+use crate::hit::Hittable;
 mod ray;
 mod vector;
-fn hit_sphere(center: &vector::Point3, radius: f64, ray: &ray::Ray) -> Option<f64> {
-    let oc = ray.origin() - center.clone();
-    let rd = ray.dir();
-    let a = rd.length_squared();
-    let half_b = vector::Vec3::dot(&oc, &rd);
-    let c = vector::Vec3::dot(&oc, &oc) - radius * radius;
-    let discriminant = half_b * half_b - a * c;
-    if discriminant < 0.0 {
-        return None;
-    }
-    Option::Some((- half_b - discriminant.sqrt()) / a)
-}
-fn ray_color(ray: &ray::Ray) -> vector::Color3 {
-    let center = vector::Point3::new(0.0, 0.0, -1.0);
-    let hit = hit_sphere(&center, 0.5, ray); 
+mod hit;
+mod sphere;
+
+fn ray_color(ray: &ray::Ray, hit: Option<hit::HitRecord>) -> vector::Color3 {
     match hit {
-        Option::Some(t) => {
-            let mut normal = ray.at(t) - center;
-            normal.normalize(); 
-            return vector::Color3::new(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
+        Option::Some(r) => {
+            return vector::Color3::new(r.normal().x() + 1.0, r.normal().y() + 1.0, r.normal().z() + 1.0) * 0.5;
         },
         Option::None => {
             let unit = vector::Vec3::unit(&ray.dir());
@@ -49,6 +37,8 @@ fn main() {
         - vertical.clone() / 2.0
         - vector::Vec3::new(0.0, 0.0, focal_lenght);
     let lower_left_corner_world = origin.clone() + lower_left_corner_view;
+    // Scene
+    let sphere = sphere::Sphere::new(vector::Point3::new(0.0, 0.0, -1.0), 0.5);
     // Render
     let channel = 3;
     let mut pixels = vec![0; image_width * image_height * channel];
@@ -62,7 +52,8 @@ fn main() {
 
             let dir = p - origin.clone();
             let ray = ray::Ray::new(origin.clone(), dir);
-            let color = ray_color(&ray);
+            let hit = sphere.hit(&ray, 0.1, 10.0);
+            let color = ray_color(&ray, hit);
             pixels[w * channel + h * image_width * channel] = (color.x() * 255.999) as u8;
             pixels[1 + w * channel + h * image_width * channel] = (color.y() * 255.999) as u8;
             pixels[2 + w * channel + h * image_width * channel] = (color.z() * 255.999) as u8;
