@@ -39,9 +39,10 @@ impl hit::Hittable for Sphere {
         }
         let hit_point = ray.at(t);
         let mut hit_normal = hit_point.clone() - self.center();
+        let front = vector::Vec3::dot(&hit_normal, &ray.dir()) < 0.0;
         hit_normal.normalize();
         Option::Some(
-            hit::HitRecord::new(hit_point, hit_normal, t, true)
+            hit::HitRecord::new(hit_point, hit_normal, t, front)
         )
     }
 }
