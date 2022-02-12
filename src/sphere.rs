@@ -41,7 +41,7 @@ impl hit::Hittable for Sphere {
         let mut hit_normal = hit_point.clone() - self.center();
         hit_normal.normalize();
         Option::Some(
-            hit::HitRecord::new(hit_point, hit_normal, t)
+            hit::HitRecord::new(hit_point, hit_normal, t, true)
         )
     }
 }

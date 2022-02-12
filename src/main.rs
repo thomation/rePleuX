@@ -6,6 +6,7 @@ mod ray;
 mod vector;
 mod hit;
 mod sphere;
+mod hittable_list;
 
 fn ray_color(ray: &ray::Ray, hit: Option<hit::HitRecord>) -> vector::Color3 {
     match hit {
@@ -38,7 +39,9 @@ fn main() {
         - vector::Vec3::new(0.0, 0.0, focal_lenght);
     let lower_left_corner_world = origin.clone() + lower_left_corner_view;
     // Scene
-    let sphere = sphere::Sphere::new(vector::Point3::new(0.0, 0.0, -1.0), 0.5);
+    let mut world = hittable_list::HittableList::new();
+    world.add(Box::new(sphere::Sphere::new(vector::Point3::new(0.0, 0.0, -1.0), 0.5)));
+    world.add(Box::new(sphere::Sphere::new(vector::Point3::new(0.0, -100.5, -1.0), 100.0)));
     // Render
     let channel = 3;
     let mut pixels = vec![0; image_width * image_height * channel];
@@ -52,7 +55,7 @@ fn main() {
 
             let dir = p - origin.clone();
             let ray = ray::Ray::new(origin.clone(), dir);
-            let hit = sphere.hit(&ray, 0.1, 10.0);
+            let hit = world.hit(&ray, 0.1, 10.0);
             let color = ray_color(&ray, hit);
             pixels[w * channel + h * image_width * channel] = (color.x() * 255.999) as u8;
             pixels[1 + w * channel + h * image_width * channel] = (color.y() * 255.999) as u8;
