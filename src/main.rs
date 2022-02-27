@@ -1,6 +1,3 @@
-use image::png::PNGEncoder;
-use image::ColorType;
-use std::fs::File;
 use crate::hit::Hittable;
 mod ray;
 mod vector;
@@ -8,6 +5,7 @@ mod hit;
 mod sphere;
 mod hittable_list;
 mod camera;
+mod output;
 
 fn ray_color(ray: &ray::Ray, hit: Option<hit::HitRecord>) -> vector::Color3 {
     match hit {
@@ -25,9 +23,8 @@ fn ray_color(ray: &ray::Ray, hit: Option<hit::HitRecord>) -> vector::Color3 {
 fn main() {
     // Image
     let aspect_ratio = 16.0 / 9.0;
-    let image_width = 800;
-    let image_height = (image_width as f64 / aspect_ratio) as usize;
-
+    let mut img = output::Image::new(aspect_ratio);
+    let img_file = output::ImageFile::new("target/output.png".to_string());
     // Camera
     let cam = camera::Camera::new(aspect_ratio);
     // Scene
@@ -35,30 +32,18 @@ fn main() {
     world.add(Box::new(sphere::Sphere::new(vector::Point3::new(0.0, 0.0, -1.0), 0.5)));
     world.add(Box::new(sphere::Sphere::new(vector::Point3::new(0.0, -100.5, -1.0), 100.0)));
     // Render
-    let channel = 3;
-    let mut pixels = vec![0; image_width * image_height * channel];
+    let image_width = img.width();
+    let image_height = img.height();
     for h in 0..image_height {
         for w in 0..image_width {
             // Screen Coordinate
             let u = w as f64 / (image_width as f64 - 1.0);
             let v = (image_height - h - 1) as f64 / (image_height as f64 - 1.0);
-            // World Coordinate
             let ray = cam.get_ray(u, v);
             let hit = world.hit(&ray, 0.1, 10.0);
             let color = ray_color(&ray, hit);
-            pixels[w * channel + h * image_width * channel] = (color.x() * 255.999) as u8;
-            pixels[1 + w * channel + h * image_width * channel] = (color.y() * 255.999) as u8;
-            pixels[2 + w * channel + h * image_width * channel] = (color.z() * 255.999) as u8;
+            img.write_color(w, h, &color);
         }
     }
-    let output = File::create("target/output.png").expect("cannot create output.png");
-    let encorder = PNGEncoder::new(output);
-    encorder
-        .encode(
-            &pixels,
-            image_width as u32,
-            image_height as u32,
-            ColorType::RGB(8),
-        )
-        .expect("encode png fail");
+    img_file.save(&img);
 }
