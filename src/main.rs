@@ -31,8 +31,8 @@ fn main() {
     let aspect_ratio = 16.0 / 9.0;
     let image_width = 800;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
-    let mut img = output::image::Image::new(image_width, image_height);
-    let img_file = output::image_file::ImageFile::new("target/output.png".to_string());
+    let mut img = output::bitmap::Bitmap::new(image_width, image_height);
+    let img_file = output::picture::Png::new("target/output.png".to_string());
     // Camera
     let cam = camera::Camera::new(aspect_ratio);
     // Scene

@@ -1,3 +1,3 @@
-pub mod image;
-pub mod image_file;
+pub mod bitmap;
+pub mod picture;
 pub mod encodable;

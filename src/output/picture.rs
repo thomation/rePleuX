@@ -3,12 +3,12 @@ use image::ColorType;
 use std::fs::File;
 use super::encodable;
 
-pub struct ImageFile {
+pub struct Png {
     path: String,
 }
-impl ImageFile {
-    pub fn new(path: String) -> ImageFile {
-        ImageFile { path: path }
+impl Png {
+    pub fn new(path: String) -> Png {
+        Png { path: path }
     }
     pub fn save(&self, img: &encodable::Encodable) {
         let output = File::create(&self.path).expect("cannot create output.png");

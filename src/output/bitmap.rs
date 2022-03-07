@@ -1,18 +1,18 @@
 use crate::vector;
 use super::encodable;
 
-pub struct Image {
+pub struct Bitmap {
     image_width: usize,
     image_height: usize,
     pixels: Vec<u8>,
     channel: usize,
 }
 
-impl Image {
-    pub fn new(image_width: usize, image_height: usize) -> Image {
+impl Bitmap {
+    pub fn new(image_width: usize, image_height: usize) -> Bitmap {
         let channel = 3;
         let pixels = vec![0; image_width * image_height * channel];
-        Image {
+        Bitmap {
             image_width: image_width,
             image_height: image_height,
             pixels: pixels,
@@ -28,7 +28,7 @@ impl Image {
             (color.z() * 255.999) as u8;
     }
 }
-impl encodable::Encodable for Image {
+impl encodable::Encodable for Bitmap {
     fn width(&self) -> usize {
         self.image_width
     }
