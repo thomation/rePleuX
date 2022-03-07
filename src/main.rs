@@ -6,22 +6,22 @@ mod hittable_list;
 mod output;
 mod ray;
 mod sphere;
-mod vector;
+mod math;
 
-fn ray_color(ray: &ray::Ray, hit: Option<hit::HitRecord>) -> vector::Color3 {
+fn ray_color(ray: &ray::Ray, hit: Option<hit::HitRecord>) -> math::vector::Color3 {
     match hit {
         Option::Some(r) => {
-            return vector::Color3::new(
+            return math::vector::Color3::new(
                 r.normal().x() + 1.0,
                 r.normal().y() + 1.0,
                 r.normal().z() + 1.0,
             ) * 0.5;
         }
         Option::None => {
-            let unit = vector::Vec3::unit(&ray.dir());
+            let unit = math::vector::Vec3::unit(&ray.dir());
             let t = (unit.y() + 1.0) * 0.5;
-            return vector::Color3::new(0.5, 0.7, 1.0) * t
-                + vector::Color3::new(1.0, 1.0, 1.0) * (1.0 - t);
+            return math::vector::Color3::new(0.5, 0.7, 1.0) * t
+                + math::vector::Color3::new(1.0, 1.0, 1.0) * (1.0 - t);
         }
     }
 }
@@ -38,11 +38,11 @@ fn main() {
     // Scene
     let mut world = hittable_list::HittableList::new();
     world.add(Box::new(sphere::Sphere::new(
-        vector::Point3::new(0.0, 0.0, -1.0),
+        math::vector::Point3::new(0.0, 0.0, -1.0),
         0.5,
     )));
     world.add(Box::new(sphere::Sphere::new(
-        vector::Point3::new(0.0, -100.5, -1.0),
+        math::vector::Point3::new(0.0, -100.5, -1.0),
         100.0,
     )));
     // Render
@@ -50,7 +50,7 @@ fn main() {
     let mut rng = rand::thread_rng();
     for h in 0..image_height {
         for w in 0..image_width {
-            let mut color = vector::Color3::new(0.0, 0.0, 0.0);
+            let mut color = math::vector::Color3::new(0.0, 0.0, 0.0);
             for _ in 0..samples_per_pixels {
                 let rw: f64 = rng.gen();
                 let rh: f64 = rng.gen();

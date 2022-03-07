@@ -1,4 +1,4 @@
-use crate::vector;
+use crate::math::vector;
 use super::encodable;
 
 pub struct Bitmap {

@@ -1,6 +1,6 @@
 use crate::hit;
 use crate::ray;
-use crate::vector;
+use crate::math::vector;
 
 pub struct Sphere {
     center: vector::Point3,

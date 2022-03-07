@@ -1,5 +1,5 @@
 use crate::ray;
-use crate::vector;
+use crate::math::vector;
 
 pub struct Camera {
     origin: vector::Point3,

@@ -1,5 +1,5 @@
 use crate::ray;
-use crate::vector;
+use crate::math::vector;
 pub struct HitRecord {
     p: vector::Point3,
     normal: vector::Dir3,
