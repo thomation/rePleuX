@@ -1,5 +1,7 @@
-use crate::camera::Camera;
+use crate::camera;
 use crate::scene::hit;
+use crate::scene::hit::Hittable;
+use crate::scene::world;
 use crate::math;
 use crate::output;
 use crate::math::ray;
@@ -11,8 +13,8 @@ impl RayTracing {
         image_width: usize,
         image_height: usize,
         samples_per_pixels: usize,
-        cam: &Camera,
-        hitable: &hit::Hittable,
+        cam: &camera::Camera,
+        world: &world::World,
         output: &mut output::bitmap::Bitmap,
     ) {
         let mut rng = rand::thread_rng();
@@ -25,7 +27,7 @@ impl RayTracing {
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
                     let ray = cam.get_ray(u, v);
-                    let hit = hitable.hit(&ray, 0.1, 10.0);
+                    let hit = world.objects().hit(&ray, 0.1, 10.0);
                     color += RayTracing::ray_color(&ray, hit);
                 }
                 color /= samples_per_pixels as f64;

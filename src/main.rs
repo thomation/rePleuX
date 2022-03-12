@@ -13,15 +13,7 @@ fn main() {
     // Camera
     let cam = camera::Camera::new(aspect_ratio);
     // Scene
-    let mut world = scene::hittable_list::HittableList::new();
-    world.add(Box::new(scene::sphere::Sphere::new(
-        math::vector::Point3::new(0.0, 0.0, -1.0),
-        0.5,
-    )));
-    world.add(Box::new(scene::sphere::Sphere::new(
-        math::vector::Point3::new(0.0, -100.5, -1.0),
-        100.0,
-    )));
+    let world = scene::world::World::new();
     // Render
     render::RayTracing::render(image_width, image_height, 1, &cam, &world, &mut img);
     // Output
