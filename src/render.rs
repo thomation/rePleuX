@@ -1,7 +1,7 @@
 use crate::camera;
-use crate::scene::hit;
-use crate::scene::hit::hittable::Hittable;
-use crate::scene::world;
+use crate::hit;
+use crate::hit::hittable::Hittable;
+use crate::scene;
 use crate::math;
 use crate::output;
 use crate::math::ray;
@@ -14,7 +14,7 @@ impl RayTracing {
         image_height: usize,
         samples_per_pixels: usize,
         cam: &camera::Camera,
-        world: &world::World,
+        world: &scene::Scene,
         output: &mut output::bitmap::Bitmap,
     ) {
         let mut rng = rand::thread_rng();

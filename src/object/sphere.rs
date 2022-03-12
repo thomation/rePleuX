@@ -1,4 +1,5 @@
-use super::hit;
+use crate::hit::hittable;
+use crate::hit::record;
 use crate::math::ray;
 use crate::math::vector;
 
@@ -19,8 +20,8 @@ impl Sphere {
     }
 }
 
-impl hit::hittable::Hittable for Sphere {
-    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<hit::record::HitRecord> {
+impl hittable::Hittable for Sphere {
+    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<record::HitRecord> {
         let oc = ray.origin() - self.center.clone();
         let rd = ray.dir();
         let a = rd.length_squared();
@@ -42,7 +43,7 @@ impl hit::hittable::Hittable for Sphere {
         let front = vector::Vec3::dot(&hit_normal, &ray.dir()) < 0.0;
         hit_normal.normalize();
         Option::Some(
-            hit::record::HitRecord::new(hit_point, hit_normal, t, front)
+            record::HitRecord::new(hit_point, hit_normal, t, front)
         )
     }
 }
