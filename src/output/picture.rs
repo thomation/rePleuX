@@ -10,7 +10,7 @@ impl Png {
     pub fn new(path: String) -> Png {
         Png { path: path }
     }
-    pub fn save(&self, img: &encodable::Encodable) {
+    pub fn save(&self, img: &impl encodable::Encodable) {
         let output = File::create(&self.path).expect("cannot create output.png");
         let encorder = PNGEncoder::new(output);
         encorder
