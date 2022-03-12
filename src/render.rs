@@ -27,7 +27,7 @@ impl RayTracing {
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
                     let ray = cam.get_ray(u, v);
-                    let hit = world.objects().hit(&ray, 0.1, 10.0);
+                    let hit = world.hit(&ray, 0.1, 10.0);
                     color += RayTracing::ray_color(&ray, hit);
                 }
                 color /= samples_per_pixels as f64;
