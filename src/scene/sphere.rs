@@ -1,4 +1,4 @@
-use crate::hit;
+use super::hit;
 use crate::math::ray;
 use crate::math::vector;
 

@@ -1,12 +1,8 @@
-use crate::hit::Hittable;
 mod camera;
-mod hit;
-mod hittable_list;
 mod output;
-mod sphere;
 mod math;
 mod render;
-
+mod scene;
 
 fn main() {
     // Bitmap
@@ -17,12 +13,12 @@ fn main() {
     // Camera
     let cam = camera::Camera::new(aspect_ratio);
     // Scene
-    let mut world = hittable_list::HittableList::new();
-    world.add(Box::new(sphere::Sphere::new(
+    let mut world = scene::hittable_list::HittableList::new();
+    world.add(Box::new(scene::sphere::Sphere::new(
         math::vector::Point3::new(0.0, 0.0, -1.0),
         0.5,
     )));
-    world.add(Box::new(sphere::Sphere::new(
+    world.add(Box::new(scene::sphere::Sphere::new(
         math::vector::Point3::new(0.0, -100.5, -1.0),
         100.0,
     )));

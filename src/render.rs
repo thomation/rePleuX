@@ -1,5 +1,5 @@
 use crate::camera::Camera;
-use crate::hit;
+use crate::scene::hit;
 use crate::math;
 use crate::output;
 use crate::math::ray;
