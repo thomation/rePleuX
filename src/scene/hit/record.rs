@@ -1,4 +1,3 @@
-use crate::math::ray;
 use crate::math::vector;
 pub struct HitRecord {
     p: vector::Point3,

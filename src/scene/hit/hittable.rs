@@ -6,14 +6,14 @@ pub trait Hittable {
 }
 
 pub struct HittableList {
-    objects: Vec<Box<Hittable>>,
+    objects: Vec<Box<dyn Hittable>>,
 }
 
 impl HittableList {
     pub fn new() -> HittableList {
         HittableList { objects: vec![] }
     }
-    pub fn add(&mut self, obj: Box<Hittable>) {
+    pub fn add(&mut self, obj: Box<dyn Hittable>) {
         self.objects.push(obj);
     }
 }
