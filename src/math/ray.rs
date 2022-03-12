@@ -1,4 +1,4 @@
-use crate::math::vector;
+use super::vector;
 pub struct Ray {
     origin: vector::Point3,
     dir: vector::Dir3,

@@ -1,5 +1,5 @@
 use crate::hit;
-use crate::ray;
+use crate::math::ray;
 
 pub struct HittableList {
     objects: Vec<Box<hit::Hittable>>,

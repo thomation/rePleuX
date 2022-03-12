@@ -3,7 +3,6 @@ mod camera;
 mod hit;
 mod hittable_list;
 mod output;
-mod ray;
 mod sphere;
 mod math;
 mod render;

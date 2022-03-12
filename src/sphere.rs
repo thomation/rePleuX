@@ -1,5 +1,5 @@
 use crate::hit;
-use crate::ray;
+use crate::math::ray;
 use crate::math::vector;
 
 pub struct Sphere {

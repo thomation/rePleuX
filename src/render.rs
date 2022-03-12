@@ -2,7 +2,7 @@ use crate::camera::Camera;
 use crate::hit;
 use crate::math;
 use crate::output;
-use crate::ray;
+use crate::math::ray;
 use rand::Rng;
 
 pub struct RayTracing {}
