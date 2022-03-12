@@ -1,22 +1,26 @@
-use super::hit;
+use super::record::HitRecord;
 use crate::math::ray;
 
+pub trait Hittable {
+    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
+}
+
 pub struct HittableList {
-    objects: Vec<Box<hit::Hittable>>,
+    objects: Vec<Box<Hittable>>,
 }
 
 impl HittableList {
     pub fn new() -> HittableList {
         HittableList { objects: vec![] }
     }
-    pub fn add(&mut self, obj: Box<hit::Hittable>) {
+    pub fn add(&mut self, obj: Box<Hittable>) {
         self.objects.push(obj);
     }
 }
 
-impl hit::Hittable for HittableList {
-    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<hit::HitRecord> {
-        let mut hit_anything = std::option::Option::<hit::HitRecord>::None;
+impl Hittable for HittableList {
+    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<HitRecord> {
+        let mut hit_anything = std::option::Option::<HitRecord>::None;
         let mut closest_so_far = t_max;
         for obj in &self.objects {
             let hit = obj.hit(&ray, t_min, closest_so_far);

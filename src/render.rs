@@ -1,6 +1,6 @@
 use crate::camera;
 use crate::scene::hit;
-use crate::scene::hit::Hittable;
+use crate::scene::hit::hittable::Hittable;
 use crate::scene::world;
 use crate::math;
 use crate::output;
@@ -35,7 +35,7 @@ impl RayTracing {
             }
         }
     }
-    fn ray_color(ray: &ray::Ray, hit: Option<hit::HitRecord>) -> math::vector::Color3 {
+    fn ray_color(ray: &ray::Ray, hit: Option<hit::record::HitRecord>) -> math::vector::Color3 {
         match hit {
             Option::Some(r) => {
                 return math::vector::Color3::new(

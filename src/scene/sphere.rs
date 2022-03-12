@@ -19,8 +19,8 @@ impl Sphere {
     }
 }
 
-impl hit::Hittable for Sphere {
-    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<hit::HitRecord> {
+impl hit::hittable::Hittable for Sphere {
+    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<hit::record::HitRecord> {
         let oc = ray.origin() - self.center.clone();
         let rd = ray.dir();
         let a = rd.length_squared();
@@ -42,7 +42,7 @@ impl hit::Hittable for Sphere {
         let front = vector::Vec3::dot(&hit_normal, &ray.dir()) < 0.0;
         hit_normal.normalize();
         Option::Some(
-            hit::HitRecord::new(hit_point, hit_normal, t, front)
+            hit::record::HitRecord::new(hit_point, hit_normal, t, front)
         )
     }
 }
