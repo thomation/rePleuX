@@ -25,28 +25,37 @@ impl RayTracing {
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
                     let ray = cam.get_ray(u, v);
-                    let hit = world.hit(&ray, 0.1, 10.0);
-                    color += RayTracing::ray_color(&ray, hit);
+                    color += RayTracing::ray_color(&ray, &world, 50);
                 }
                 color /= samples_per_pixels as f64;
                 output.write_color(w, h, &color);
             }
         }
     }
-    fn ray_color(ray: &ray::Ray, hit: Option<hit::record::HitRecord>) -> math::vector::Color3 {
+    fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: i8) -> math::vector::Color3 {
+        if depth <= 0 {
+            return math::vector::Color3::new(0.0, 0.0, 0.0);
+        }
+        let hit = world.hit(&ray, 0.1, 10.0);
         match hit {
             Option::Some(r) => {
-                return math::vector::Color3::new(
-                    r.normal().x() + 1.0,
-                    r.normal().y() + 1.0,
-                    r.normal().z() + 1.0,
-                ) * 0.5;
+                let target = r.position() + r.normal() + RayTracing::random_in_unit_sphere();
+                let ray = math::ray::Ray::new(r.position(), target - r.position());
+                return RayTracing::ray_color(&ray, &world, depth - 1) * 0.5;
             }
             Option::None => {
                 let unit = math::vector::Vec3::unit(&ray.dir());
                 let t = (unit.y() + 1.0) * 0.5;
                 return math::vector::Color3::new(0.5, 0.7, 1.0) * t
                     + math::vector::Color3::new(1.0, 1.0, 1.0) * (1.0 - t);
+            }
+        }
+    }
+    fn random_in_unit_sphere() -> math::vector::Vec3 {
+        loop {
+            let p = math::vector::Vec3::random_range(-1.0, 1.0);
+            if p.length_squared() < 1.0 {
+                return p;
             }
         }
     }

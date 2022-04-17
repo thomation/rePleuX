@@ -14,8 +14,11 @@ impl HitRecord {
             front_face: front_face,
         }
     }
-    pub fn normal(&self) -> &vector::Dir3 {
-        &self.normal
+    pub fn position(&self) -> vector::Point3{
+        self.p.clone()
+    }
+    pub fn normal(&self) -> vector::Dir3 {
+        self.normal.clone()
     }
     pub fn t(&self) -> f64 {
         self.t
