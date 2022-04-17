@@ -5,7 +5,6 @@ use crate::scene;
 use crate::math;
 use crate::output;
 use crate::math::ray;
-use rand::Rng;
 
 pub struct RayTracing {}
 impl RayTracing {
@@ -17,13 +16,12 @@ impl RayTracing {
         world: &scene::Scene,
         output: &mut output::bitmap::Bitmap,
     ) {
-        let mut rng = rand::thread_rng();
         for h in 0..image_height {
             for w in 0..image_width {
                 let mut color = math::vector::Color3::new(0.0, 0.0, 0.0);
                 for _ in 0..samples_per_pixels {
-                    let rw: f64 = rng.gen();
-                    let rh: f64 = rng.gen();
+                    let rw: f64 = math::random::generate();
+                    let rh: f64 = math::random::generate();
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
                     let ray = cam.get_ray(u, v);
