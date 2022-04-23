@@ -39,7 +39,7 @@ impl RayTracing {
         let hit = world.hit(&ray, 0.1, 10.0);
         match hit {
             Option::Some(r) => {
-                let target = r.position() + r.normal() + RayTracing::random_in_unit_sphere();
+                let target = r.position() + r.normal() + RayTracing::random_in_unit_vector();
                 let ray = math::ray::Ray::new(r.position(), target - r.position());
                 return RayTracing::ray_color(&ray, &world, depth - 1) * 0.5;
             }
@@ -58,5 +58,10 @@ impl RayTracing {
                 return p;
             }
         }
+    }
+    fn random_in_unit_vector() -> math::vector::Vec3 {
+        let mut r = RayTracing::random_in_unit_sphere();
+        r.normalize();
+        r
     }
 }
