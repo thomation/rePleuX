@@ -19,7 +19,8 @@ impl Bitmap {
             channel: channel,
         }
     }
-    pub fn write_color(&mut self, w: usize, h: usize, color: &vector::Color3) {
+    pub fn write_color(&mut self, w: usize, h: usize, raw_color: &vector::Color3) {
+        let color = vector::Color3::new(raw_color.x().sqrt(), raw_color.y().sqrt(), raw_color.z().sqrt());
         self.pixels[w * self.channel + h * self.image_width * self.channel] =
             (color.x() * 255.999) as u8;
         self.pixels[1 + w * self.channel + h * self.image_width * self.channel] =
