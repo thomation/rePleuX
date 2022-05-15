@@ -5,6 +5,7 @@ mod render;
 mod scene;
 mod object;
 mod hit;
+mod material;
 
 fn main() {
     let aspect_ratio = 16.0 / 9.0;

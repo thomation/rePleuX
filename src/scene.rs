@@ -2,6 +2,8 @@ use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
 use crate::object::sphere;
 use crate::math;
+use crate::material;
+
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
 }
@@ -11,10 +13,12 @@ impl Scene {
         objects.push(Box::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, 0.0, -1.0),
             0.5,
+            material::lambertian::Lambertian::new(math::vector::Color3::new(0.5, 0.5, 0.5)),
         )));
         objects.push(Box::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -100.5, -1.0),
             100.0,
+            material::lambertian::Lambertian::new(math::vector::Color3::new(0.5, 0.5, 0.5)),
         )));
         Scene {
             objects: objects,

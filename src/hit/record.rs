@@ -1,17 +1,21 @@
 use crate::math::vector;
-pub struct HitRecord {
+use crate::material::material;
+
+pub struct HitRecord<'a> {
     p: vector::Point3,
     normal: vector::Dir3,
     t: f64,
     front_face: bool,
+    material :&'a material::Material,
 }
-impl HitRecord {
-    pub fn new(p: vector::Point3, normal: vector::Dir3, t: f64, front_face: bool) -> HitRecord {
+impl<'a> HitRecord<'a> {
+    pub fn new(p: vector::Point3, normal: vector::Dir3, t: f64, front_face: bool, material: &material::Material) -> HitRecord {
         HitRecord {
             p: p,
             normal: normal,
             t: t,
             front_face: front_face,
+            material : material, 
         }
     }
     pub fn position(&self) -> vector::Point3{
@@ -22,5 +26,8 @@ impl HitRecord {
     }
     pub fn t(&self) -> f64 {
         self.t
+    }
+    pub fn material (&self) -> &material::Material{
+        self.material
     }
 }
