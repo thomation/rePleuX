@@ -41,7 +41,7 @@ impl RayTracing {
                 let scatter = rec.material().scatter(&ray, &rec);
                 match scatter {
                     Option::Some(sr) => {
-                        return RayTracing::ray_color(&sr, &world, depth - 1) * 0.5;
+                        return RayTracing::ray_color(sr.ray(), &world, depth - 1) * sr.attenuation();
                     }
                     Option::None => {
                         return math::vector::Color3::new(0.0, 0.0, 0.0);
