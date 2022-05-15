@@ -59,6 +59,10 @@ impl Vec3 {
             e: [v[0] / l, v[1] / l, v[2] / l],
         }
     }
+    pub fn near_zero(&self) -> bool {
+        let s = 1.0e-8;
+        self.x().abs() < s && self.y().abs() < s && self.z().abs() < s
+    }
 }
 impl std::cmp::PartialEq for Vec3 {
     fn eq(&self, rhs: &Self) -> bool {
