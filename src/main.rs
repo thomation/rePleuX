@@ -15,7 +15,7 @@ fn main() {
     let mut img = output::bitmap::Bitmap::new(image_width, image_height);
     let cam = camera::Camera::new(aspect_ratio);
     let world = scene::Scene::new();
-    render::RayTracing::render(image_width, image_height, 4, &cam, &world, &mut img);
+    render::RayTracing::render(image_width, image_height, 16, &cam, &world, &mut img);
     let img_file = output::picture::Png::new("target/output.png".to_string());
     img_file.save(&img);
 }

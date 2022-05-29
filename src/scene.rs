@@ -13,12 +13,12 @@ impl Scene {
         objects.push(Box::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, 0.0, -1.0),
             0.5,
-            material::lambertian::Lambertian::new(math::vector::Color3::new(0.5, 0.1, 0.1)),
+            material::lambertian::Lambertian::new(math::vector::Color3::new(0.8, 0.1, 0.1)),
         )));
         objects.push(Box::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -100.5, -1.0),
             100.0,
-            material::lambertian::Lambertian::new(math::vector::Color3::new(0.1, 0.1, 0.5)),
+            material::lambertian::Lambertian::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
         )));
         Scene {
             objects: objects,

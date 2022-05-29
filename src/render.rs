@@ -24,7 +24,7 @@ impl RayTracing {
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
                     let ray = cam.get_ray(u, v);
-                    color += RayTracing::ray_color(&ray, &world, 50);
+                    color += RayTracing::ray_color(&ray, &world, 10);
                 }
                 color /= samples_per_pixels as f64;
                 output.write_color(w, h, &color);
@@ -35,7 +35,7 @@ impl RayTracing {
         if depth <= 0 {
             return math::vector::Color3::new(0.0, 0.0, 0.0);
         }
-        let hit = world.hit(&ray, 0.1, 10.0);
+        let hit = world.hit(&ray, 0.0001, 10.0);
         match hit {
             Option::Some(rec) => {
                 let scatter = rec.material().scatter(&ray, &rec);
