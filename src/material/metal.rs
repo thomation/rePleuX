@@ -10,7 +10,7 @@ pub struct Metal {
 }
 
 impl Metal {
-    fn new(albedo: vector::Color3) -> Self {
+    pub fn new(albedo: vector::Color3) -> Self {
         Metal { albedo: albedo }
     }
     pub fn albedo(&self) -> vector::Color3 {

@@ -9,16 +9,31 @@ pub struct Scene {
 }
 impl Scene {
     pub fn new() -> Scene {
+        let material_ground = material::lambertian::Lambertian::new(math::vector::Color3::new(0.8, 0.8, 0.0));
+        let material_center = material::lambertian::Lambertian::new(math::vector::Color3::new(0.7, 0.3, 0.3));
+        let material_left = material::metal::Metal::new(math::vector::Color3::new(0.8, 0.8, 0.8));
+        let material_right = material::metal::Metal::new(math::vector::Color3::new(0.8, 0.6, 0.2));
+
         let mut objects : Vec<Box<dyn Hittable>> = vec![];
-        objects.push(Box::new(sphere::Sphere::new(
-            math::vector::Point3::new(0.0, 0.0, -1.0),
-            0.5,
-            material::lambertian::Lambertian::new(math::vector::Color3::new(0.8, 0.1, 0.1)),
-        )));
         objects.push(Box::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -100.5, -1.0),
             100.0,
-            material::lambertian::Lambertian::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
+            material_ground
+        )));
+        objects.push(Box::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, 0.0, -1.0),
+            0.5,
+            material_center
+        )));
+        objects.push(Box::new(sphere::Sphere::new(
+            math::vector::Point3::new(-1.0, 0.0, -1.0),
+            0.5,
+            material_left
+        )));
+        objects.push(Box::new(sphere::Sphere::new(
+            math::vector::Point3::new(1.0, 0.0, -1.0),
+            0.5,
+            material_right
         )));
         Scene {
             objects: objects,
