@@ -11,8 +11,8 @@ impl Scene {
     pub fn new() -> Scene {
         let material_ground = material::lambertian::Lambertian::new(math::vector::Color3::new(0.8, 0.8, 0.0));
         let material_center = material::lambertian::Lambertian::new(math::vector::Color3::new(0.7, 0.3, 0.3));
-        let material_left = material::metal::Metal::new(math::vector::Color3::new(0.8, 0.8, 0.8));
-        let material_right = material::metal::Metal::new(math::vector::Color3::new(0.8, 0.6, 0.2));
+        let material_left = material::metal::Metal::new(math::vector::Color3::new(0.8, 0.8, 0.8), 0.3);
+        let material_right = material::metal::Metal::new(math::vector::Color3::new(0.8, 0.6, 0.2), 1.0);
 
         let mut objects : Vec<Box<dyn Hittable>> = vec![];
         objects.push(Box::new(sphere::Sphere::new(
