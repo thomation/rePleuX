@@ -27,6 +27,9 @@ impl<'a> HitRecord<'a> {
     pub fn t(&self) -> f64 {
         self.t
     }
+    pub fn front_face(&self) -> bool {
+        self.front_face
+    }
     pub fn material (&self) -> &material::Material{
         self.material
     }

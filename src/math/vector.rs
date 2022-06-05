@@ -94,6 +94,12 @@ impl Vec3 {
         let p = Vec3::dot(v, n) * 2.0;
         Vec3::sub(v, &Vec3::mul(n, p))
     }
+    pub fn refract(v: &Self, n: &Self, etai_over_etat: f64) -> Self {
+        let cos_theta = Vec3::dot(v, n).min(1.0);
+        let out_x = Vec3::add(v, &Vec3::mul(n, cos_theta)) * etai_over_etat;
+        let out_y = Vec3::mul(n, -(1.0 - out_x.length_squared()).abs().sqrt());
+        out_x + out_y
+    }
 }
 impl std::cmp::PartialEq for Vec3 {
     fn eq(&self, rhs: &Self) -> bool {
