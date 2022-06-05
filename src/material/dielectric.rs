@@ -23,24 +23,29 @@ impl material::Material for Dielectric {
         } else {
             self.index_of_fraction
         };
+        let normal = if hit_record.front_face() {
+            hit_record.normal()
+        } else {
+            -hit_record.normal()
+        };
         let unit_dir = math::vector::Vec3::unit(&ray_in.dir());
         let cos_theta =
-            math::vector::Vec3::dot(&math::vector::Vec3::neg(&unit_dir), &hit_record.normal())
+            math::vector::Vec3::dot(&math::vector::Vec3::neg(&unit_dir), &normal)
                 .min(1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
         if refraction_ratio * sin_theta > 1.0 {
-            let reflected = math::vector::Vec3::reflect(&unit_dir, &hit_record.normal());
+            let reflected = math::vector::Vec3::reflect(&unit_dir, &normal);
             Option::Some(scatter::ScatterResult::new(
                 math::ray::Ray::new(hit_record.position(), reflected),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
             ))
         } else {
-            let refracted =
-                math::vector::Vec3::refract(&unit_dir, &hit_record.normal(), refraction_ratio);
-            Option::Some(scatter::ScatterResult::new(
-                math::ray::Ray::new(hit_record.position(), refracted),
-                math::vector::Color3::new(1.0, 1.0, 1.0),
-            ))
+        let refracted =
+            math::vector::Vec3::refract(&unit_dir, &normal, refraction_ratio);
+        Option::Some(scatter::ScatterResult::new(
+            math::ray::Ray::new(hit_record.position(), refracted),
+            math::vector::Color3::new(1.0, 1.0, 1.0),
+        ))
         }
     }
 }
