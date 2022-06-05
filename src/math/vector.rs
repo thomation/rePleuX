@@ -95,9 +95,9 @@ impl Vec3 {
         Vec3::sub(v, &Vec3::mul(n, p))
     }
     pub fn refract(v: &Self, n: &Self, etai_over_etat: f64) -> Self {
-        let cos_theta = Vec3::dot(v, n).min(1.0);
+        let cos_theta = Vec3::dot(&Vec3::neg(v), n).min(1.0);
         let out_x = Vec3::add(v, &Vec3::mul(n, cos_theta)) * etai_over_etat;
-        let out_y = Vec3::mul(n, -(1.0 - out_x.length_squared()).abs().sqrt());
+        let out_y = Vec3::mul(n, - (1.0 - out_x.length_squared()).abs().sqrt());
         out_x + out_y
     }
 }
