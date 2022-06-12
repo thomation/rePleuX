@@ -42,11 +42,11 @@ impl<M: material::Material> hittable::Hittable for Sphere<M> {
             }
         }
         let hit_point = ray.at(t);
-        let mut hit_normal = hit_point.clone() - self.center();
-        let front = vector::Vec3::dot(&hit_normal, &ray.dir()) < 0.0;
-        hit_normal.normalize();
+        let mut outward_norml = (hit_point.clone() - self.center()) / self.radius;
+        let front = vector::Vec3::dot(&outward_norml, &ray.dir()) < 0.0;
+        outward_norml.normalize();
         Option::Some(
-            record::HitRecord::new(hit_point, hit_normal, t, front, &self.material)
+            record::HitRecord::new(hit_point, outward_norml, t, front, &self.material)
         )
     }
 }

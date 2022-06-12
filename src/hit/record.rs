@@ -9,10 +9,10 @@ pub struct HitRecord<'a> {
     material :&'a material::Material,
 }
 impl<'a> HitRecord<'a> {
-    pub fn new(p: vector::Point3, normal: vector::Dir3, t: f64, front_face: bool, material: &material::Material) -> HitRecord {
+    pub fn new(p: vector::Point3, outward_normal: vector::Dir3, t: f64, front_face: bool, material: &material::Material) -> HitRecord {
         HitRecord {
             p: p,
-            normal: normal,
+            normal: if front_face {outward_normal} else {-outward_normal},
             t: t,
             front_face: front_face,
             material : material, 
