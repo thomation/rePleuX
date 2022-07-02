@@ -77,11 +77,8 @@ impl Vec3 {
         self = -self;
         self += n.clone() * cos_theta;
         self *= etai_over_etat;
-        let vy = - (1.0 - self.length_squared()).abs().sqrt();
-        self += n * vy ;
-        // let out_x = Vec3::add(v, &Vec3::mul(n, cos_theta)) * etai_over_etat;
-        // let out_y = Vec3::mul(n, - (1.0 - out_x.length_squared()).abs().sqrt());
-        // out_x + out_y
+        let vy = -(1.0 - self.length_squared()).abs().sqrt();
+        self += n * vy;
         self
     }
 }
@@ -103,26 +100,25 @@ impl std::ops::IndexMut<usize> for Vec3 {
 }
 impl std::ops::Neg for Vec3 {
     type Output = Self;
-    fn neg(self) -> Self {
-        Vec3 {
-            e: [-self[0], -self[1], -self[2]],
-        }
+    fn neg(mut self) -> Self {
+        self.e[0] = -self[0];
+        self.e[1] = -self[1];
+        self.e[2] = -self[2];
+        self
     }
 }
 impl std::ops::Add for Vec3 {
     type Output = Self;
-    fn add(self, rhs: Self) -> Self {
-        Vec3 {
-            e: [self[0] + rhs[0], self[1] + rhs[1], self[2] + rhs[2]],
-        }
+    fn add(mut self, rhs: Self) -> Self {
+        self += rhs;
+        self
     }
 }
 impl std::ops::Add<&Self> for Vec3 {
     type Output = Self;
-    fn add(self, rhs: &Self) -> Self {
-        Vec3 {
-            e: [self[0] + rhs[0], self[1] + rhs[1], self[2] + rhs[2]],
-        }
+    fn add(mut self, rhs: &Self) -> Self {
+        self += rhs;
+        self
     }
 }
 impl std::ops::AddAssign for Vec3 {
@@ -132,20 +128,25 @@ impl std::ops::AddAssign for Vec3 {
         self[2] += rhs[2];
     }
 }
+impl std::ops::AddAssign<&Self> for Vec3 {
+    fn add_assign(&mut self, rhs: &Self) {
+        self[0] += rhs[0];
+        self[1] += rhs[1];
+        self[2] += rhs[2];
+    }
+}
 impl std::ops::Sub for Vec3 {
     type Output = Self;
-    fn sub(self, rhs: Self) -> Self {
-        Vec3 {
-            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
-        }
+    fn sub(mut self, rhs: Self) -> Self {
+        self -= rhs;
+        self
     }
 }
 impl std::ops::Sub<&Self> for Vec3 {
     type Output = Self;
-    fn sub(self, rhs: &Self) -> Self {
-        Vec3 {
-            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
-        }
+    fn sub(mut self, rhs: &Self) -> Self {
+        self -= rhs;
+        self
     }
 }
 impl std::ops::SubAssign for Vec3 {
@@ -155,20 +156,25 @@ impl std::ops::SubAssign for Vec3 {
         self[2] -= rhs[2];
     }
 }
+impl std::ops::SubAssign<&Self> for Vec3 {
+    fn sub_assign(&mut self, rhs: &Self) {
+        self[0] -= rhs[0];
+        self[1] -= rhs[1];
+        self[2] -= rhs[2];
+    }
+}
 impl std::ops::Mul<Self> for Vec3 {
     type Output = Self;
-    fn mul(self, rhs: Self) -> Self {
-        Vec3 {
-            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]],
-        }
+    fn mul(mut self, rhs: Self) -> Self {
+        self *= rhs;
+        self
     }
 }
 impl std::ops::Mul<&Self> for Vec3 {
     type Output = Self;
-    fn mul(self, rhs: &Self) -> Self {
-        Vec3 {
-            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]],
-        }
+    fn mul(mut self, rhs: &Self) -> Self {
+        self *= rhs;
+        self
     }
 }
 impl std::ops::MulAssign<Self> for Vec3 {
@@ -178,12 +184,18 @@ impl std::ops::MulAssign<Self> for Vec3 {
         self[2] *= rhs[2];
     }
 }
+impl std::ops::MulAssign<&Self> for Vec3 {
+    fn mul_assign(&mut self, rhs: &Self) {
+        self[0] *= rhs[0];
+        self[1] *= rhs[1];
+        self[2] *= rhs[2];
+    }
+}
 impl std::ops::Mul<f64> for Vec3 {
     type Output = Self;
-    fn mul(self, rhs: f64) -> Self {
-        Vec3 {
-            e: [self[0] * rhs, self[1] * rhs, self[2] * rhs],
-        }
+    fn mul(mut self, rhs: f64) -> Self {
+        self *= rhs;
+        self
     }
 }
 impl std::ops::MulAssign<f64> for Vec3 {
@@ -195,10 +207,9 @@ impl std::ops::MulAssign<f64> for Vec3 {
 }
 impl std::ops::Mul<Vec3> for f64 {
     type Output = Vec3;
-    fn mul(self, rhs: Vec3) -> Vec3 {
-        Vec3 {
-            e: [self * rhs[0], self * rhs[1], self * rhs[2]],
-        }
+    fn mul(self, mut rhs: Vec3) -> Vec3 {
+        rhs *= self;
+        rhs
     }
 }
 impl std::ops::Div<f64> for Vec3 {
