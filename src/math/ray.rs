@@ -17,8 +17,8 @@ impl Ray {
         &self.dir
     }
     pub fn at(&self, t: f64) -> vector::Point3 {
-        let o = self.origin().clone();
-        let d = self.dir().clone();
+        let o = *self.origin();
+        let d = *self.dir();
         o + d * t
     }
 }
@@ -28,8 +28,8 @@ fn test_ray() {
         vector::Point3::new(0.0, 0.0, 0.0),
         vector::Vec3::new(1.0, 2.0, 3.0),
     );
-    assert_eq!(r.origin().clone(), vector::Point3::new(0.0, 0.0, 0.0));
-    assert_eq!(r.dir().clone(), vector::Vec3::new(1.0, 2.0, 3.0));
+    assert_eq!(*r.origin(), vector::Point3::new(0.0, 0.0, 0.0));
+    assert_eq!(*r.dir(), vector::Vec3::new(1.0, 2.0, 3.0));
     assert_eq!(r.at(0.5), vector::Point3::new(0.5, 1.0, 1.5));
     assert_eq!(r.at(-0.5), vector::Point3::new(-0.5, -1.0, -1.5));
 }

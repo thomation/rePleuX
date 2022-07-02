@@ -14,7 +14,7 @@ impl ScatterResult {
     pub fn ray(&self) -> &math::ray::Ray {
         &self.ray
     }
-    pub fn attenuation(&self) -> math::vector::Color3 {
-        self.attenuation.clone()
+    pub fn attenuation(&self) -> &math::vector::Color3 {
+        &self.attenuation
     }
 }
