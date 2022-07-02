@@ -25,10 +25,11 @@ impl<M: material::Material> Sphere<M>{
 
 impl<M: material::Material> hittable::Hittable for Sphere<M> {
     fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<record::HitRecord> {
-        let oc = ray.origin() - self.center.clone();
-        let rd = ray.dir();
-        let a = rd.length_squared();
-        let half_b = vector::Vec3::dot(&oc, &rd);
+        let ray_origin = ray.origin().clone();
+        let oc = ray_origin - self.center.clone();
+        let ray_dir = ray.dir();
+        let a = ray_dir.length_squared();
+        let half_b = vector::Vec3::dot(&oc, ray_dir);
         let c = vector::Vec3::dot(&oc, &oc) - self.radius * self.radius;
         let discriminant = half_b * half_b - a * c;
         if discriminant < 0.0 {
