@@ -6,8 +6,10 @@ mod scene;
 mod object;
 mod hit;
 mod material;
+use std::time::Instant;
 
 fn main() {
+    let now = Instant::now();
     let aspect_ratio = 16.0 / 9.0;
     let image_width = 800;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
@@ -18,4 +20,5 @@ fn main() {
     render::RayTracing::render(image_width, image_height, 16, &cam, &world, &mut img);
     let img_file = output::picture::Png::new("target/output.png".to_string());
     img_file.save(&img);
+    println!("Run time: {} secs", now.elapsed().as_secs());
 }
