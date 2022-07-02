@@ -72,9 +72,7 @@ impl Vec3 {
         self - n * p
     }
     pub fn refract(mut self, n: Self, etai_over_etat: f64) -> Self {
-        self = -self;
-        let cos_theta = Vec3::dot(&self, &n).min(1.0);
-        self = -self;
+        let cos_theta = (- Vec3::dot(&self, &n)).min(1.0);
         self += n.clone() * cos_theta;
         self *= etai_over_etat;
         let vy = -(1.0 - self.length_squared()).abs().sqrt();
