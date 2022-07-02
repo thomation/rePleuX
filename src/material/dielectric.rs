@@ -38,13 +38,13 @@ impl material::Material for Dielectric {
         if refraction_ratio * sin_theta > 1.0  || Dielectric::reflectance(cos_theta, refraction_ratio) > math::random::generate_range(0.0, 1.0) {
             let reflected = math::vector::Vec3::reflect(&unit_dir, &normal);
             Option::Some(scatter::ScatterResult::new(
-                math::ray::Ray::new(*hit_record.position(), reflected),
+                math::ray::Ray::new(hit_record.position().clone(), reflected),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
             ))
         } else {
             let refracted = math::vector::Vec3::refract(&unit_dir, &normal, refraction_ratio);
             Option::Some(scatter::ScatterResult::new(
-                math::ray::Ray::new(*hit_record.position(), refracted),
+                math::ray::Ray::new(hit_record.position().clone(), refracted),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
             ))
         }

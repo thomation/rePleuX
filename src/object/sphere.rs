@@ -30,8 +30,8 @@ impl<M: material::Material> hittable::Hittable for Sphere<M> {
         t_min: f64,
         t_max: f64,
     ) -> std::option::Option<record::HitRecord> {
-        let ray_origin = *ray.origin();
-        let oc = ray_origin - self.center;
+        let ray_origin = ray.origin().clone();
+        let oc = ray_origin - &self.center;
         let ray_dir = ray.dir();
         let a = ray_dir.length_squared();
         let half_b = vector::Vec3::dot(&oc, ray_dir);
@@ -48,7 +48,7 @@ impl<M: material::Material> hittable::Hittable for Sphere<M> {
             }
         }
         let hit_point = ray.at(t);
-        let mut outward_norml = (hit_point - self.center()) / self.radius;
+        let mut outward_norml = (hit_point.clone() - self.center()) / self.radius;
         let front = vector::Vec3::dot(&outward_norml, &ray.dir()) < 0.0;
         outward_norml.normalize();
         Option::Some(record::HitRecord::new(

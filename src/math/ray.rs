@@ -17,8 +17,8 @@ impl Ray {
         &self.dir
     }
     pub fn at(&self, t: f64) -> vector::Point3 {
-        let o = *self.origin();
-        let d = *self.dir();
+        let o = self.origin().clone();
+        let d = self.dir().clone();
         o + d * t
     }
 }

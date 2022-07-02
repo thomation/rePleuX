@@ -1,6 +1,6 @@
 use super::random;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Vec3 {
     e: [f64; 3],
 }

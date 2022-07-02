@@ -21,11 +21,11 @@ impl material::Material for Lambertian {
         ray_in: &math::ray::Ray,
         hit_record: &HitRecord,
     ) -> Option<scatter::ScatterResult> {
-        let mut scatter_dir = *hit_record.normal() + material::random_in_unit_vector();
+        let mut scatter_dir = hit_record.normal().clone() + material::random_in_unit_vector();
         if scatter_dir.near_zero() {
-            scatter_dir = *hit_record.normal();
+            scatter_dir = hit_record.normal().clone();
         }
-        let ray_out = math::ray::Ray::new(*hit_record.position(), scatter_dir);
-        Option::Some(scatter::ScatterResult::new(ray_out, *self.albedo()))
+        let ray_out = math::ray::Ray::new(hit_record.position().clone(), scatter_dir);
+        Option::Some(scatter::ScatterResult::new(ray_out, self.albedo().clone()))
     }
 }
