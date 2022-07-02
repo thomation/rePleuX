@@ -1,6 +1,6 @@
 use super::random;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -133,6 +133,14 @@ impl std::ops::Add for Vec3 {
         }
     }
 }
+impl std::ops::Add<&Self> for Vec3 {
+    type Output = Self;
+    fn add(self, rhs: &Self) -> Self {
+        Vec3 {
+            e: [self[0] + rhs[0], self[1] + rhs[1], self[2] + rhs[2]],
+        }
+    }
+}
 impl std::ops::AddAssign for Vec3 {
     fn add_assign(&mut self, rhs: Self) {
         self[0] += rhs[0];
@@ -143,7 +151,17 @@ impl std::ops::AddAssign for Vec3 {
 impl std::ops::Sub for Vec3 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
-        self + (-rhs)
+        Vec3 {
+            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
+        }
+    }
+}
+impl std::ops::Sub<&Self> for Vec3 {
+    type Output = Self;
+    fn sub(self, rhs: &Self) -> Self {
+        Vec3 {
+            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
+        }
     }
 }
 impl std::ops::SubAssign for Vec3 {
@@ -156,6 +174,14 @@ impl std::ops::SubAssign for Vec3 {
 impl std::ops::Mul<Self> for Vec3 {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self {
+        Vec3 {
+            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]],
+        }
+    }
+}
+impl std::ops::Mul<&Self> for Vec3 {
+    type Output = Self;
+    fn mul(self, rhs: &Self) -> Self {
         Vec3 {
             e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]],
         }
