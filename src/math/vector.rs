@@ -45,29 +45,6 @@ impl Vec3 {
         let u = Vec3::unit(self);
         self.e = u.e;
     }
-    pub fn neg(p: &Self) -> Vec3 {
-        Vec3{
-            e:[-p[0], -p[1], -p[2]]
-        }
-    }
-    pub fn add(p: &Self, q: &Self) -> Vec3 {
-        Vec3 {
-            e: [p[0] + q[0], p[1] + q[1], p[2] + q[2]]
-        }
-    }
-    pub fn sub(p: &Self, q: &Self) -> Vec3 {
-        Vec3 {
-            e: [p[0] - q[0], p[1] - q[1], p[2] - q[2]]
-        }
-    }
-    pub fn mul(p: &Self, s: f64) -> Vec3 {
-        Vec3 {
-            e: [p[0] * s, p[1] * s, p[2] * s],
-        }
-    }
-    pub fn div(p: &Self, s: f64) -> Vec3 {
-        Vec3::mul(p, 1.0 / s)
-    }
     pub fn dot(p: &Self, q: &Self) -> f64 {
         p.x() * q.x() + p.y() * q.y() + p.z() * q.z()
     }
@@ -90,15 +67,22 @@ impl Vec3 {
         let s = 1.0e-8;
         self.x().abs() < s && self.y().abs() < s && self.z().abs() < s
     }
-    pub fn reflect(v: &Self, n: &Self) -> Self {
-        let p = Vec3::dot(v, n) * 2.0;
-        Vec3::sub(v, &Vec3::mul(n, p))
+    pub fn reflect(self, n: Self) -> Self {
+        let p = Vec3::dot(&self, &n) * 2.0;
+        self - n * p
     }
-    pub fn refract(v: &Self, n: &Self, etai_over_etat: f64) -> Self {
-        let cos_theta = Vec3::dot(&Vec3::neg(v), n).min(1.0);
-        let out_x = Vec3::add(v, &Vec3::mul(n, cos_theta)) * etai_over_etat;
-        let out_y = Vec3::mul(n, - (1.0 - out_x.length_squared()).abs().sqrt());
-        out_x + out_y
+    pub fn refract(mut self, n: Self, etai_over_etat: f64) -> Self {
+        self = -self;
+        let cos_theta = Vec3::dot(&self, &n).min(1.0);
+        self = -self;
+        self += n.clone() * cos_theta;
+        self *= etai_over_etat;
+        let vy = - (1.0 - self.length_squared()).abs().sqrt();
+        self += n * vy ;
+        // let out_x = Vec3::add(v, &Vec3::mul(n, cos_theta)) * etai_over_etat;
+        // let out_y = Vec3::mul(n, - (1.0 - out_x.length_squared()).abs().sqrt());
+        // out_x + out_y
+        self
     }
 }
 impl std::cmp::PartialEq for Vec3 {
@@ -243,10 +227,8 @@ fn test_vec3_create() {
 fn test_vec3_add() {
     let u = Vec3::new(-1.1, -2.1, -3.3);
     let v = Vec3::new(1.1, 2.1, 3.3);
-    let w1 = Vec3::add(&u, &v);
     let w = u + v;
     assert_eq!(w, Vec3::new(0.0, 0.0, 0.0));
-    assert_eq!(w1, Vec3::new(0.0, 0.0, 0.0));
     let mut x = Vec3::new(1.0, 2.0, 3.0);
     x += Vec3::new(0.1, 0.2, 0.3);
     assert_eq!(x, Vec3::new(1.1, 2.2, 3.3));
@@ -255,20 +237,16 @@ fn test_vec3_add() {
 fn test_vec3_sub() {
     let u = Vec3::new(1.1, 2.2, 3.3);
     let v = Vec3::new(0.1, 0.2, 0.3);
-    let w1 = Vec3::sub(&u, &v);
     let mut w = u - v;
     assert_eq!(w, Vec3::new(1.0, 2.0, 3.0));
-    assert_eq!(w1, Vec3::new(1.0, 2.0, 3.0));
     w -= Vec3::new(0.1, 0.2, 0.3);
     assert_eq!(w, Vec3::new(0.9, 1.8, 2.7));
 }
 #[test]
 fn test_vec3_mul() {
     let mut u = Vec3::new(1.1, 2.2, 3.3);
-    let u1 = Vec3::mul(&u, 10.0);
     u *= 10.0;
     assert_eq!(u, Vec3::new(11.0, 22.0, 33.0));
-    assert_eq!(u1, Vec3::new(11.0, 22.0, 33.0));
     let v = Vec3::new(0.1, 0.2, 0.3);
     let mut w = u * v;
     assert_eq!(w, Vec3::new(1.1, 4.4, 9.9));
@@ -281,10 +259,8 @@ fn test_vec3_mul() {
 #[test]
 fn test_vec3_div() {
     let mut u = Vec3::new(1.11, 2.22, 3.33);
-    let u1 = Vec3::div(&u, 10.0);
     u /= 10.0;
     assert_eq!(u, Vec3::new(1.11 / 10.0, 2.22 / 10.0, 3.33 / 10.0));
-    assert_eq!(u1, Vec3::new(1.11 / 10.0, 2.22 / 10.0, 3.33 / 10.0));
     assert_eq!(u / 2.0, Vec3::new(1.11 / 20.0, 2.22 / 20.0, 3.33 / 20.0));
 }
 #[test]

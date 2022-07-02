@@ -32,9 +32,8 @@ impl material::Material for Metal {
         hit_record: &HitRecord,
     ) -> std::option::Option<scatter::ScatterResult> {
         let ray_dir = Vec3::unit(&ray_in.dir());
-        let normal = hit_record.normal();
-        let reflected = Vec3::reflect(&ray_dir, &normal);
-        if Vec3::dot(&reflected, &normal) > 0.0 {
+        let reflected = ray_dir.reflect(hit_record.normal().clone());
+        if Vec3::dot(&reflected, hit_record.normal()) > 0.0 {
             let scattered = math::ray::Ray::new(hit_record.position().clone(), reflected + material::random_in_unit_sphere() * self.fuzz());
             Option::Some(scatter::ScatterResult::new(scattered, self.albedo().clone()))
         } else {
