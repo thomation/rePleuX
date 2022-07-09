@@ -42,8 +42,10 @@ impl Vec3 {
         self.length_squared().sqrt()
     }
     pub fn normalize(&mut self) {
-        let u = Vec3::unit(self);
-        self.e = u.e;
+        let l = self.length();
+        self.e[0] /= l;
+        self.e[1] /= l;
+        self.e[2] /= l;
     }
     pub fn dot(p: &Self, q: &Self) -> f64 {
         p.x() * q.x() + p.y() * q.y() + p.z() * q.z()
@@ -58,10 +60,9 @@ impl Vec3 {
         }
     }
     pub fn unit(v: &Self) -> Self {
-        let l = v.length();
-        Vec3 {
-            e: [v[0] / l, v[1] / l, v[2] / l],
-        }
+        let mut w = v.clone();
+        w.normalize();
+        w
     }
     pub fn near_zero(&self) -> bool {
         let s = 1.0e-8;
