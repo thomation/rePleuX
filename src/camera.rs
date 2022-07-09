@@ -9,8 +9,10 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(aspect_ratio: f64) -> Camera {
-        let viewport_height = 2.0;
+    pub fn new(aspect_ratio: f64, vfov: f64) -> Camera {
+        let theta = vfov * std::f64::consts::PI / 180.0;
+        let h = (theta * 0.5).tan();
+        let viewport_height = 2.0 * h;
         let viewport_width = viewport_height * aspect_ratio;
         let focal_lenght = 1.0;
         let origin = vector::Point3::new(0.0, 0.0, 0.0);
