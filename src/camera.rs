@@ -16,7 +16,7 @@ impl Camera {
         let viewport_height = 2.0 * h;
         let viewport_width = viewport_height * aspect_ratio;
 
-        let mut w = (look_from.clone() - look_at);
+        let mut w = look_from.clone() - look_at;
         w.normalize();
         let mut u = vector::Vec3::cross(&vup, &w);
         u.normalize();
