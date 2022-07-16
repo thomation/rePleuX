@@ -11,7 +11,8 @@ pub struct Camera {
 impl Camera {
     pub fn new(look_from: vector::Point3, look_at: vector::Point3, vup: vector::Dir3, vfov: f64, aspect_ratio: f64) -> Camera {
         let theta = vfov * std::f64::consts::PI / 180.0;
-        let h = (theta * 0.5).tan();
+        let focal_lenght = 1.0;
+        let h = (theta * 0.5).tan() * focal_lenght;
         let viewport_height = 2.0 * h;
         let viewport_width = viewport_height * aspect_ratio;
 
@@ -24,7 +25,6 @@ impl Camera {
         let vertical = v * viewport_height;
 
         let origin = look_from;
-        let focal_lenght = 1.0;
         let lower_left_corner_view = -horizontal.clone() / 2.0
             - vertical.clone() / 2.0
             - w * focal_lenght;
