@@ -16,7 +16,10 @@ fn main() {
     let image_height = (image_width as f64 / aspect_ratio) as usize;
 
     let mut img = output::bitmap::Bitmap::new(image_width, image_height);
-    let cam = camera::Camera::new(vector::Point3::new(-2.0, 2.0, 1.0), vector::Point3::new(0.0, 0.0, -1.0), vector::Dir3::new(0.0, 1.0, 0.0), 20.0, aspect_ratio);
+    let look_from = vector::Point3::new(3.0, 3.0, 2.0);
+    let look_at = vector::Point3::new(0.0, 0.0, -1.0);
+    let focus_dist = (look_from.clone() - &look_at).length();
+    let cam = camera::Camera::new(look_from, look_at, vector::Dir3::new(0.0, 1.0, 0.0), 20.0, aspect_ratio, 2.0, focus_dist);
     let world = scene::Scene::new();
     render::RayTracing::render(image_width, image_height, 16, &cam, &world, &mut img);
     let img_file = output::picture::Png::new("target/output.png".to_string());
