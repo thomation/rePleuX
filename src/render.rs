@@ -11,6 +11,7 @@ impl RayTracing {
         image_width: usize,
         image_height: usize,
         samples_per_pixels: usize,
+        max_depth: usize,
         cam: &camera::Camera,
         world: &scene::Scene,
         output: &mut output::bitmap::Bitmap,
@@ -24,14 +25,14 @@ impl RayTracing {
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
                     let ray = cam.get_ray(u, v);
-                    color += RayTracing::ray_color(&ray, &world, 10);
+                    color += RayTracing::ray_color(&ray, &world, max_depth);
                 }
                 color /= samples_per_pixels as f64;
                 output.write_color(w, h, &color);
             }
         }
     }
-    fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: i8) -> math::vector::Color3 {
+    fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: usize) -> math::vector::Color3 {
         if depth <= 0 {
             return math::vector::Color3::new(0.0, 0.0, 0.0);
         }

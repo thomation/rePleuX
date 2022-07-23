@@ -1,49 +1,40 @@
 use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
-use crate::object::sphere;
-use crate::math;
 use crate::material;
+use crate::math;
+use crate::object::sphere;
 
 pub struct Scene {
     objects: Vec<Box<dyn Hittable>>,
 }
 impl Scene {
     pub fn new() -> Scene {
-        let material_ground = material::lambertian::Lambertian::new(math::vector::Color3::new(0.8, 0.8, 0.0));
-        let material_center = material::lambertian::Lambertian::new(math::vector::Color3::new(0.1, 0.2, 0.5));
-        let material_left = material::dielectric::Dielectric::new(1.5);
-        let material_left2 = material::dielectric::Dielectric::new(1.5);
-        let material_right = material::metal::Metal::new(math::vector::Color3::new(0.8, 0.6, 0.2), 1.0);
+        let mut objects: Vec<Box<dyn Hittable>> = vec![];
+        objects.push(Box::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, -1000.0, 0.0),
+            1000.0,
+            material::lambertian::Lambertian::new(math::vector::Color3::new(0.5, 0.5, 0.5)),
+        )));
 
-        let mut objects : Vec<Box<dyn Hittable>> = vec![];
+        // Random spheres
+
         objects.push(Box::new(sphere::Sphere::new(
-            math::vector::Point3::new(0.0, -100.5, -1.0),
-            100.0,
-            material_ground
+            math::vector::Point3::new(0.0, 1.0, 0.0),
+            1.0,
+            material::dielectric::Dielectric::new(1.5),
         )));
         objects.push(Box::new(sphere::Sphere::new(
-            math::vector::Point3::new(0.0, 0.0, -1.0),
-            0.5,
-            material_center
+            math::vector::Point3::new(-4.0, 1.0, 0.0),
+            1.0,
+            material::lambertian::Lambertian::new(math::vector::Color3::new(0.4, 0.2, 0.1)),
         )));
         objects.push(Box::new(sphere::Sphere::new(
-            math::vector::Point3::new(-1.0, 0.0, -1.0),
-            0.5,
-            material_left
+            math::vector::Point3::new(4.0, 1.0, 0.0),
+            1.0,
+            material::metal::Metal::new(math::vector::Color3::new(0.7, 0.6, 0.5), 0.0),
         )));
-        objects.push(Box::new(sphere::Sphere::new(
-            math::vector::Point3::new(-1.0, 0.0, -1.0),
-            -0.4,
-            material_left2
-        )));
-        objects.push(Box::new(sphere::Sphere::new(
-            math::vector::Point3::new(1.0, 0.0, -1.0),
-            0.5,
-            material_right
-        )));
-        Scene {
-            objects: objects,
-        }
+
+        Scene { objects: objects }
     }
 }
 
@@ -58,9 +49,7 @@ impl Hittable for Scene {
                     closest_so_far = r.t();
                     hit_anything = Option::Some(r);
                 }
-                Option::None => {
-
-                }
+                Option::None => {}
             }
         }
         return hit_anything;
