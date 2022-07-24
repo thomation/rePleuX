@@ -4,8 +4,10 @@ use crate::math;
 use crate::math::ray;
 use crate::output;
 use crate::scene;
+use std::sync::Arc;
+use std::sync::Mutex;
+use std::thread::spawn;
 use std::time::Instant;
-
 pub struct RayTracing {}
 impl RayTracing {
     pub fn render(
@@ -13,27 +15,45 @@ impl RayTracing {
         image_height: usize,
         samples_per_pixels: usize,
         max_depth: usize,
-        cam: &camera::Camera,
-        world: &scene::Scene,
-        output: &mut output::bitmap::Bitmap,
+        thread_count: usize,
+        cam: Arc<camera::Camera>,
+        world: Arc<scene::Scene>,
+        output: Arc<Mutex<output::bitmap::Bitmap>>,
     ) {
-        let colors = RayTracing::render_rows(
-            image_width,
-            image_height,
-            0,
-            image_height,
-            samples_per_pixels,
-            max_depth,
-            cam,
-            world,
-        );
-        for h in 0..image_height {
-            for w in 0..image_width {
-                output.write_color(w, h, &colors[w + h * image_width]);
-            }
+        let mut thread_handles = vec![];
+        let rows_per_thead = image_height / thread_count;
+        for t in 0..thread_count {
+            let cam_for_child = cam.clone();
+            let world_for_child = world.clone();
+            let output_for_child = output.clone();
+            thread_handles.push(spawn(move || {
+                let start_row = t * rows_per_thead;
+                let end_row = if t + 1 == thread_count {
+                    image_height
+                } else {
+                    start_row + rows_per_thead
+                };
+                let colors = RayTracing::render_rows(
+                    t,
+                    image_width,
+                    image_height,
+                    start_row,
+                    end_row,
+                    samples_per_pixels,
+                    max_depth,
+                    &cam_for_child,
+                    &world_for_child,
+                    &output_for_child,
+                );
+            }));
         }
+        for handle in thread_handles {
+            handle.join().unwrap();
+        }
+        println!("Threads finished");
     }
     fn render_rows(
+        thread_index: usize,
         image_width: usize,
         image_height: usize,
         start_row: usize,
@@ -42,6 +62,7 @@ impl RayTracing {
         max_depth: usize,
         cam: &camera::Camera,
         world: &scene::Scene,
+        output: &Mutex<output::bitmap::Bitmap>
     ) -> Vec<math::vector::Color3> {
         let mut colors: Vec<math::vector::Color3> = vec![];
         for h in start_row..end_row {
@@ -57,11 +78,11 @@ impl RayTracing {
                     color += RayTracing::ray_color(&ray, &world, max_depth);
                 }
                 color /= samples_per_pixels as f64;
-                colors.push(color);
+                output.lock().unwrap().write_color(w, h, &color);
             }
             println!(
-                "{}% Finished, Row time: {} secs",
-                (h + 1) as f64 / image_height as f64 * 100.0,
+                "Thread#{} Finished, Row time: {} secs",
+                thread_index,
                 row_time.elapsed().as_secs(),
             );
         }
