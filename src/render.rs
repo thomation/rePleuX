@@ -17,8 +17,34 @@ impl RayTracing {
         world: &scene::Scene,
         output: &mut output::bitmap::Bitmap,
     ) {
-        let all_time = Instant::now();
+        let colors = RayTracing::render_rows(
+            image_width,
+            image_height,
+            0,
+            image_height,
+            samples_per_pixels,
+            max_depth,
+            cam,
+            world,
+        );
         for h in 0..image_height {
+            for w in 0..image_width {
+                output.write_color(w, h, &colors[w + h * image_width]);
+            }
+        }
+    }
+    fn render_rows(
+        image_width: usize,
+        image_height: usize,
+        start_row: usize,
+        end_row: usize,
+        samples_per_pixels: usize,
+        max_depth: usize,
+        cam: &camera::Camera,
+        world: &scene::Scene,
+    ) -> Vec<math::vector::Color3> {
+        let mut colors: Vec<math::vector::Color3> = vec![];
+        for h in start_row..end_row {
             let row_time = Instant::now();
             for w in 0..image_width {
                 let mut color = math::vector::Color3::new(0.0, 0.0, 0.0);
@@ -31,15 +57,15 @@ impl RayTracing {
                     color += RayTracing::ray_color(&ray, &world, max_depth);
                 }
                 color /= samples_per_pixels as f64;
-                output.write_color(w, h, &color);
+                colors.push(color);
             }
             println!(
-                "{}% Finished, Raw time: {} secs All time: {}",
+                "{}% Finished, Row time: {} secs",
                 (h + 1) as f64 / image_height as f64 * 100.0,
                 row_time.elapsed().as_secs(),
-                all_time.elapsed().as_secs()
             );
         }
+        colors
     }
     fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: usize) -> math::vector::Color3 {
         if depth <= 0 {
