@@ -6,6 +6,8 @@ pub struct Bitmap {
     image_height: usize,
     pixels: Vec<u8>,
     channel: usize,
+    finished_count: i32,
+    max_count: usize,
 }
 
 impl Bitmap {
@@ -17,6 +19,8 @@ impl Bitmap {
             image_height: image_height,
             pixels: pixels,
             channel: channel,
+            finished_count : 0,
+            max_count: image_height * image_width,
         }
     }
     pub fn write_color(&mut self, w: usize, h: usize, raw_color: &vector::Color3) {
@@ -27,6 +31,8 @@ impl Bitmap {
             (color.y() * 255.999) as u8;
         self.pixels[2 + w * self.channel + h * self.image_width * self.channel] =
             (color.z() * 255.999) as u8;
+        self.finished_count += 1;
+        println!("Progress:{}/{}, {}%", self.finished_count, self.max_count, self.finished_count as f32 * 100.0 / self.max_count as f32);
     }
 }
 impl encodable::Encodable for Bitmap {
