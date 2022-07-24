@@ -23,7 +23,7 @@ impl<M: material::Material> Sphere<M> {
     }
 }
 
-impl<M: material::Material> hittable::Hittable for Sphere<M> {
+impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hittable for Sphere<M> {
     fn hit(
         &self,
         ray: &ray::Ray,
