@@ -33,7 +33,7 @@ impl RayTracing {
                 } else {
                     start_row + rows_per_thead
                 };
-                let colors = RayTracing::render_rows(
+                RayTracing::render_rows(
                     t,
                     image_width,
                     image_height,
@@ -63,8 +63,7 @@ impl RayTracing {
         cam: &camera::Camera,
         world: &scene::Scene,
         output: &Mutex<output::bitmap::Bitmap>
-    ) -> Vec<math::vector::Color3> {
-        let mut colors: Vec<math::vector::Color3> = vec![];
+    ){
         for h in start_row..end_row {
             let row_time = Instant::now();
             for w in 0..image_width {
@@ -86,7 +85,6 @@ impl RayTracing {
                 row_time.elapsed().as_secs(),
             );
         }
-        colors
     }
     fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: usize) -> math::vector::Color3 {
         if depth <= 0 {
