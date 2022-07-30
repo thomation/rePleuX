@@ -62,8 +62,9 @@ impl RayTracing {
         max_depth: usize,
         cam: &camera::Camera,
         world: &scene::Scene,
-        output: &Mutex<output::bitmap::Bitmap>
-    ){
+        output: &Mutex<output::bitmap::Bitmap>,
+    ) {
+        let mut colors = vec![];
         for h in start_row..end_row {
             let row_time = Instant::now();
             for w in 0..image_width {
@@ -77,14 +78,20 @@ impl RayTracing {
                     color += RayTracing::ray_color(&ray, &world, max_depth);
                 }
                 color /= samples_per_pixels as f64;
-                output.lock().unwrap().write_color(w, h, &color);
+                colors.push(color);
             }
             println!(
-                "Thread#{} Finished, Row time: {} secs",
+                "Thread#{} Finished {}/{}, Row time: {} secs",
                 thread_index,
+                h - start_row,
+                end_row - start_row,
                 row_time.elapsed().as_secs(),
             );
         }
+        output
+            .lock()
+            .unwrap()
+            .write_row_colors(start_row, end_row, colors);
     }
     fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: usize) -> math::vector::Color3 {
         if depth <= 0 {

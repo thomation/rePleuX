@@ -16,7 +16,7 @@ fn main() {
     let aspect_ratio = 3.0 / 2.0;
     let image_width = 1200;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
-    let samples_per_pixel = 128;
+    let samples_per_pixel = 16;
     let max_depth = 20;
 
     let img = Arc::new(Mutex::new(output::bitmap::Bitmap::new(image_width, image_height)));
@@ -38,7 +38,7 @@ fn main() {
         image_height,
         samples_per_pixel,
         max_depth,
-        5,
+        6,
         Arc::new(cam),
         Arc::new(world),
         img.clone()
