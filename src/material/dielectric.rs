@@ -2,6 +2,7 @@ use super::material;
 use super::scatter;
 use crate::hit;
 use crate::math;
+use crate::math::ray::Ray;
 pub struct Dielectric {
     index_of_fraction: f64,
 }
@@ -38,13 +39,13 @@ impl material::Material for Dielectric {
         if refraction_ratio * sin_theta > 1.0  || Dielectric::reflectance(cos_theta, refraction_ratio) > math::random::generate_range(0.0, 1.0) {
             let reflected = unit_dir.clone().reflect(normal);
             Option::Some(scatter::ScatterResult::new(
-                math::ray::Ray::new(hit_record.position().clone(), reflected),
+                math::ray::Ray::new(hit_record.position().clone(), reflected, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
             ))
         } else {
             let refracted = unit_dir.refract(normal, refraction_ratio);
             Option::Some(scatter::ScatterResult::new(
-                math::ray::Ray::new(hit_record.position().clone(), refracted),
+                math::ray::Ray::new(hit_record.position().clone(), refracted, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
             ))
         }

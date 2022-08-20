@@ -25,7 +25,7 @@ impl material::Material for Lambertian {
         if scatter_dir.near_zero() {
             scatter_dir = hit_record.normal().clone();
         }
-        let ray_out = math::ray::Ray::new(hit_record.position().clone(), scatter_dir);
+        let ray_out = math::ray::Ray::new(hit_record.position().clone(), scatter_dir, ray_in.time());
         Option::Some(scatter::ScatterResult::new(ray_out, self.albedo().clone()))
     }
 }

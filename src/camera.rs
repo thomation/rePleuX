@@ -10,6 +10,8 @@ pub struct Camera {
     u : vector::Point3,
     v : vector::Point3,
     lens_radius: f64,
+    time0: f64,
+    time1: f64,
 }
 
 impl Camera {
@@ -21,6 +23,8 @@ impl Camera {
         aspect_ratio: f64,
         aperture: f64,
         focus_dist: f64,
+        time0: f64,
+        time1: f64,
     ) -> Camera {
         let theta = vfov * std::f64::consts::PI / 180.0;
         let h = (theta * 0.5).tan() * focus_dist;
@@ -47,6 +51,8 @@ impl Camera {
             u : u,
             v : v,
             lens_radius: aperture / 2.0,
+            time0: time0,
+            time1: time1,
         }
     }
     pub fn get_ray(&self, s: f64, t: f64) -> ray::Ray {
@@ -57,7 +63,7 @@ impl Camera {
             + self.vertical.clone() * t;
 
         let dir = p - &self.origin - &offset;
-        ray::Ray::new(self.origin.clone() + offset, dir)
+        ray::Ray::new(self.origin.clone() + offset, dir, random::generate_range(self.time0, self.time1))
     }
     fn random_in_unit_disk() -> vector::Vec3 {
         loop {

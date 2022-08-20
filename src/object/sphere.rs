@@ -18,7 +18,7 @@ impl<M: material::Material> Sphere<M> {
             material: material,
         }
     }
-    pub fn center(&self) -> &vector::Point3 {
+    pub fn center(&self, time: f64) -> &vector::Point3 {
         &self.center
     }
 }
@@ -48,7 +48,7 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
             }
         }
         let hit_point = ray.at(t);
-        let mut outward_norml = (hit_point.clone() - self.center()) / self.radius;
+        let mut outward_norml = (hit_point.clone() - self.center(ray.time())) / self.radius;
         let front = vector::Vec3::dot(&outward_norml, &ray.dir()) < 0.0;
         outward_norml.normalize();
         Option::Some(record::HitRecord::new(
