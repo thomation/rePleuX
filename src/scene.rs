@@ -31,10 +31,19 @@ impl Scene {
                         // diffuse
                         let albedo =
                             math::vector::Color3::random() * math::vector::Color3::random();
-                        objects.push(Box::new(sphere::Sphere::new(
+                        let center2 = center
+                            + math::vector::Vec3::new(
+                                0.0,
+                                math::random::generate_range(0.0, 0.5),
+                                0.0,
+                            );
+                        objects.push(Box::new(sphere::Sphere::new_move(
                             center,
+                            center2,
                             0.2,
                             material::lambertian::Lambertian::new(albedo),
+                            0.0,
+                            1.0,
                         )));
                     } else if choose_mat < 0.95 {
                         // metal
