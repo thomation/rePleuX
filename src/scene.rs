@@ -1,3 +1,4 @@
+use crate::hit::aabb::AABB;
 use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
 use crate::material;
@@ -101,5 +102,30 @@ impl Hittable for Scene {
             }
         }
         return hit_anything;
+    }
+
+    fn bounding_box(&self, time0: f64, time1: f64) -> Option<AABB> {
+        if self.objects.is_empty() {
+            return Option::None;
+        }
+        let mut final_box = AABB::new(math::vector::Point3::zero(), math::vector::Point3::zero());
+        let mut first_box = true;
+        for obj in &self.objects {
+            let check = obj.bounding_box(time0, time1);
+            match check {
+                Option::Some(b) => {
+                    if first_box {
+                        final_box = b;
+                    } else {
+                        final_box = AABB::surrounding_box(final_box, b)
+                    }
+                    first_box = false;
+                }
+                Option::None => {
+                    return Option::None;
+                }
+            }
+        }
+        Option::Some(final_box)
     }
 }

@@ -1,3 +1,4 @@
+use crate::hit::aabb;
 use crate::hit::hittable;
 use crate::hit::record;
 use crate::material::material;
@@ -24,7 +25,14 @@ impl<M: material::Material> Sphere<M> {
             time1: 0.0,
         }
     }
-    pub fn new_move(center0: vector::Point3, center1: vector::Point3, radius: f64, material:M, time0:f64, time1:f64) -> Sphere<M> {
+    pub fn new_move(
+        center0: vector::Point3,
+        center1: vector::Point3,
+        radius: f64,
+        material: M,
+        time0: f64,
+        time1: f64,
+    ) -> Sphere<M> {
         Sphere {
             center0: center0,
             center1: center1,
@@ -80,5 +88,17 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
             front,
             &self.material,
         ))
+    }
+
+    fn bounding_box(&self, time0: f64, time1: f64) -> Option<aabb::AABB> {
+        let box0 = aabb::AABB::new(
+            self.center(time0) - vector::Vec3::new(self.radius, self.radius, self.radius),
+            self.center(time0) + vector::Vec3::new(self.radius, self.radius, self.radius),
+        );
+        let box1 = aabb::AABB::new(
+            self.center(time1) - vector::Vec3::new(self.radius, self.radius, self.radius),
+            self.center(time1) + vector::Vec3::new(self.radius, self.radius, self.radius),
+        );
+        Option::Some(aabb::AABB::surrounding_box(box0, box1))
     }
 }

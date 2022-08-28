@@ -12,6 +12,9 @@ impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Vec3 {
         Vec3 { e: [x, y, z] }
     }
+    pub fn zero() -> Vec3 {
+        Vec3 { e: [0.0, 0.0, 0.0] }
+    }
     pub fn random() -> Vec3 {
         Vec3 {
             e: [random::generate(), random::generate(), random::generate()],
