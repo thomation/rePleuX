@@ -1,5 +1,6 @@
 use crate::math::ray;
 use crate::math::vector;
+#[derive(Debug, Clone, Copy)]
 pub struct AABB {
     min: vector::Point3,
     max: vector::Point3,
@@ -14,7 +15,7 @@ impl AABB {
     pub fn max(&self) -> &vector::Point3 {
         &self.max
     }
-    pub fn hit(&self, ray: ray::Ray, t_min: f64, t_max: f64) -> bool {
+    pub fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> bool {
         let mut tn = t_min;
         let mut tx = t_max;
         for a in 0..3 {

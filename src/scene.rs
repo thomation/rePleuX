@@ -4,14 +4,15 @@ use crate::hit::record::HitRecord;
 use crate::material;
 use crate::math;
 use crate::object::sphere;
+use std::sync::Arc;
 
 pub struct Scene {
-    objects: Vec<Box<dyn Hittable>>,
+    objects: Vec<Arc<dyn Hittable>>,
 }
 impl Scene {
     pub fn new() -> Scene {
-        let mut objects: Vec<Box<dyn Hittable>> = vec![];
-        objects.push(Box::new(sphere::Sphere::new(
+        let mut objects: Vec<Arc<dyn Hittable>> = vec![];
+        objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -1000.0, 0.0),
             1000.0,
             material::lambertian::Lambertian::new(math::vector::Color3::new(0.5, 0.5, 0.5)),
@@ -38,7 +39,7 @@ impl Scene {
                                 math::random::generate_range(0.0, 0.5),
                                 0.0,
                             );
-                        objects.push(Box::new(sphere::Sphere::new_move(
+                        objects.push(Arc::new(sphere::Sphere::new_move(
                             center,
                             center2,
                             0.2,
@@ -50,14 +51,14 @@ impl Scene {
                         // metal
                         let albedo = math::vector::Color3::random_range(0.5, 1.0);
                         let fuzz = math::random::generate_range(0.0, 0.5);
-                        objects.push(Box::new(sphere::Sphere::new(
+                        objects.push(Arc::new(sphere::Sphere::new(
                             center,
                             0.2,
                             material::metal::Metal::new(albedo, fuzz),
                         )));
                     } else {
                         // glass
-                        objects.push(Box::new(sphere::Sphere::new(
+                        objects.push(Arc::new(sphere::Sphere::new(
                             center,
                             0.2,
                             material::dielectric::Dielectric::new(1.5),
@@ -67,17 +68,17 @@ impl Scene {
             }
         }
 
-        objects.push(Box::new(sphere::Sphere::new(
+        objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, 1.0, 0.0),
             1.0,
             material::dielectric::Dielectric::new(1.5),
         )));
-        objects.push(Box::new(sphere::Sphere::new(
+        objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(-4.0, 1.0, 0.0),
             1.0,
             material::lambertian::Lambertian::new(math::vector::Color3::new(0.4, 0.2, 0.1)),
         )));
-        objects.push(Box::new(sphere::Sphere::new(
+        objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(4.0, 1.0, 0.0),
             1.0,
             material::metal::Metal::new(math::vector::Color3::new(0.7, 0.6, 0.5), 0.0),

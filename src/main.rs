@@ -6,6 +6,7 @@ mod object;
 mod output;
 mod render;
 mod scene;
+mod bvh_node;
 use crate::math::vector;
 use std::sync::Arc;
 use std::sync::Mutex;
