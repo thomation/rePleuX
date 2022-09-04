@@ -17,7 +17,7 @@ fn main() {
     let aspect_ratio = 3.0 / 2.0;
     let image_width = 400;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
-    let samples_per_pixel = 32;
+    let samples_per_pixel = 4;
     let max_depth = 20;
 
     let img = Arc::new(Mutex::new(output::bitmap::Bitmap::new(image_width, image_height)));

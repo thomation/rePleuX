@@ -2,6 +2,7 @@ use crate::hit::aabb;
 use crate::hit::hittable;
 use std::sync::Arc;
 use crate::math::random;
+use crate::hit::record;
 pub struct BvhNode {
     bounding_box: aabb::AABB,
     left: Arc<dyn hittable::Hittable>,
@@ -90,21 +91,25 @@ impl hittable::Hittable for BvhNode {
         ray: &crate::math::ray::Ray,
         t_min: f64,
         t_max: f64,
-    ) -> Option<crate::hit::record::HitRecord> {
+    ) -> Option<record::HitRecord> {
         if !self.bounding_box.hit(ray, t_min, t_max) {
             return Option::None;
         }
-        let hit_left = self.left.hit(ray, t_min, t_max);
-        match hit_left {
-            Option::Some(r) => Option::Some(r),
-            Option::None => {
-                let hit_right = self.right.hit(ray, t_min, t_max);
-                match hit_right {
-                    Option::Some(r) => Option::Some(r),
-                    Option::None => Option::None,
+        let hits = vec![self.left.hit(ray, t_min, t_max), self.right.hit(ray, t_min, t_max)];
+        let mut hit_anything = std::option::Option::<record::HitRecord>::None;
+        let mut closest_so_far = t_max;
+        for hit in hits {
+            match hit {
+                Option::Some(r) => {
+                    if r.t() < closest_so_far {
+                        closest_so_far = r.t();
+                        hit_anything = Option::Some(r);
+                    }
                 }
+                Option::None => {}
             }
         }
+        hit_anything
     }
 
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<aabb::AABB> {

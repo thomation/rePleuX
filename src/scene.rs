@@ -1,4 +1,4 @@
-use crate::hit::aabb::AABB;
+use crate::bvh_node;
 use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
 use crate::material;
@@ -7,7 +7,7 @@ use crate::object::sphere;
 use std::sync::Arc;
 
 pub struct Scene {
-    objects: Vec<Arc<dyn Hittable>>,
+    bvh: bvh_node::BvhNode,
 }
 impl Scene {
     pub fn new() -> Scene {
@@ -84,49 +84,12 @@ impl Scene {
             material::metal::Metal::new(math::vector::Color3::new(0.7, 0.6, 0.5), 0.0),
         )));
 
-        Scene { objects: objects }
+        let bvh = bvh_node::BvhNode::new(&mut objects, 0.0, 1.0);
+        Scene {
+            bvh: bvh,
+        }
     }
-}
-
-impl Hittable for Scene {
-    fn hit(&self, ray: &math::ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<HitRecord> {
-        let mut hit_anything = std::option::Option::<HitRecord>::None;
-        let mut closest_so_far = t_max;
-        for obj in &self.objects {
-            let hit = obj.hit(&ray, t_min, closest_so_far);
-            match hit {
-                Option::Some(r) => {
-                    closest_so_far = r.t();
-                    hit_anything = Option::Some(r);
-                }
-                Option::None => {}
-            }
-        }
-        return hit_anything;
-    }
-
-    fn bounding_box(&self, time0: f64, time1: f64) -> Option<AABB> {
-        if self.objects.is_empty() {
-            return Option::None;
-        }
-        let mut final_box = AABB::new(math::vector::Point3::zero(), math::vector::Point3::zero());
-        let mut first_box = true;
-        for obj in &self.objects {
-            let check = obj.bounding_box(time0, time1);
-            match check {
-                Option::Some(b) => {
-                    if first_box {
-                        final_box = b;
-                    } else {
-                        final_box = AABB::surrounding_box(final_box, b)
-                    }
-                    first_box = false;
-                }
-                Option::None => {
-                    return Option::None;
-                }
-            }
-        }
-        Option::Some(final_box)
+    pub fn hit(&self, ray: &math::ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<HitRecord> {
+        self.bvh.hit(ray, t_min, t_max)
     }
 }
