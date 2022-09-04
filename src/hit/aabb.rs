@@ -53,3 +53,8 @@ impl AABB {
         AABB::new(small, big)
     }
 }
+impl std::fmt::Display for AABB {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.min(), self.max())
+    }
+}
