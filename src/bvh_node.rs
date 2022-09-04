@@ -95,10 +95,11 @@ impl hittable::Hittable for BvhNode {
         if !self.bounding_box.hit(ray, t_min, t_max) {
             return Option::None;
         }
-        let hits = vec![self.left.hit(ray, t_min, t_max), self.right.hit(ray, t_min, t_max)];
+        let nodes = vec![&self.left, &self.right];
         let mut hit_anything = std::option::Option::<record::HitRecord>::None;
         let mut closest_so_far = t_max;
-        for hit in hits {
+        for node in nodes {
+            let hit = node.hit(ray, t_min, closest_so_far);
             match hit {
                 Option::Some(r) => {
                     if r.t() < closest_so_far {
