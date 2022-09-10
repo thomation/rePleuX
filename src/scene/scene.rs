@@ -13,6 +13,12 @@ pub struct Scene {
 }
 impl Scene {
     pub fn new() -> Scene {
+        // let mut objects = Scene::random_spheres();
+        let mut objects = Scene::two_spheres();
+        let bvh = bvh_node::BvhNode::new(&mut objects, 0.0, 1.0);
+        Scene { bvh: bvh }
+    }
+    fn random_spheres() -> Vec<Arc<dyn Hittable>> {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -1000.0, 0.0),
@@ -92,9 +98,29 @@ impl Scene {
             1.0,
             material::metal::Metal::new(math::vector::Color3::new(0.7, 0.6, 0.5), 0.0),
         )));
-
-        let bvh = bvh_node::BvhNode::new(&mut objects, 0.0, 1.0);
-        Scene { bvh: bvh }
+        objects
+    }
+    fn two_spheres() -> Vec<Arc<dyn Hittable>> {
+        let mut objects: Vec<Arc<dyn Hittable>> = vec![];
+        let checker = checker_texture::CheckerTexture::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
+        );
+        let checker1 = checker_texture::CheckerTexture::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
+        );
+        objects.push(Arc::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, -10.0, 0.0),
+            10.0,
+            material::lambertian::Lambertian::new(checker)),
+        ));
+        objects.push(Arc::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, 10.0, 0.0),
+            10.0,
+            material::lambertian::Lambertian::new(checker1)),
+        ));
+        objects
     }
     pub fn hit(
         &self,
