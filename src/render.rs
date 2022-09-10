@@ -1,9 +1,8 @@
 use crate::camera;
-use crate::hit::hittable::Hittable;
 use crate::math;
 use crate::math::ray;
 use crate::output;
-use crate::scene;
+use crate::scene::scene;
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::thread::spawn;

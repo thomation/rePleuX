@@ -1,4 +1,4 @@
-use crate::bvh_node;
+use super::bvh_node;
 use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
 use crate::material;

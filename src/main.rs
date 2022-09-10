@@ -6,7 +6,6 @@ mod object;
 mod output;
 mod render;
 mod scene;
-mod bvh_node;
 use crate::math::vector;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -35,7 +34,7 @@ fn main() {
         0.0,
         1.0,
     );
-    let world = scene::Scene::new();
+    let world = scene::scene::Scene::new();
     render::RayTracing::render(
         image_width,
         image_height,
