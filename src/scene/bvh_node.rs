@@ -121,6 +121,7 @@ impl hittable::Hittable for BvhNode {
 use crate::material;
 use crate::math;
 use crate::object::sphere;
+use crate::texture::solid_texture;
 #[test]
 fn test_bvh() {
     let mut objects: Vec<Arc<dyn hittable::Hittable>> = vec![];
@@ -139,7 +140,7 @@ fn test_bvh() {
                     center,
                     center2,
                     0.2,
-                    material::lambertian::Lambertian::new(albedo),
+                    material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(albedo)),
                     0.0,
                     1.0,
                 )));

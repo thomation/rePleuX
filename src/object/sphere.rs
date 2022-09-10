@@ -49,6 +49,14 @@ impl<M: material::Material> Sphere<M> {
         let v = (time - self.time0) / (self.time1 - self.time0);
         self.center0 + (self.center1 - self.center0) * v
     }
+    pub fn get_sphere_uv(p: &vector::Point3) -> (f64, f64) {
+        let pi = std::f64::consts::PI;
+        let theta = (- p.y()).acos();
+        let phi = (-p.z()).atan2(p.x()) + pi;
+        let u = phi / (pi * 2.0);
+        let v = theta / pi;
+        (u, v)
+    }
 }
 
 impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hittable
@@ -78,13 +86,16 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
             }
         }
         let hit_point = ray.at(t);
-        let mut outward_norml = (hit_point.clone() - self.center(ray.time())) / self.radius;
-        let front = vector::Vec3::dot(&outward_norml, &ray.dir()) < 0.0;
-        outward_norml.normalize();
+        let mut outward_normal = (hit_point.clone() - self.center(ray.time())) / self.radius;
+        let front = vector::Vec3::dot(&outward_normal, &ray.dir()) < 0.0;
+        outward_normal.normalize();
+        let uv = Sphere::<M>::get_sphere_uv(&outward_normal);
         Option::Some(record::HitRecord::new(
             hit_point,
-            outward_norml,
+            outward_normal,
             t,
+            uv.0,
+            uv.1,
             front,
             &self.material,
         ))

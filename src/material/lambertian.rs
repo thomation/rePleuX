@@ -2,20 +2,20 @@ use super::material;
 use super::scatter;
 use crate::hit::record::HitRecord;
 use crate::math;
-use crate::math::vector;
+use crate::texture::texturable;
 
-pub struct Lambertian {
-    albedo: vector::Color3,
+pub struct Lambertian<T: texturable::Texturable> {
+    albedo: T,
 }
-impl Lambertian {
-    pub fn new(albedo: vector::Color3) -> Lambertian {
+impl <T:texturable::Texturable> Lambertian<T> {
+    pub fn new(albedo: T) -> Lambertian<T> {
         Lambertian { albedo: albedo }
     }
-    pub fn albedo(&self) -> &vector::Color3 {
+    pub fn albedo(&self) -> &T{
         &self.albedo
     }
 }
-impl material::Material for Lambertian {
+impl <T: texturable::Texturable> material::Material for Lambertian<T> {
     fn scatter(
         &self,
         ray_in: &math::ray::Ray,
@@ -26,6 +26,6 @@ impl material::Material for Lambertian {
             scatter_dir = hit_record.normal().clone();
         }
         let ray_out = math::ray::Ray::new(hit_record.position().clone(), scatter_dir, ray_in.time());
-        Option::Some(scatter::ScatterResult::new(ray_out, self.albedo().clone()))
+        Option::Some(scatter::ScatterResult::new(ray_out, self.albedo().value(hit_record.u(), hit_record.v(), hit_record.position())))
     }
 }

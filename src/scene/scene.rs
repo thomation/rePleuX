@@ -4,6 +4,7 @@ use crate::hit::record::HitRecord;
 use crate::material;
 use crate::math;
 use crate::object::sphere;
+use crate::texture::solid_texture;
 use std::sync::Arc;
 
 pub struct Scene {
@@ -15,7 +16,7 @@ impl Scene {
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -1000.0, 0.0),
             1000.0,
-            material::lambertian::Lambertian::new(math::vector::Color3::new(0.5, 0.5, 0.5)),
+            material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(math::vector::Color3::new(0.5, 0.5, 0.5))),
         )));
 
         // Random spheres
@@ -43,7 +44,7 @@ impl Scene {
                             center,
                             center2,
                             0.2,
-                            material::lambertian::Lambertian::new(albedo),
+                            material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(albedo)),
                             0.0,
                             1.0,
                         )));
@@ -76,7 +77,7 @@ impl Scene {
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(-4.0, 1.0, 0.0),
             1.0,
-            material::lambertian::Lambertian::new(math::vector::Color3::new(0.4, 0.2, 0.1)),
+            material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(math::vector::Color3::new(0.4, 0.2, 0.1))),
         )));
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(4.0, 1.0, 0.0),

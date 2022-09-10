@@ -11,7 +11,7 @@ impl SolidTexture {
     }
 }
 impl texturable::Texturable for SolidTexture {
-    fn color (&self, u: f64, v:f64, p: &crate::math::vector::Point3) -> crate::math::vector::Color3 {
+    fn value (&self, u: f64, v:f64, p: &crate::math::vector::Point3) -> crate::math::vector::Color3 {
         self.color_value
     }
 }
