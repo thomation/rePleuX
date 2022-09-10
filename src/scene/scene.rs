@@ -4,6 +4,7 @@ use crate::hit::record::HitRecord;
 use crate::material;
 use crate::math;
 use crate::object::sphere;
+use crate::texture::checker_texture;
 use crate::texture::solid_texture;
 use std::sync::Arc;
 
@@ -16,7 +17,10 @@ impl Scene {
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -1000.0, 0.0),
             1000.0,
-            material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(math::vector::Color3::new(0.5, 0.5, 0.5))),
+            material::lambertian::Lambertian::new(checker_texture::CheckerTexture::new(
+                solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
+                solid_texture::SolidTexture::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
+            )),
         )));
 
         // Random spheres
@@ -44,7 +48,9 @@ impl Scene {
                             center,
                             center2,
                             0.2,
-                            material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(albedo)),
+                            material::lambertian::Lambertian::new(
+                                solid_texture::SolidTexture::new(albedo),
+                            ),
                             0.0,
                             1.0,
                         )));
@@ -77,7 +83,9 @@ impl Scene {
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(-4.0, 1.0, 0.0),
             1.0,
-            material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(math::vector::Color3::new(0.4, 0.2, 0.1))),
+            material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(
+                math::vector::Color3::new(0.4, 0.2, 0.1),
+            )),
         )));
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(4.0, 1.0, 0.0),
@@ -86,11 +94,14 @@ impl Scene {
         )));
 
         let bvh = bvh_node::BvhNode::new(&mut objects, 0.0, 1.0);
-        Scene {
-            bvh: bvh,
-        }
+        Scene { bvh: bvh }
     }
-    pub fn hit(&self, ray: &math::ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<HitRecord> {
+    pub fn hit(
+        &self,
+        ray: &math::ray::Ray,
+        t_min: f64,
+        t_max: f64,
+    ) -> std::option::Option<HitRecord> {
         self.bvh.hit(ray, t_min, t_max)
     }
 }
