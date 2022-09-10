@@ -6,7 +6,8 @@ mod object;
 mod output;
 mod render;
 mod scene;
-use crate::math::vector;
+mod texture;
+
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::Instant;
@@ -20,13 +21,13 @@ fn main() {
     let max_depth = 20;
 
     let img = Arc::new(Mutex::new(output::bitmap::Bitmap::new(image_width, image_height)));
-    let look_from = vector::Point3::new(13.0, 2.0, 3.0);
-    let look_at = vector::Point3::new(0.0, 0.0, 0.0);
+    let look_from = math::vector::Point3::new(13.0, 2.0, 3.0);
+    let look_at = math::vector::Point3::new(0.0, 0.0, 0.0);
     let focus_dist = 10.0;
     let cam = camera::Camera::new(
         look_from,
         look_at,
-        vector::Dir3::new(0.0, 1.0, 0.0),
+        math::vector::Dir3::new(0.0, 1.0, 0.0),
         20.0,
         aspect_ratio,
         0.1,
