@@ -95,13 +95,14 @@ impl RayTracing {
         match hit {
             Option::Some(rec) => {
                 let scatter = rec.material().scatter(&ray, &rec);
+                let emit = rec.material().emitted(rec.u(), rec.v(), rec.position());
                 match scatter {
                     Option::Some(sr) => {
-                        return RayTracing::ray_color(sr.ray(), &world, depth - 1)
+                        return emit + RayTracing::ray_color(sr.ray(), &world, depth - 1)
                             * sr.attenuation();
                     }
                     Option::None => {
-                        return math::vector::Color3::new(0.0, 0.0, 0.0);
+                        emit
                     }
                 }
             }
