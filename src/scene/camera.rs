@@ -12,25 +12,24 @@ pub struct Camera {
     lens_radius: f64,
     time0: f64,
     time1: f64,
+    aspect_ratio: f64,
 }
-
 impl Camera {
     pub fn new(
         look_from: vector::Point3,
         look_at: vector::Point3,
         vup: vector::Dir3,
         vfov: f64,
-        aspect_ratio: f64,
         aperture: f64,
         focus_dist: f64,
         time0: f64,
         time1: f64,
     ) -> Camera {
+        let aspect_ratio = 3.0 / 2.0;
         let theta = vfov * std::f64::consts::PI / 180.0;
         let h = (theta * 0.5).tan() * focus_dist;
         let viewport_height = 2.0 * h;
         let viewport_width = viewport_height * aspect_ratio;
-
         let mut w = look_from.clone() - look_at;
         w.normalize();
         let mut u = vector::Vec3::cross(&vup, &w);
@@ -53,6 +52,7 @@ impl Camera {
             lens_radius: aperture / 2.0,
             time0: time0,
             time1: time1,
+            aspect_ratio: aspect_ratio,
         }
     }
     pub fn get_ray(&self, s: f64, t: f64) -> ray::Ray {
@@ -76,5 +76,8 @@ impl Camera {
                 return p;
             }
         }
+    }
+    pub fn aspect_ratio(&self) -> f64 {
+        self.aspect_ratio
     }
 }

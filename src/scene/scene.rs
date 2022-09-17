@@ -1,4 +1,5 @@
 use super::bvh_node;
+use super::camera;
 use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
 use crate::material;
@@ -10,15 +11,19 @@ use std::sync::Arc;
 
 pub struct Scene {
     bvh: bvh_node::BvhNode,
+    camera: camera::Camera,
 }
 impl Scene {
     pub fn new() -> Scene {
         // let mut objects = Scene::random_spheres();
-        let mut objects = Scene::two_spheres();
-        let bvh = bvh_node::BvhNode::new(&mut objects, 0.0, 1.0);
-        Scene { bvh: bvh }
+        let mut ret = Scene::two_spheres();
+        let bvh = bvh_node::BvhNode::new(&mut ret.0, 0.0, 1.0);
+        Scene {
+            bvh: bvh,
+            camera: ret.1,
+        }
     }
-    fn random_spheres() -> Vec<Arc<dyn Hittable>> {
+    fn random_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -1000.0, 0.0),
@@ -98,9 +103,22 @@ impl Scene {
             1.0,
             material::metal::Metal::new(math::vector::Color3::new(0.7, 0.6, 0.5), 0.0),
         )));
-        objects
+        let look_from = math::vector::Point3::new(13.0, 2.0, 3.0);
+        let look_at = math::vector::Point3::new(0.0, 0.0, 0.0);
+        let focus_dist = 10.0;
+        let cam = camera::Camera::new(
+            look_from,
+            look_at,
+            math::vector::Dir3::new(0.0, 1.0, 0.0),
+            20.0,
+            0.1,
+            focus_dist,
+            0.0,
+            1.0,
+        );
+        (objects, cam)
     }
-    fn two_spheres() -> Vec<Arc<dyn Hittable>> {
+    fn two_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
         let checker = checker_texture::CheckerTexture::new(
             solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
@@ -113,14 +131,27 @@ impl Scene {
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -10.0, 0.0),
             10.0,
-            material::lambertian::Lambertian::new(checker)),
-        ));
+            material::lambertian::Lambertian::new(checker),
+        )));
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, 10.0, 0.0),
             10.0,
-            material::lambertian::Lambertian::new(checker1)),
-        ));
-        objects
+            material::lambertian::Lambertian::new(checker1),
+        )));
+        let look_from = math::vector::Point3::new(13.0, 2.0, 3.0);
+        let look_at = math::vector::Point3::new(0.0, 0.0, 0.0);
+        let focus_dist = 10.0;
+        let cam = camera::Camera::new(
+            look_from,
+            look_at,
+            math::vector::Dir3::new(0.0, 1.0, 0.0),
+            20.0,
+            0.1,
+            focus_dist,
+            0.0,
+            1.0,
+        );
+        (objects, cam)
     }
     pub fn hit(
         &self,
@@ -129,5 +160,8 @@ impl Scene {
         t_max: f64,
     ) -> std::option::Option<HitRecord> {
         self.bvh.hit(ray, t_min, t_max)
+    }
+    pub fn camera(&self) -> &camera::Camera {
+        &self.camera
     }
 }

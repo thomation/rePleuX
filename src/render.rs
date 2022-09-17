@@ -1,4 +1,3 @@
-use crate::camera;
 use crate::math;
 use crate::math::ray;
 use crate::output;
@@ -15,14 +14,12 @@ impl RayTracing {
         samples_per_pixels: usize,
         max_depth: usize,
         thread_count: usize,
-        cam: Arc<camera::Camera>,
         world: Arc<scene::Scene>,
         output: Arc<Mutex<output::bitmap::Bitmap>>,
     ) {
         let mut thread_handles = vec![];
         let rows_per_thead = image_height / thread_count;
         for t in 0..thread_count {
-            let cam_for_child = cam.clone();
             let world_for_child = world.clone();
             let output_for_child = output.clone();
             thread_handles.push(spawn(move || {
@@ -40,7 +37,6 @@ impl RayTracing {
                     end_row,
                     samples_per_pixels,
                     max_depth,
-                    &cam_for_child,
                     &world_for_child,
                     &output_for_child,
                 );
@@ -59,7 +55,6 @@ impl RayTracing {
         end_row: usize,
         samples_per_pixels: usize,
         max_depth: usize,
-        cam: &camera::Camera,
         world: &scene::Scene,
         output: &Mutex<output::bitmap::Bitmap>,
     ) {
@@ -73,7 +68,7 @@ impl RayTracing {
                     let rh: f64 = math::random::generate();
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
-                    let ray = cam.get_ray(u, v);
+                    let ray = world.camera().get_ray(u, v);
                     color += RayTracing::ray_color(&ray, &world, max_depth);
                 }
                 color /= samples_per_pixels as f64;
