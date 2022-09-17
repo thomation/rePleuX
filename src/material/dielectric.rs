@@ -2,7 +2,6 @@ use super::material;
 use super::scatter;
 use crate::hit;
 use crate::math;
-use crate::math::ray::Ray;
 pub struct Dielectric {
     index_of_fraction: f64,
 }
@@ -33,10 +32,12 @@ impl material::Material for Dielectric {
         };
         let normal = hit_record.normal().clone();
         let unit_dir = math::vector::Vec3::unit(&ray_in.dir());
-        let cos_theta =
-            math::vector::Vec3::dot(&-unit_dir.clone(), &normal).min(1.0);
+        let cos_theta = math::vector::Vec3::dot(&-unit_dir.clone(), &normal).min(1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
-        if refraction_ratio * sin_theta > 1.0  || Dielectric::reflectance(cos_theta, refraction_ratio) > math::random::generate_range(0.0, 1.0) {
+        if refraction_ratio * sin_theta > 1.0
+            || Dielectric::reflectance(cos_theta, refraction_ratio)
+                > math::random::generate_range(0.0, 1.0)
+        {
             let reflected = unit_dir.clone().reflect(normal);
             Option::Some(scatter::ScatterResult::new(
                 math::ray::Ray::new(hit_record.position().clone(), reflected, ray_in.time()),
@@ -49,5 +50,9 @@ impl material::Material for Dielectric {
                 math::vector::Color3::new(1.0, 1.0, 1.0),
             ))
         }
+    }
+
+    fn emitted(&self, u: f64, v: f64, p: &math::vector::Point3) -> math::vector::Color3 {
+        math::vector::Color3::zero()
     }
 }
