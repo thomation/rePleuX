@@ -106,10 +106,7 @@ impl RayTracing {
                 }
             }
             Option::None => {
-                let unit = math::vector::Vec3::unit(&ray.dir());
-                let t = (unit.y() + 1.0) * 0.5;
-                return math::vector::Color3::new(0.5, 0.7, 1.0) * t
-                    + math::vector::Color3::new(1.0, 1.0, 1.0) * (1.0 - t);
+                world.background().clone()
             }
         }
     }

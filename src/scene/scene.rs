@@ -12,6 +12,7 @@ use std::sync::Arc;
 pub struct Scene {
     bvh: bvh_node::BvhNode,
     camera: camera::Camera,
+    backgound: math::vector::Color3,
 }
 impl Scene {
     pub fn new() -> Scene {
@@ -21,6 +22,7 @@ impl Scene {
         Scene {
             bvh: bvh,
             camera: ret.1,
+            backgound: math::vector::Color3::new(0.7, 0.8, 1.0),
         }
     }
     fn random_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera) {
@@ -159,5 +161,8 @@ impl Scene {
     }
     pub fn camera(&self) -> &camera::Camera {
         &self.camera
+    }
+    pub fn background(&self) -> &math::vector::Color3 {
+        &self.backgound
     }
 }
