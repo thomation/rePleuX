@@ -124,10 +124,6 @@ impl Scene {
             solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
             solid_texture::SolidTexture::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
         );
-        let checker1 = checker_texture::CheckerTexture::new(
-            solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
-            solid_texture::SolidTexture::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
-        );
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -10.0, 0.0),
             10.0,
@@ -136,7 +132,7 @@ impl Scene {
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, 10.0, 0.0),
             10.0,
-            material::lambertian::Lambertian::new(checker1),
+            material::lambertian::Lambertian::new(checker),
         )));
         let look_from = math::vector::Point3::new(13.0, 2.0, 3.0);
         let look_at = math::vector::Point3::new(0.0, 0.0, 0.0);

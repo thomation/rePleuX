@@ -1,4 +1,5 @@
 use super::texturable;
+#[derive(Debug, Clone, Copy)]
 pub struct CheckerTexture<T: texturable::Texturable, S: texturable::Texturable> {
     even: T,
     odd: S,

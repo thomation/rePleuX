@@ -1,5 +1,6 @@
 use super::texturable;
 use crate::math::vector;
+#[derive(Debug, Clone, Copy)]
 pub struct SolidTexture {
     color_value: vector::Color3,
 }
