@@ -4,6 +4,13 @@ use super::material;
 pub struct DiffuseLight<T: texturable::Texturable> {
     emit: T,
 }
+impl <T:texturable::Texturable> DiffuseLight<T> {
+    pub fn new(emit: T) -> DiffuseLight<T> {
+        DiffuseLight {
+            emit: emit, 
+        }
+    }
+}
 impl <T: texturable::Texturable> material::Material for DiffuseLight<T> {
     fn scatter(&self, ray_in: &crate::math::ray::Ray, hit_record: &crate::hit::record::HitRecord) -> Option<super::scatter::ScatterResult> {
         Option::None

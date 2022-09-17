@@ -3,7 +3,9 @@ use super::camera;
 use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
 use crate::material;
+use crate::material::diffuse_light;
 use crate::math;
+use crate::object::rect;
 use crate::object::sphere;
 use crate::texture::checker_texture;
 use crate::texture::solid_texture;
@@ -17,15 +19,15 @@ pub struct Scene {
 impl Scene {
     pub fn new() -> Scene {
         // let mut objects = Scene::random_spheres();
-        let mut ret = Scene::two_spheres();
+        let mut ret = Scene::simple_light();
         let bvh = bvh_node::BvhNode::new(&mut ret.0, 0.0, 1.0);
         Scene {
             bvh: bvh,
             camera: ret.1,
-            backgound: math::vector::Color3::new(0.7, 0.8, 1.0),
+            backgound: ret.2,
         }
     }
-    fn random_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera) {
+    fn random_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -1000.0, 0.0),
@@ -118,9 +120,10 @@ impl Scene {
             0.0,
             1.0,
         );
-        (objects, cam)
+        let backgound = math::vector::Color3::new(0.7, 0.8, 1.0);
+        (objects, cam, backgound)
     }
-    fn two_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera) {
+    fn two_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
         let checker = checker_texture::CheckerTexture::new(
             solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
@@ -149,7 +152,45 @@ impl Scene {
             0.0,
             1.0,
         );
-        (objects, cam)
+        let backgound = math::vector::Color3::new(0.7, 0.8, 1.0);
+        (objects, cam, backgound)
+    }
+    fn simple_light() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
+        let mut objects: Vec<Arc<dyn Hittable>> = vec![];
+        let checker = checker_texture::CheckerTexture::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.9, 0.9, 0.9)),
+        );
+        objects.push(Arc::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, -1000.0, 0.0),
+            1000.0,
+            material::lambertian::Lambertian::new(checker),
+        )));
+        objects.push(Arc::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, 2.0, 0.0),
+            2.0,
+            material::lambertian::Lambertian::new(checker),
+        )));
+        let lightcolor = solid_texture::SolidTexture::new(math::vector::Color3::new(4.0, 4.0, 4.0));
+        let difflight = diffuse_light::DiffuseLight::new(lightcolor);
+        objects.push(Arc::new(rect::XYRect::new(
+            3.0, 5.0, 1.0, 3.0, -2.0, difflight,
+        )));
+
+        let look_from = math::vector::Point3::new(26.0, 3.0, 6.0);
+        let look_at = math::vector::Point3::new(0.0, 2.0, 0.0);
+        let focus_dist = 10.0;
+        let cam = camera::Camera::new(
+            look_from,
+            look_at,
+            math::vector::Dir3::new(0.0, 1.0, 0.0),
+            20.0,
+            0.1,
+            focus_dist,
+            0.0,
+            1.0,
+        );
+        (objects, cam, math::vector::Color3::zero())
     }
     pub fn hit(
         &self,
