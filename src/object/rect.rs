@@ -32,7 +32,7 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
         t_min: f64,
         t_max: f64,
     ) -> Option<crate::hit::record::HitRecord> {
-        let t =(self.k - ray.origin().z() / ray.dir().z());
+        let t =(self.k - ray.origin().z()) / ray.dir().z();
     if t < t_min || t > t_max {
         return Option::None;
     }
@@ -58,8 +58,8 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
     }
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
         Option::Some(aabb::AABB::new(
-            vector::Point3::new(self.x0, self.y0, self.k - 0.0001),
-            vector::Point3::new(self.x1, self.y1, self.k + 0.0001),
+            vector::Point3::new(self.x0, self.y0, self.k - 0.001),
+            vector::Point3::new(self.x1, self.y1, self.k + 0.001),
         ))
     }
 }
