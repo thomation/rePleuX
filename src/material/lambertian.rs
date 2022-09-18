@@ -4,6 +4,7 @@ use crate::hit::record::HitRecord;
 use crate::math;
 use crate::texture::texturable;
 
+#[derive(Debug, Clone, Copy)]
 pub struct Lambertian<T: texturable::Texturable> {
     albedo: T,
 }
