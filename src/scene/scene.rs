@@ -12,6 +12,7 @@ use crate::texture::solid_texture;
 use std::sync::Arc;
 
 pub struct Scene {
+    objects: Vec<Arc<dyn Hittable>>,
     bvh: bvh_node::BvhNode,
     camera: camera::Camera,
     backgound: math::vector::Color3,
@@ -22,6 +23,7 @@ impl Scene {
         let mut ret = Scene::simple_light();
         let bvh = bvh_node::BvhNode::new(&mut ret.0, 0.0, 1.0);
         Scene {
+            objects: ret.0,
             bvh: bvh,
             camera: ret.1,
             backgound: ret.2,
@@ -167,30 +169,36 @@ impl Scene {
             material::lambertian::Lambertian::new(checker),
         )));
         objects.push(Arc::new(sphere::Sphere::new(
-            math::vector::Point3::new(0.0, 2.0, 0.0),
+            math::vector::Point3::new(0.0, 2.0, -0.0),
             2.0,
             material::lambertian::Lambertian::new(checker),
         )));
         let lightcolor = solid_texture::SolidTexture::new(math::vector::Color3::new(4.0, 4.0, 4.0));
         let difflight = diffuse_light::DiffuseLight::new(lightcolor);
         objects.push(Arc::new(rect::XYRect::new(
-            3.0, 5.0, 1.0, 3.0, -2.0, difflight,
+            3.0, 5.0, 1.0, 3.0, -2.0,
+            difflight
         )));
 
+        objects.push(Arc::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, 5.0, -2.0),
+            1.0,
+            difflight
+        )));
         let look_from = math::vector::Point3::new(26.0, 3.0, 6.0);
         let look_at = math::vector::Point3::new(0.0, 2.0, 0.0);
         let focus_dist = 10.0;
         let cam = camera::Camera::new(
             look_from,
             look_at,
-            math::vector::Dir3::new(0.0, 1.0, 0.0),
+            math::vector::Dir3::new(0.0, 2.0, 0.0),
             20.0,
             0.1,
             focus_dist,
             0.0,
             1.0,
         );
-        (objects, cam, math::vector::Color3::zero())
+        (objects, cam, math::vector::Color3::new(0.0, 0.0, 0.0))
     }
     pub fn hit(
         &self,
@@ -200,6 +208,21 @@ impl Scene {
     ) -> std::option::Option<HitRecord> {
         self.bvh.hit(ray, t_min, t_max)
     }
+    // pub fn hit(&self, ray: &math::ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<HitRecord> {
+    //     let mut hit_anything = std::option::Option::<HitRecord>::None;
+    //     let mut closest_so_far = t_max;
+    //     for obj in &self.objects {
+    //         let hit = obj.hit(&ray, t_min, closest_so_far);
+    //         match hit {
+    //             Option::Some(r) => {
+    //                 closest_so_far = r.t();
+    //                 hit_anything = Option::Some(r);
+    //             }
+    //             Option::None => {}
+    //         }
+    //     }
+    //     return hit_anything;
+    // }
     pub fn camera(&self) -> &camera::Camera {
         &self.camera
     }

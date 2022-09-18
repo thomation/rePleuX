@@ -1,6 +1,7 @@
 use crate::texture::texturable;
 use super::material;
 
+#[derive(Debug, Clone, Copy)]
 pub struct DiffuseLight<T: texturable::Texturable> {
     emit: T,
 }
