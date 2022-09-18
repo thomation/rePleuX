@@ -58,8 +58,8 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
     }
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
         Option::Some(aabb::AABB::new(
-            vector::Point3::new(self.x0, self.y0, self.k - 0.001),
-            vector::Point3::new(self.x1, self.y1, self.k + 0.001),
+            vector::Point3::new(self.x0, self.y0, self.k - 0.0001),
+            vector::Point3::new(self.x1, self.y1, self.k + 0.0001),
         ))
     }
 }
@@ -119,8 +119,8 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
     }
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
         Option::Some(aabb::AABB::new(
-            vector::Point3::new(self.x0, self.k - 0.001, self.z0),
-            vector::Point3::new(self.x1, self.k + 0.001, self.z1),
+            vector::Point3::new(self.x0, self.k - 0.0001, self.z0),
+            vector::Point3::new(self.x1, self.k + 0.0001, self.z1),
         ))
     }
 }
@@ -179,8 +179,8 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
     }
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
         Option::Some(aabb::AABB::new(
-            vector::Point3::new(self.k - 0.001, self.y0, self.z0),
-            vector::Point3::new(self.k + 0.001, self.y1, self.z1),
+            vector::Point3::new(self.k - 0.0001, self.y0, self.z0),
+            vector::Point3::new(self.k + 0.0001, self.y1, self.z1),
         ))
     }
 }
