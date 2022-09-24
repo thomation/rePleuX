@@ -1,4 +1,4 @@
-use super::hittable;
+use super::hittable::{self, Hittable};
 use crate::math;
 use super::record;
 use std::sync::Arc;
@@ -10,6 +10,9 @@ impl HittableList {
     pub fn new () -> HittableList {
         let objects = vec![];
         HittableList { objects: objects }
+    }
+    pub fn add (&mut self, obj: Arc<dyn Hittable>) {
+        self.objects.push(obj);
     }
 }
 impl hittable::Hittable for HittableList {
