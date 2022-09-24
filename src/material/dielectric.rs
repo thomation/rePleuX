@@ -2,6 +2,7 @@ use super::material;
 use super::scatter;
 use crate::hit;
 use crate::math;
+#[derive(Debug, Clone, Copy)]
 pub struct Dielectric {
     index_of_fraction: f64,
 }
