@@ -1,5 +1,5 @@
 use super::rect;
-use crate::hit::hittable_list;
+use crate::hit::{hittable_list, hittable, aabb};
 use crate::material::material;
 use crate::math::vector;
 use std::sync::Arc;
@@ -68,5 +68,14 @@ impl Cubic {
             box_max: p1,
             sides,
         }
+    }
+}
+impl hittable::Hittable for Cubic {
+    fn hit(&self, ray: &crate::math::ray::Ray, t_min: f64, t_max: f64) -> Option<crate::hit::record::HitRecord> {
+        self.sides.hit(ray, t_min, t_max)
+    }
+
+    fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
+        Option::Some(aabb::AABB::new(self.box_min, self.box_max))
     }
 }
