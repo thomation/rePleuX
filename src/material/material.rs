@@ -3,7 +3,7 @@ use crate::hit::record::HitRecord;
 use crate::math::ray;
 use crate::math::vector;
 
-pub trait Material {
+pub trait Material: std::marker::Send + std::marker::Sync {
     fn scatter(&self, ray_in: &ray::Ray, hit_record: &HitRecord) -> Option<scatter::ScatterResult>;
     fn emitted(&self, u: f64, v: f64, p: &vector::Point3) -> vector::Color3;
 }

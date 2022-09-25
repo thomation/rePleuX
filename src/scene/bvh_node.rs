@@ -140,7 +140,7 @@ fn test_bvh() {
                     center,
                     center2,
                     0.2,
-                    material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(albedo)),
+                    Arc::new(material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(albedo))),
                     0.0,
                     1.0,
                 )));

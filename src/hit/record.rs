@@ -1,17 +1,18 @@
+use std::sync::Arc;
 use crate::math::vector;
 use crate::material::material;
 
-pub struct HitRecord<'a> {
+pub struct HitRecord {
     p: vector::Point3,
     normal: vector::Dir3,
     t: f64,
     u: f64,
     v: f64,
     front_face: bool,
-    material :&'a material::Material,
+    material :Arc<dyn material::Material>,
 }
-impl<'a> HitRecord<'a> {
-    pub fn new(p: vector::Point3, outward_normal: vector::Dir3, t: f64, u: f64, v:f64, front_face: bool, material: &material::Material) -> HitRecord {
+impl HitRecord {
+    pub fn new(p: vector::Point3, outward_normal: vector::Dir3, t: f64, u: f64, v:f64, front_face: bool, material: Arc<dyn material::Material>) -> HitRecord {
         HitRecord {
             p: p,
             normal: if front_face {outward_normal} else {-outward_normal},
@@ -40,7 +41,7 @@ impl<'a> HitRecord<'a> {
     pub fn front_face(&self) -> bool {
         self.front_face
     }
-    pub fn material (&self) -> &material::Material{
-        self.material
+    pub fn material (&self) -> Arc<dyn material::Material>{
+        self.material.clone()
     }
 }

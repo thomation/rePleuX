@@ -3,16 +3,24 @@ use crate::hit::hittable;
 use crate::hit::record;
 use crate::material::material;
 use crate::math::vector;
-pub struct XYRect<M: material::Material> {
+use std::sync::Arc;
+pub struct XYRect {
     x0: f64,
     x1: f64,
     y0: f64,
     y1: f64,
     k: f64,
-    material: M,
+    material: Arc<dyn material::Material>,
 }
-impl<M: material::Material> XYRect<M> {
-    pub fn new(x0: f64, x1: f64, y0: f64, y1: f64, k: f64, material: M) -> XYRect<M> {
+impl XYRect {
+    pub fn new(
+        x0: f64,
+        x1: f64,
+        y0: f64,
+        y1: f64,
+        k: f64,
+        material: Arc<dyn material::Material>,
+    ) -> XYRect {
         XYRect {
             x0: x0,
             x1: x1,
@@ -23,9 +31,7 @@ impl<M: material::Material> XYRect<M> {
         }
     }
 }
-impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hittable
-    for XYRect<M>
-{
+impl hittable::Hittable for XYRect {
     fn hit(
         &self,
         ray: &crate::math::ray::Ray,
@@ -53,7 +59,7 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
             u,
             v,
             front,
-            &self.material,
+            self.material.clone(),
         ))
     }
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
@@ -64,16 +70,23 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
     }
 }
 
-pub struct XZRect<M: material::Material> {
+pub struct XZRect {
     x0: f64,
     x1: f64,
     z0: f64,
     z1: f64,
     k: f64,
-    material: M,
+    material: Arc<dyn material::Material>,
 }
-impl<M: material::Material> XZRect<M> {
-    pub fn new(x0: f64, x1: f64, z0: f64, z1: f64, k: f64, material: M) -> XZRect<M> {
+impl XZRect {
+    pub fn new(
+        x0: f64,
+        x1: f64,
+        z0: f64,
+        z1: f64,
+        k: f64,
+        material: Arc<dyn material::Material>,
+    ) -> XZRect {
         XZRect {
             x0: x0,
             x1: x1,
@@ -84,9 +97,7 @@ impl<M: material::Material> XZRect<M> {
         }
     }
 }
-impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hittable
-    for XZRect<M>
-{
+impl hittable::Hittable for XZRect {
     fn hit(
         &self,
         ray: &crate::math::ray::Ray,
@@ -114,7 +125,7 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
             u,
             v,
             front,
-            &self.material,
+            self.material.clone(),
         ))
     }
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
@@ -124,16 +135,23 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
         ))
     }
 }
-pub struct YZRect<M: material::Material> {
+pub struct YZRect {
     y0: f64,
     y1: f64,
     z0: f64,
     z1: f64,
     k: f64,
-    material: M,
+    material: Arc<dyn material::Material>,
 }
-impl<M: material::Material> YZRect<M> {
-    pub fn new(y0: f64, y1: f64, z0: f64, z1: f64, k: f64, material: M) -> YZRect<M> {
+impl YZRect {
+    pub fn new(
+        y0: f64,
+        y1: f64,
+        z0: f64,
+        z1: f64,
+        k: f64,
+        material: Arc<dyn material::Material>,
+    ) -> YZRect {
         YZRect {
             y0: y0,
             y1: y1,
@@ -144,9 +162,7 @@ impl<M: material::Material> YZRect<M> {
         }
     }
 }
-impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hittable
-    for YZRect<M>
-{
+impl hittable::Hittable for YZRect {
     fn hit(
         &self,
         ray: &crate::math::ray::Ray,
@@ -174,7 +190,7 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
             u,
             v,
             front,
-            &self.material,
+            self.material.clone(),
         ))
     }
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {

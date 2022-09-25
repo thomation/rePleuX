@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use crate::hit::aabb;
 use crate::hit::hittable;
 use crate::hit::record;
@@ -5,17 +6,17 @@ use crate::material::material;
 use crate::math::ray;
 use crate::math::vector;
 
-pub struct Sphere<M: material::Material> {
+pub struct Sphere {
     center0: vector::Point3,
     center1: vector::Point3,
     radius: f64,
-    material: M,
+    material: Arc<dyn material::Material>,
     time0: f64,
     time1: f64,
 }
 
-impl<M: material::Material> Sphere<M> {
-    pub fn new(center: vector::Point3, radius: f64, material: M) -> Sphere<M> {
+impl Sphere {
+    pub fn new(center: vector::Point3, radius: f64, material: Arc<dyn material::Material>) -> Sphere {
         Sphere {
             center0: center,
             center1: center,
@@ -29,10 +30,10 @@ impl<M: material::Material> Sphere<M> {
         center0: vector::Point3,
         center1: vector::Point3,
         radius: f64,
-        material: M,
+        material: Arc<dyn material::Material>,
         time0: f64,
         time1: f64,
-    ) -> Sphere<M> {
+    ) -> Sphere {
         Sphere {
             center0: center0,
             center1: center1,
@@ -59,8 +60,8 @@ impl<M: material::Material> Sphere<M> {
     }
 }
 
-impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hittable
-    for Sphere<M>
+impl hittable::Hittable
+    for Sphere
 {
     fn hit(
         &self,
@@ -89,7 +90,7 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
         let mut outward_normal = (hit_point.clone() - self.center(ray.time())) / self.radius;
         let front = vector::Vec3::dot(&outward_normal, &ray.dir()) < 0.0;
         outward_normal.normalize();
-        let uv = Sphere::<M>::get_sphere_uv(&outward_normal);
+        let uv = Sphere::get_sphere_uv(&outward_normal);
         Option::Some(record::HitRecord::new(
             hit_point,
             outward_normal,
@@ -97,7 +98,7 @@ impl<M: material::Material + std::marker::Send + std::marker::Sync> hittable::Hi
             uv.0,
             uv.1,
             front,
-            &self.material,
+            self.material.clone(),
         ))
     }
 
