@@ -5,9 +5,7 @@ use crate::hit::record::HitRecord;
 use crate::material;
 use crate::material::diffuse_light;
 use crate::math;
-use crate::object::rect;
-use crate::object::sphere;
-use crate::object::cubic;
+use crate::object::{rect, sphere, cubic, translate};
 use crate::texture::checker_texture;
 use crate::texture::solid_texture;
 use std::sync::Arc;
@@ -250,14 +248,16 @@ impl Scene {
         objects.push(Arc::new(rect::XYRect::new(
             0.0, 555.0, 0.0, 555.0, 555.0, white.clone(),
         )));
-        objects.push(Arc::new(cubic::Cubic::new(
-            math::vector::Point3::new(130.0, 0.0, 65.0),
-            math::vector::Point3::new(295.0, 165.0, 230.0),
-            white.clone())));
-        objects.push(Arc::new(cubic::Cubic::new(
-            math::vector::Point3::new(265.0, 0.0, 295.0),
-            math::vector::Point3::new(430.0, 330.0, 460.0),
-            white.clone())));
+
+        objects.push(Arc::new(translate::Translate::new(Arc::new(cubic::Cubic::new(
+            math::vector::Point3::new(0.0, 0.0, 0.0),
+            math::vector::Point3::new(165.0, 330.0, 165.0),
+            white.clone())), math::vector::Dir3::new(265.0, 0.0, 295.0))));
+        objects.push(Arc::new(translate::Translate::new(Arc::new(cubic::Cubic::new(
+            math::vector::Point3::new(0.0, 0.0, 0.0),
+            math::vector::Point3::new(165.0, 165.0,165.0),
+            white.clone())), math::vector::Dir3::new(130.0, 0.0, 65.0))));
+
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
         let look_at = math::vector::Point3::new(278.0, 278.0, 0.0);
         let focus_dist = 50.0;
