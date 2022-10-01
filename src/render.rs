@@ -91,7 +91,7 @@ impl RayTracing {
         if depth <= 0 {
             return math::vector::Color3::new(0.0, 0.0, 0.0);
         }
-        let hit = world.hit(&ray, 0.0001, 10000000.0); // t_max is infinity
+        let hit = world.hit(&ray, 0.0001, f64::INFINITY); // t_max is infinity
         match hit {
             Option::Some(rec) => {
                 let scatter = rec.material().scatter(&ray, &rec);
