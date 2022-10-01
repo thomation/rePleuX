@@ -5,7 +5,7 @@ use crate::hit::record::HitRecord;
 use crate::material;
 use crate::material::diffuse_light;
 use crate::math;
-use crate::object::{rect, sphere, cubic, translate, rotate};
+use crate::object::{cubic, rect, rotate, sphere, translate};
 use crate::texture::checker_texture;
 use crate::texture::solid_texture;
 use std::sync::Arc;
@@ -163,14 +163,14 @@ impl Scene {
     }
     fn simple_light() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
-        let red = Arc::new(material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(
-            math::vector::Color3::new(0.65, 0.05, 0.05)),
+        let red = Arc::new(material::lambertian::Lambertian::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.65, 0.05, 0.05)),
         ));
-        let white = Arc::new(material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(
-            math::vector::Color3::new(0.73, 0.73, 0.73)),
+        let white = Arc::new(material::lambertian::Lambertian::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.73, 0.73, 0.73)),
         ));
-        let green = Arc::new(material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(
-            math::vector::Color3::new(0.12, 0.45, 0.15)),
+        let green = Arc::new(material::lambertian::Lambertian::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.12, 0.45, 0.15)),
         ));
         let checker = checker_texture::CheckerTexture::new(
             solid_texture::SolidTexture::new(math::vector::Color3::new(0.2, 0.3, 0.1)),
@@ -190,7 +190,12 @@ impl Scene {
             solid_texture::SolidTexture::new(math::vector::Color3::new(15.0, 15.0, 15.0));
         let difflight = Arc::new(diffuse_light::DiffuseLight::new(lightcolor));
         objects.push(Arc::new(rect::XYRect::new(
-            0.0, 555.0, 0.0, 555.0, 555.0, white.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            555.0,
+            white.clone(),
         )));
         objects.push(Arc::new(rect::XYRect::new(3.0, 5.0, 1.0, 3.0, -2.0, red)));
         objects.push(Arc::new(rect::YZRect::new(3.0, 5.0, 1.0, 3.0, -2.0, white)));
@@ -218,14 +223,14 @@ impl Scene {
     }
     fn cornell_box() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
-        let red = Arc::new(material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(
-            math::vector::Color3::new(0.65, 0.05, 0.05)),
+        let red = Arc::new(material::lambertian::Lambertian::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.65, 0.05, 0.05)),
         ));
-        let white = Arc::new(material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(
-            math::vector::Color3::new(0.73, 0.73, 0.73)),
+        let white = Arc::new(material::lambertian::Lambertian::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.73, 0.73, 0.73)),
         ));
-        let green = Arc::new(material::lambertian::Lambertian::new(solid_texture::SolidTexture::new(
-            math::vector::Color3::new(0.12, 0.45, 0.15)),
+        let green = Arc::new(material::lambertian::Lambertian::new(
+            solid_texture::SolidTexture::new(math::vector::Color3::new(0.12, 0.45, 0.15)),
         ));
         let lightcolor =
             solid_texture::SolidTexture::new(math::vector::Color3::new(15.0, 15.0, 15.0));
@@ -240,23 +245,52 @@ impl Scene {
             213.0, 343.0, 227.0, 332.0, 554.0, difflight,
         )));
         objects.push(Arc::new(rect::XZRect::new(
-            0.0, 555.0, 0.0, 555.0, 0.0, white.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            0.0,
+            white.clone(),
         )));
         objects.push(Arc::new(rect::XZRect::new(
-            0.0, 555.0, 0.0, 555.0, 555.0, white.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            555.0,
+            white.clone(),
         )));
         objects.push(Arc::new(rect::XYRect::new(
-            0.0, 555.0, 0.0, 555.0, 555.0, white.clone(),
+            0.0,
+            555.0,
+            0.0,
+            555.0,
+            555.0,
+            white.clone(),
         )));
 
-        objects.push(Arc::new(rotate::RotateY::new(Arc::new(translate::Translate::new(Arc::new(cubic::Cubic::new(
-            math::vector::Point3::new(0.0, 0.0, 0.0),
-            math::vector::Point3::new(165.0, 330.0, 165.0),
-            white.clone())), math::vector::Dir3::new(265.0, 0.0, 295.0))), 15.0)));
-        objects.push(Arc::new(rotate::RotateY::new(Arc::new(translate::Translate::new(Arc::new(cubic::Cubic::new(
-            math::vector::Point3::new(0.0, 0.0, 0.0),
-            math::vector::Point3::new(165.0, 165.0,165.0),
-            white.clone())), math::vector::Dir3::new(130.0, 0.0, 65.0))), -18.0)));
+        objects.push(Arc::new(translate::Translate::new(
+            Arc::new(rotate::RotateY::new(
+                Arc::new(cubic::Cubic::new(
+                    math::vector::Point3::new(0.0, 0.0, 0.0),
+                    math::vector::Point3::new(165.0, 330.0, 165.0),
+                    white.clone(),
+                )),
+                15.0,
+            )),
+            math::vector::Dir3::new(265.0, 0.0, 295.0),
+        )));
+        objects.push(Arc::new(translate::Translate::new(
+            Arc::new(rotate::RotateY::new(
+                Arc::new(cubic::Cubic::new(
+                    math::vector::Point3::new(0.0, 0.0, 0.0),
+                    math::vector::Point3::new(165.0, 165.0, 165.0),
+                    white.clone(),
+                )),
+                -18.0,
+            )),
+            math::vector::Dir3::new(130.0, 0.0, 65.0),
+        )));
 
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
         let look_at = math::vector::Point3::new(278.0, 278.0, 0.0);
