@@ -13,7 +13,7 @@ use std::time::Instant;
 
 fn main() {
     let now = Instant::now();
-    let samples_per_pixel = 64;
+    let samples_per_pixel = 128;
     let max_depth = 50;
 
     let world = scene::scene::Scene::new();

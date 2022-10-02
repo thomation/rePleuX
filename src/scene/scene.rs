@@ -2,12 +2,10 @@ use super::bvh_node;
 use super::camera;
 use crate::hit::hittable::Hittable;
 use crate::hit::record::HitRecord;
-use crate::material;
-use crate::material::diffuse_light;
+use crate::material::{self, diffuse_light, isotropic};
 use crate::math;
-use crate::object::{cubic, rect, rotate, sphere, translate};
-use crate::texture::checker_texture;
-use crate::texture::solid_texture;
+use crate::object::{constant_medium, cubic, rect, rotate, sphere, translate};
+use crate::texture::{checker_texture, solid_texture};
 use std::sync::Arc;
 
 pub struct Scene {
@@ -269,27 +267,39 @@ impl Scene {
             white.clone(),
         )));
 
-        objects.push(Arc::new(translate::Translate::new(
-            Arc::new(rotate::RotateY::new(
-                Arc::new(cubic::Cubic::new(
-                    math::vector::Point3::new(0.0, 0.0, 0.0),
-                    math::vector::Point3::new(165.0, 330.0, 165.0),
-                    white.clone(),
+        objects.push(Arc::new(constant_medium::ConstantMedium::new(
+            Arc::new(translate::Translate::new(
+                Arc::new(rotate::RotateY::new(
+                    Arc::new(cubic::Cubic::new(
+                        math::vector::Point3::new(0.0, 0.0, 0.0),
+                        math::vector::Point3::new(165.0, 330.0, 165.0),
+                        white.clone(),
+                    )),
+                    15.0,
                 )),
-                15.0,
+                math::vector::Dir3::new(265.0, 0.0, 295.0),
             )),
-            math::vector::Dir3::new(265.0, 0.0, 295.0),
+            0.01,
+            Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
+                math::vector::Color3::zero(),
+            ))),
         )));
-        objects.push(Arc::new(translate::Translate::new(
-            Arc::new(rotate::RotateY::new(
-                Arc::new(cubic::Cubic::new(
-                    math::vector::Point3::new(0.0, 0.0, 0.0),
-                    math::vector::Point3::new(165.0, 165.0, 165.0),
-                    white.clone(),
+        objects.push(Arc::new(constant_medium::ConstantMedium::new(
+            Arc::new(translate::Translate::new(
+                Arc::new(rotate::RotateY::new(
+                    Arc::new(cubic::Cubic::new(
+                        math::vector::Point3::new(0.0, 0.0, 0.0),
+                        math::vector::Point3::new(165.0, 165.0, 165.0),
+                        white.clone(),
+                    )),
+                    -18.0,
                 )),
-                -18.0,
+                math::vector::Dir3::new(130.0, 0.0, 65.0),
             )),
-            math::vector::Dir3::new(130.0, 0.0, 65.0),
+            0.01,
+            Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
+                math::vector::Color3::one(),
+            ))),
         )));
 
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
