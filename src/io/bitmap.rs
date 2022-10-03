@@ -23,6 +23,16 @@ impl Bitmap {
             max_count: image_height,
         }
     }
+    pub fn from(image_width: usize, image_height: usize, pixels: Vec<u8>, channel: usize) -> Bitmap {
+        Bitmap {
+            image_width: image_width,
+            image_height: image_height,
+            pixels: pixels,
+            channel: channel,
+            finished_count : 0,
+            max_count: image_height,
+        }
+    }
     pub fn write_row_colors(&mut self, start_row: usize, end_row: usize, colors:Vec<vector::Color3>) {
         for h in start_row..end_row {
             for w in 0..self.image_width {
