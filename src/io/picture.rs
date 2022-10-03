@@ -1,6 +1,8 @@
 use super::encodable;
+use image::jpeg::JPEGDecoder;
 use image::png::PNGEncoder;
 use image::ColorType;
+use image::ImageDecoder;
 use std::fs::File;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -20,5 +22,24 @@ impl Png {
         encorder
             .encode(img.lock().unwrap().pixels(), w, h, ColorType::RGB(8))
             .expect("encode png fail");
+    }
+}
+pub struct Jpeg {
+    path: String,
+}
+impl Jpeg {
+    pub fn new(path: String) -> Jpeg {
+        Jpeg { path }
+    }
+    pub fn load(&self) -> Vec<u8> {
+        let input = File::open(&self.path).expect("cannot read intput file");
+        let mut decorder = JPEGDecoder::new(input);
+        match decorder.read_image() {
+            Ok(d) => match d {
+                image::DecodingResult::U8(u) => u,
+                image::DecodingResult::U16(_) => panic!("Not support u16"),
+            },
+            Err(_) => panic!("Cannot decode jpeg file"),
+        }
     }
 }
