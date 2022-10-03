@@ -1,6 +1,6 @@
 use crate::math;
 use crate::math::ray;
-use crate::output;
+use crate::io;
 use crate::scene::scene;
 use std::sync::Arc;
 use std::sync::Mutex;
@@ -15,7 +15,7 @@ impl RayTracing {
         max_depth: usize,
         thread_count: usize,
         world: Arc<scene::Scene>,
-        output: Arc<Mutex<output::bitmap::Bitmap>>,
+        output: Arc<Mutex<io::bitmap::Bitmap>>,
     ) {
         let mut thread_handles = vec![];
         let rows_per_thead = image_height / thread_count;
@@ -56,7 +56,7 @@ impl RayTracing {
         samples_per_pixels: usize,
         max_depth: usize,
         world: &scene::Scene,
-        output: &Mutex<output::bitmap::Bitmap>,
+        output: &Mutex<io::bitmap::Bitmap>,
     ) {
         let mut colors = vec![];
         for h in start_row..end_row {
