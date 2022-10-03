@@ -1,5 +1,5 @@
+use super::{encodable, decodable};
 use crate::math::vector;
-use super::encodable;
 
 pub struct Bitmap {
     image_width: usize,
@@ -19,37 +19,66 @@ impl Bitmap {
             image_height: image_height,
             pixels: pixels,
             channel: channel,
-            finished_count : 0,
+            finished_count: 0,
             max_count: image_height,
         }
     }
-    pub fn from(image_width: usize, image_height: usize, pixels: Vec<u8>, channel: usize) -> Bitmap {
+    pub fn from(
+        image_width: usize,
+        image_height: usize,
+        pixels: Vec<u8>,
+        channel: usize,
+    ) -> Bitmap {
         Bitmap {
             image_width: image_width,
             image_height: image_height,
             pixels: pixels,
             channel: channel,
-            finished_count : 0,
+            finished_count: 0,
             max_count: image_height,
         }
     }
-    pub fn write_row_colors(&mut self, start_row: usize, end_row: usize, colors:Vec<vector::Color3>) {
+    pub fn write_row_colors(
+        &mut self,
+        start_row: usize,
+        end_row: usize,
+        colors: Vec<vector::Color3>,
+    ) {
         for h in start_row..end_row {
             for w in 0..self.image_width {
                 self.write_color(w, h, &colors[w + (h - start_row) * self.image_width]);
             }
         }
         self.finished_count += end_row - start_row;
-        println!("Progress:{}/{}, {}%", self.finished_count, self.max_count, self.finished_count as f32 * 100.0 / self.max_count as f32);
+        println!(
+            "Progress:{}/{}, {}%",
+            self.finished_count,
+            self.max_count,
+            self.finished_count as f32 * 100.0 / self.max_count as f32
+        );
     }
     pub fn write_color(&mut self, w: usize, h: usize, raw_color: &vector::Color3) {
-        let color = vector::Color3::new(raw_color.x().sqrt(), raw_color.y().sqrt(), raw_color.z().sqrt());
+        let color = vector::Color3::new(
+            raw_color.x().sqrt(),
+            raw_color.y().sqrt(),
+            raw_color.z().sqrt(),
+        );
         self.pixels[w * self.channel + h * self.image_width * self.channel] =
             (color.x() * 255.999) as u8;
         self.pixels[1 + w * self.channel + h * self.image_width * self.channel] =
             (color.y() * 255.999) as u8;
         self.pixels[2 + w * self.channel + h * self.image_width * self.channel] =
             (color.z() * 255.999) as u8;
+    }
+    pub fn read_color(&self, w: usize, h: usize) -> vector::Color3 {
+        let x = self.pixels[0 + w * self.channel + h * self.image_width * self.channel] as f64;
+        let y = self.pixels[1 + w * self.channel + h * self.image_height * self.channel] as f64;
+        let z = self.pixels[2 + w * self.channel + h * self.image_height * self.channel] as f64;
+        vector::Color3::new(
+            x / 255.0,
+            y / 255.0,
+            z / 255.0,
+        )
     }
 }
 impl encodable::Encodable for Bitmap {
@@ -61,5 +90,18 @@ impl encodable::Encodable for Bitmap {
     }
     fn pixels(&self) -> &Vec<u8> {
         &self.pixels
+    }
+}
+impl decodable::Decodable for Bitmap {
+    fn width(&self) -> usize {
+       self.image_width 
+    }
+
+    fn height(&self) -> usize {
+        self.image_height
+    }
+
+    fn color(&self, w: usize, h: usize) -> vector::Color3 {
+        self.read_color(w, h)
     }
 }
