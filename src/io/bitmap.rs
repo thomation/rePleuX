@@ -72,8 +72,8 @@ impl Bitmap {
     }
     pub fn read_color(&self, w: usize, h: usize) -> vector::Color3 {
         let x = self.pixels[0 + w * self.channel + h * self.image_width * self.channel] as f64 / 255.999;
-        let y = self.pixels[1 + w * self.channel + h * self.image_height * self.channel] as f64 / 255.999;
-        let z = self.pixels[2 + w * self.channel + h * self.image_height * self.channel] as f64 / 255.999;
+        let y = self.pixels[1 + w * self.channel + h * self.image_width * self.channel] as f64 / 255.999;
+        let z = self.pixels[2 + w * self.channel + h * self.image_width * self.channel] as f64 / 255.999;
         vector::Color3::new(
             x * x,
             y * y,
