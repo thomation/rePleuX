@@ -131,10 +131,8 @@ impl Scene {
     }
     fn earth() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
         let mut pic = picture::Jpeg::new("asset/earthmap.jpg".to_string());
-        let pixels = pic.load();
-        let size = pic.Size();
-        let channel = pic.Channel();
-        let bitmap = bitmap::Bitmap::from(size.0, size.1, pixels, channel);
+        let mut bitmap = bitmap::Bitmap::new_empty();
+        let pixels = pic.load(&mut bitmap);
 
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
         let earth_surface = image_texture::ImageTexture::new(Arc::new(bitmap));

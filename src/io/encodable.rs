@@ -1,5 +1,4 @@
 pub trait Encodable {
-    fn width(&self) -> usize;
-    fn height(&self) -> usize;
+    fn get_size(&self) -> (usize, usize);
     fn pixels(&self) -> &Vec<u8>;
 }
