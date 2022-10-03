@@ -1,10 +1,10 @@
-use std::sync::Arc;
 use crate::hit::aabb;
 use crate::hit::hittable;
 use crate::hit::record;
 use crate::material::material;
 use crate::math::ray;
 use crate::math::vector;
+use std::sync::Arc;
 
 pub struct Sphere {
     center0: vector::Point3,
@@ -16,7 +16,11 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(center: vector::Point3, radius: f64, material: Arc<dyn material::Material>) -> Sphere {
+    pub fn new(
+        center: vector::Point3,
+        radius: f64,
+        material: Arc<dyn material::Material>,
+    ) -> Sphere {
         Sphere {
             center0: center,
             center1: center,
@@ -52,7 +56,7 @@ impl Sphere {
     }
     pub fn get_sphere_uv(p: &vector::Point3) -> (f64, f64) {
         let pi = std::f64::consts::PI;
-        let theta = (- p.y()).acos();
+        let theta = (-p.y()).acos();
         let phi = (-p.z()).atan2(p.x()) + pi;
         let u = phi / (pi * 2.0);
         let v = theta / pi;
@@ -60,9 +64,7 @@ impl Sphere {
     }
 }
 
-impl hittable::Hittable
-    for Sphere
-{
+impl hittable::Hittable for Sphere {
     fn hit(
         &self,
         ray: &ray::Ray,
@@ -113,4 +115,31 @@ impl hittable::Hittable
         );
         Option::Some(aabb::AABB::surrounding_box(box0, box1))
     }
+}
+#[test]
+fn uv() {
+    // p: a given point on the sphere of radius one, centered at the origin.
+    // u: returned value [0,1] of angle around the Y axis from X=-1.
+    // v: returned value [0,1] of angle from Y=-1 to Y=+1.
+    //     <1 0 0> yields <0.50 0.50>       <-1  0  0> yields <0.00 0.50>
+    //     <0 1 0> yields <0.50 1.00>       < 0 -1  0> yields <0.50 0.00>
+    //     <0 0 1> yields <0.25 0.50>       < 0  0 -1> yields <0.75 0.50>
+    let p1 = vector::Point3::new(1.0, 0.0, 0.0);
+    let uv1 = Sphere::get_sphere_uv(&p1);
+    assert_eq!(uv1, (0.5, 0.5));
+    let p2 = vector::Point3::new(-1.0, 0.0, 0.0);
+    let uv2 = Sphere::get_sphere_uv(&p2);
+    assert_eq!(uv2, (0.0, 0.5));
+    let p3 = vector::Point3::new(0.0, 1.0, 0.0);
+    let uv3 = Sphere::get_sphere_uv(&p3);
+    assert_eq!(uv3, (0.5, 1.0));
+    let p4 = vector::Point3::new(0.0, -1.0, 0.0);
+    let uv4 = Sphere::get_sphere_uv(&p4);
+    assert_eq!(uv4, (0.5, 0.0));
+    let p5 = vector::Point3::new(0.0, 0.0, 1.0);
+    let uv5 = Sphere::get_sphere_uv(&p5);
+    assert_eq!(uv5, (0.25, 0.50));
+    let p6 = vector::Point3::new(0.0, 0.0, -0.1);
+    let uv6 = Sphere::get_sphere_uv(&p6);
+    assert_eq!(uv6, (0.75, 0.5));
 }
