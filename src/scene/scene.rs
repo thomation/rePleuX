@@ -5,8 +5,7 @@ use crate::hit::record::HitRecord;
 use crate::material::{self, diffuse_light, isotropic};
 use crate::math;
 use crate::object::{constant_medium, cubic, rect, rotate, sphere, translate};
-use crate::texture::texturable;
-use crate::texture::{checker_texture, solid_texture, image_texture};
+use crate::texture::{checker_texture, solid_texture, image_texture, noise_texture};
 use std::sync::Arc;
 use crate::io::{picture, bitmap};
 
@@ -19,7 +18,7 @@ pub struct Scene {
 impl Scene {
     pub fn new() -> Scene {
         // let mut objects = Scene::random_spheres();
-        let mut ret = Scene::earth();
+        let mut ret = Scene::two_perlin_spheres();
         let bvh = bvh_node::BvhNode::new(&mut ret.0, 0.0, 1.0);
         Scene {
             objects: ret.0,
@@ -173,6 +172,35 @@ impl Scene {
             math::vector::Point3::new(0.0, 10.0, 0.0),
             10.0,
             Arc::new(material::lambertian::Lambertian::new(checker)),
+        )));
+        let look_from = math::vector::Point3::new(13.0, 2.0, 3.0);
+        let look_at = math::vector::Point3::new(0.0, 0.0, 0.0);
+        let focus_dist = 10.0;
+        let cam = camera::Camera::new(
+            look_from,
+            look_at,
+            math::vector::Dir3::new(0.0, 1.0, 0.0),
+            20.0,
+            0.1,
+            focus_dist,
+            0.0,
+            1.0,
+        );
+        let backgound = math::vector::Color3::new(0.7, 0.8, 1.0);
+        (objects, cam, backgound)
+    }
+    fn two_perlin_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
+        let mut objects: Vec<Arc<dyn Hittable>> = vec![];
+        let perlintexure = noise_texture::NoiseTexture::new();
+        objects.push(Arc::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, -1000.0, 0.0),
+            1000.0,
+            Arc::new(material::lambertian::Lambertian::new(perlintexure.clone())),
+        )));
+        objects.push(Arc::new(sphere::Sphere::new(
+            math::vector::Point3::new(0.0, 2.0, 0.0),
+            2.0,
+            Arc::new(material::lambertian::Lambertian::new(perlintexure)),
         )));
         let look_from = math::vector::Point3::new(13.0, 2.0, 3.0);
         let look_at = math::vector::Point3::new(0.0, 0.0, 0.0);
