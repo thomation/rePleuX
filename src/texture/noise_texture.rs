@@ -16,7 +16,6 @@ impl NoiseTexture {
 }
 impl texturable::Texturable for NoiseTexture {
     fn value(&self, u: f64, v: f64, p: &vector::Point3) -> vector::Color3 {
-        let ps = p.clone() * self.scale;
-        vector::Color3::one() * self.noise.turb(&ps, 7)
+        vector::Color3::one() * 0.5 * (1.0 + (p.z()*self.scale + 10.0 * self.noise.turb(&p, 7)).sin())
     }
 }

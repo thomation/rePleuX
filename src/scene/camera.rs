@@ -25,7 +25,7 @@ impl Camera {
         time0: f64,
         time1: f64,
     ) -> Camera {
-        let aspect_ratio = 1.0;
+        let aspect_ratio = 1.5;
         let theta = vfov * std::f64::consts::PI / 180.0;
         let h = (theta * 0.5).tan() * focus_dist;
         let viewport_height = 2.0 * h;
