@@ -26,7 +26,7 @@ fn main() {
         image_height,
         samples_per_pixel,
         max_depth,
-        6,
+        12,
         Arc::new(world),
         img.clone()
     );
