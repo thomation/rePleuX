@@ -191,7 +191,7 @@ impl Scene {
     }
     fn two_perlin_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
-        let perlintexure = noise_texture::NoiseTexture::new();
+        let perlintexure = noise_texture::NoiseTexture::new(4.0);
         objects.push(Arc::new(sphere::Sphere::new(
             math::vector::Point3::new(0.0, -1000.0, 0.0),
             1000.0,
