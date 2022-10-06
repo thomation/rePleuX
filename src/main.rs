@@ -21,12 +21,12 @@ fn main() {
     let image_width = 800;
     let image_height = (image_width as f64 / aspect_ratio) as usize;
     let img = Arc::new(Mutex::new(io::bitmap::Bitmap::new(image_width, image_height)));
-    render::RayTracing::render(
+    render::RayTracing::render2(
         image_width,
         image_height,
         samples_per_pixel,
         max_depth,
-        12,
+        6,
         Arc::new(world),
         img.clone()
     );
