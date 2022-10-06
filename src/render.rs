@@ -1,11 +1,30 @@
+use crate::io;
 use crate::math;
 use crate::math::ray;
-use crate::io;
 use crate::scene::scene;
+use core::time;
 use std::sync::Arc;
 use std::sync::Mutex;
+use std::thread;
 use std::thread::spawn;
 use std::time::Instant;
+pub struct CurrentRow {
+    row: usize,
+    max: usize,
+}
+impl CurrentRow {
+    pub fn new(max: usize) -> CurrentRow {
+        CurrentRow { row: 0, max }
+    }
+    pub fn get_and_increase(&mut self) -> Option<usize> {
+        if self.row >= self.max {
+            return Option::None;
+        }
+        let r = self.row;
+        self.row += 1;
+        Option::Some(r)
+    }
+}
 pub struct RayTracing {}
 impl RayTracing {
     pub fn render(
@@ -40,6 +59,54 @@ impl RayTracing {
                     &world_for_child,
                     &output_for_child,
                 );
+            }));
+        }
+        for handle in thread_handles {
+            handle.join().unwrap();
+        }
+        println!("Threads finished");
+    }
+    
+    pub fn render2(
+        image_width: usize,
+        image_height: usize,
+        samples_per_pixels: usize,
+        max_depth: usize,
+        thread_count: usize,
+        world: Arc<scene::Scene>,
+        output: Arc<Mutex<io::bitmap::Bitmap>>,
+    ) {
+        let mut thread_handles = vec![];
+        let rows_per_thead = image_height / thread_count;
+        let mut current_row = Arc::new(Mutex::new(CurrentRow::new(image_height - 1)));
+        for t in 0..thread_count {
+            let world_for_child = world.clone();
+            let output_for_child = output.clone();
+            let current_row_for_chile = current_row.clone();
+            thread_handles.push(spawn(move || {
+                let one_milli = time::Duration::from_millis(1);
+                'thread: loop {
+                    match current_row_for_chile.lock().unwrap().get_and_increase() {
+                        Some(start_row) => {
+                            RayTracing::render_rows(
+                                t,
+                                image_width,
+                                image_height,
+                                start_row,
+                                start_row + 1,
+                                samples_per_pixels,
+                                max_depth,
+                                &world_for_child,
+                                &output_for_child,
+                            );
+                        }
+                        None => {
+                            println!("All works are finished for process:{}", t);
+                            break 'thread;
+                        }
+                    }
+                    thread::sleep(one_milli);
+                }
             }));
         }
         for handle in thread_handles {
@@ -98,17 +165,14 @@ impl RayTracing {
                 let emit = rec.material().emitted(rec.u(), rec.v(), rec.position());
                 match scatter {
                     Option::Some(sr) => {
-                        return emit + RayTracing::ray_color(sr.ray(), &world, depth - 1)
-                            * sr.attenuation();
+                        return emit
+                            + RayTracing::ray_color(sr.ray(), &world, depth - 1)
+                                * sr.attenuation();
                     }
-                    Option::None => {
-                        emit
-                    }
+                    Option::None => emit,
                 }
             }
-            Option::None => {
-                world.background().clone()
-            }
+            Option::None => world.background().clone(),
         }
     }
 }
