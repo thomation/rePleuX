@@ -86,7 +86,8 @@ impl RayTracing {
             thread_handles.push(spawn(move || {
                 let one_milli = time::Duration::from_millis(1);
                 'thread: loop {
-                    match current_row_for_chile.lock().unwrap().get_and_increase() {
+                    let check = current_row_for_chile.lock().unwrap().get_and_increase(); 
+                    match check {
                         Some(start_row) => {
                             RayTracing::render_rows(
                                 t,
@@ -144,7 +145,7 @@ impl RayTracing {
             println!(
                 "Thread#{} Finished {}/{}, Row time: {} secs",
                 thread_index,
-                h - start_row,
+                h - start_row + 1,
                 end_row - start_row,
                 row_time.elapsed().as_secs(),
             );
