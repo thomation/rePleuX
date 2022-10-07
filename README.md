@@ -3,10 +3,10 @@
 ## 第一本
 https://github.com/thomation/rePleuX/releases/tag/v0.1.0
 
-结果可以接受
+128spp，结果可以接受
 ![result](./result/v1_spp128.png)
 ## 第二本
 https://github.com/thomation/rePleuX/releases/tag/v0.2.0
 
-多线程渲染了4个小时，噪点还是太多
+128spp，多线程渲染了4个小时，噪点还是太多。只能等用蒙特卡洛来改进了。
 ![result](./result/v2_spp128.png)
