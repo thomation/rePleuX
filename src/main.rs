@@ -1,8 +1,8 @@
 mod hit;
+mod io;
 mod material;
 mod math;
 mod object;
-mod io;
 mod render;
 mod scene;
 mod texture;
@@ -33,18 +33,19 @@ fn main() {
     // let img_file = io::picture::Png::new("target/output.png".to_string());
     // img_file.save(img);
     // println!("Run time: {} secs", now.elapsed().as_secs());
-    
 
     // Test mc
-    const N:usize = 10000;
     let mut inside_circle = 0;
-    for _ in 0..N {
+    let mut run = 0;
+    loop {
         let x = math::random::generate_range(-1.0, 1.0);
         let y = math::random::generate_range(-1.0, 1.0);
-        if x * x + y* y < 1.0 {
+        if x * x + y * y < 1.0 {
             inside_circle += 1;
         }
+        run += 1;
+        if run % 100000 == 0 {
+            println!("Estimate PI: {}", 4.0 * inside_circle as f64 / run as f64);
+        }
     }
-    println!("Estimate PI: {}", 4.0 * inside_circle as f64 / N as f64);
-
 }
