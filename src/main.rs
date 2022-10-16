@@ -38,8 +38,11 @@ fn main() {
     const N: usize = 10000;
     let mut sum = 0.0;
     for _ in 0..N {
-        let x = math::random::generate_range(0.0, 2.0);
-        sum += x * x;
+        let x = math::random::generate_range(0.0, 4.0).sqrt();
+        sum += x * x / pdf(x);
     }
-    println!("Estimate x * x (0..2): {}", 2.0 * sum / N as f64);
+    println!("I of x * x (0..2): {}", sum / N as f64);
+}
+fn pdf(x: f64) -> f64 {
+    0.5 * x
 }
