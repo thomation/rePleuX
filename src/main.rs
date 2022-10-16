@@ -35,26 +35,11 @@ fn main() {
     // println!("Run time: {} secs", now.elapsed().as_secs());
 
     // Test mc
-    let mut inside_circle = 0;
-    let mut inside_circle_stratified = 0;
-    let SQRT_N: usize = 10000;
-    for i in 0..SQRT_N {
-        for j in 0..SQRT_N {
-            let x = math::random::generate_range(-1.0, 1.0);
-            let y = math::random::generate_range(-1.0, 1.0);
-            if x * x + y * y < 1.0 {
-                inside_circle += 1;
-            }
-            let u = 2.0 * ((i as f64 + math::random::generate()) / SQRT_N as f64) - 1.0;
-            let v = 2.0 * ((j as f64 + math::random::generate()) / SQRT_N as f64) - 1.0;
-            if u * u + v * v < 1.0 {
-                inside_circle_stratified += 1;
-            }
-        }
+    const N: usize = 10000;
+    let mut sum = 0.0;
+    for _ in 0..N {
+        let x = math::random::generate_range(0.0, 2.0);
+        sum += x * x;
     }
-    println!(
-        "Estimate PI: regular {}, stratified {}",
-        4.0 * inside_circle as f64 / (SQRT_N * SQRT_N) as f64,
-        4.0 * inside_circle_stratified as f64 / (SQRT_N * SQRT_N) as f64
-    );
+    println!("Estimate x * x (0..2): {}", 2.0 * sum / N as f64);
 }
