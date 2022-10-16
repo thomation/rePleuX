@@ -35,14 +35,14 @@ fn main() {
     // println!("Run time: {} secs", now.elapsed().as_secs());
 
     // Test mc
-    const N: usize = 10000;
+    const N: usize = 1;
     let mut sum = 0.0;
     for _ in 0..N {
-        let x = math::random::generate_range(0.0, 4.0).sqrt();
+        let x = math::random::generate_range(0.0, 8.0).powf(1.0 / 3.0);
         sum += x * x / pdf(x);
     }
     println!("I of x * x (0..2): {}", sum / N as f64);
 }
 fn pdf(x: f64) -> f64 {
-    0.5 * x
+    3.0 * x * x / 8.0
 }
