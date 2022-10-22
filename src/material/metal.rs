@@ -42,6 +42,7 @@ impl material::Material for Metal {
             Option::Some(scatter::ScatterResult::new(
                 scattered,
                 self.albedo().clone(),
+                0.0,
             ))
         } else {
             Option::None
@@ -49,5 +50,9 @@ impl material::Material for Metal {
     }
     fn emitted(&self, u: f64, v: f64, p: &math::vector::Point3) -> math::vector::Color3 {
         math::vector::Color3::zero()
+    }
+
+    fn scatting_pdf(&self, hit_record: &HitRecord, scattered: &math::ray::Ray) -> f64 {
+        todo!()
     }
 }

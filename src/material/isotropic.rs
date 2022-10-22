@@ -26,10 +26,15 @@ impl<T: texturable::Texturable> material::Material for Isotropic<T> {
             ),
             self.albedo
                 .value(hit_record.u(), hit_record.v(), hit_record.position()),
+            0.0,
         ))
     }
 
     fn emitted(&self, u: f64, v: f64, p: &crate::math::vector::Point3) -> vector::Color3 {
         vector::Color3::zero()
+    }
+
+    fn scatting_pdf(&self, hit_record: &crate::hit::record::HitRecord, scattered: &ray::Ray) -> f64 {
+        todo!()
     }
 }

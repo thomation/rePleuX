@@ -43,17 +43,23 @@ impl material::Material for Dielectric {
             Option::Some(scatter::ScatterResult::new(
                 math::ray::Ray::new(hit_record.position().clone(), reflected, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
+                0.0,
             ))
         } else {
             let refracted = unit_dir.refract(normal, refraction_ratio);
             Option::Some(scatter::ScatterResult::new(
                 math::ray::Ray::new(hit_record.position().clone(), refracted, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
+                0.0,
             ))
         }
     }
 
     fn emitted(&self, u: f64, v: f64, p: &math::vector::Point3) -> math::vector::Color3 {
         math::vector::Color3::zero()
+    }
+
+    fn scatting_pdf(&self, hit_record: &hit::record::HitRecord, scattered: &math::ray::Ray) -> f64 {
+        todo!()
     }
 }

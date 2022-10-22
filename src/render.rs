@@ -167,8 +167,8 @@ impl RayTracing {
                 match scatter {
                     Option::Some(sr) => {
                         return emit
-                            + RayTracing::ray_color(sr.ray(), &world, depth - 1)
-                                * sr.attenuation();
+                            + rec.material().scatting_pdf(&rec, sr.ray()) * RayTracing::ray_color(sr.ray(), &world, depth - 1)
+                                * sr.attenuation() / sr.pdf();
                     }
                     Option::None => emit,
                 }

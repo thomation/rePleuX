@@ -6,6 +6,7 @@ use crate::math::vector;
 pub trait Material: std::marker::Send + std::marker::Sync {
     fn scatter(&self, ray_in: &ray::Ray, hit_record: &HitRecord) -> Option<scatter::ScatterResult>;
     fn emitted(&self, u: f64, v: f64, p: &vector::Point3) -> vector::Color3;
+    fn scatting_pdf(&self, hit_record: &HitRecord, scattered: &ray::Ray) -> f64;
 }
 pub fn random_in_unit_sphere() -> vector::Vec3 {
     loop {

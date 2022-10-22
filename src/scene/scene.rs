@@ -18,7 +18,7 @@ pub struct Scene {
 impl Scene {
     pub fn new() -> Scene {
         // let mut objects = Scene::random_spheres();
-        let mut ret = Scene::final_scene();
+        let mut ret = Scene::cornell_box();
         let bvh = bvh_node::BvhNode::new(&mut ret.0, 0.0, 1.0);
         Scene {
             objects: ret.0,
@@ -295,7 +295,42 @@ impl Scene {
             white.clone(),
         )));
 
-        objects.push(Arc::new(constant_medium::ConstantMedium::new(
+        // objects.push(Arc::new(constant_medium::ConstantMedium::new(
+        //     Arc::new(translate::Translate::new(
+        //         Arc::new(rotate::RotateY::new(
+        //             Arc::new(cubic::Cubic::new(
+        //                 math::vector::Point3::new(0.0, 0.0, 0.0),
+        //                 math::vector::Point3::new(165.0, 330.0, 165.0),
+        //                 white.clone(),
+        //             )),
+        //             15.0,
+        //         )),
+        //         math::vector::Dir3::new(265.0, 0.0, 295.0),
+        //     )),
+        //     0.01,
+        //     Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
+        //         math::vector::Color3::zero(),
+        //     ))),
+        // )));
+        // objects.push(Arc::new(constant_medium::ConstantMedium::new(
+        //     Arc::new(translate::Translate::new(
+        //         Arc::new(rotate::RotateY::new(
+        //             Arc::new(cubic::Cubic::new(
+        //                 math::vector::Point3::new(0.0, 0.0, 0.0),
+        //                 math::vector::Point3::new(165.0, 165.0, 165.0),
+        //                 white.clone(),
+        //             )),
+        //             -18.0,
+        //         )),
+        //         math::vector::Dir3::new(130.0, 0.0, 65.0),
+        //     )),
+        //     0.01,
+        //     Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
+        //         math::vector::Color3::one(),
+        //     ))),
+        // )));
+
+        objects.push(
             Arc::new(translate::Translate::new(
                 Arc::new(rotate::RotateY::new(
                     Arc::new(cubic::Cubic::new(
@@ -306,13 +341,9 @@ impl Scene {
                     15.0,
                 )),
                 math::vector::Dir3::new(265.0, 0.0, 295.0),
-            )),
-            0.01,
-            Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
-                math::vector::Color3::zero(),
-            ))),
-        )));
-        objects.push(Arc::new(constant_medium::ConstantMedium::new(
+            ))
+        );
+        objects.push(
             Arc::new(translate::Translate::new(
                 Arc::new(rotate::RotateY::new(
                     Arc::new(cubic::Cubic::new(
@@ -323,12 +354,8 @@ impl Scene {
                     -18.0,
                 )),
                 math::vector::Dir3::new(130.0, 0.0, 65.0),
-            )),
-            0.01,
-            Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
-                math::vector::Color3::one(),
-            ))),
-        )));
+            ))
+        );
 
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
         let look_at = math::vector::Point3::new(278.0, 278.0, 0.0);

@@ -20,4 +20,8 @@ impl <T: texturable::Texturable> material::Material for DiffuseLight<T> {
     fn emitted(&self, u: f64, v: f64, p: &crate::math::vector::Point3) -> crate::math::vector::Color3 {
         self.emit.value(u, v, p)
     }
+
+    fn scatting_pdf(&self, hit_record: &crate::hit::record::HitRecord, scattered: &crate::math::ray::Ray) -> f64 {
+        todo!()
+    }
 }

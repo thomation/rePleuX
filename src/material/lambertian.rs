@@ -2,6 +2,7 @@ use super::material;
 use super::scatter;
 use crate::hit::record::HitRecord;
 use crate::math;
+use crate::math::vector;
 use crate::texture::texturable;
 
 #[derive(Debug, Clone, Copy)]
@@ -27,14 +28,20 @@ impl<T: texturable::Texturable> material::Material for Lambertian<T> {
             scatter_dir = hit_record.normal().clone();
         }
         let ray_out =
-            math::ray::Ray::new(hit_record.position().clone(), scatter_dir, ray_in.time());
+            math::ray::Ray::new(hit_record.position().clone(), scatter_dir.clone(), ray_in.time());
         Option::Some(scatter::ScatterResult::new(
             ray_out,
             self.albedo()
                 .value(hit_record.u(), hit_record.v(), hit_record.position()),
+            vector::Vec3::dot(&hit_record.normal(), &scatter_dir) / std::f64::consts::PI,
         ))
     }
     fn emitted(&self, u: f64, v: f64, p: &math::vector::Point3) -> math::vector::Color3 {
         math::vector::Color3::zero()
+    }
+
+    fn scatting_pdf(&self, hit_record: &HitRecord, scattered: &math::ray::Ray) -> f64 {
+        let cosine = vector::Vec3::dot(hit_record.normal(), scattered.dir());
+        if cosine < 0.0 {0.0} else {cosine / std::f64::consts::PI}
     }
 }
