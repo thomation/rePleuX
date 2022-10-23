@@ -1,9 +1,8 @@
-use super::material;
+use super::material::random_in_half_sphere;
+use super::material::{self, random_cosine_direction};
 use super::scatter;
-use crate::hit;
 use crate::hit::record::HitRecord;
-use crate::math;
-use crate::math::vector;
+use crate::math::{self, onb, vector};
 use crate::texture::texturable;
 
 #[derive(Debug, Clone, Copy)]
@@ -24,15 +23,19 @@ impl<T: texturable::Texturable> material::Material for Lambertian<T> {
         ray_in: &math::ray::Ray,
         hit_record: &HitRecord,
     ) -> Option<scatter::ScatterResult> {
-        let mut scatter_dir = material::random_in_half_sphere(hit_record.normal());
+        let uvw = onb::Onb::build_from_w(hit_record.normal());
+        let mut scatter_dir = uvw.local(&random_cosine_direction());
         scatter_dir.normalize();
-        let ray_out =
-            math::ray::Ray::new(hit_record.position().clone(), scatter_dir.clone(), ray_in.time());
+        let ray_out = math::ray::Ray::new(
+            hit_record.position().clone(),
+            scatter_dir.clone(),
+            ray_in.time(),
+        );
         Option::Some(scatter::ScatterResult::new(
             ray_out,
             self.albedo()
                 .value(hit_record.u(), hit_record.v(), hit_record.position()),
-            0.5 / std::f64::consts::PI,
+            vector::Vec3::dot(uvw.w(), &scatter_dir) / std::f64::consts::PI
         ))
     }
     fn emitted(&self, u: f64, v: f64, p: &math::vector::Point3) -> math::vector::Color3 {
@@ -41,6 +44,10 @@ impl<T: texturable::Texturable> material::Material for Lambertian<T> {
 
     fn scatting_pdf(&self, hit_record: &HitRecord, scattered: &math::ray::Ray) -> f64 {
         let cosine = vector::Vec3::dot(hit_record.normal(), scattered.dir());
-        if cosine < 0.0 {0.0} else {cosine / std::f64::consts::PI}
+        if cosine < 0.0 {
+            0.0
+        } else {
+            cosine / std::f64::consts::PI
+        }
     }
 }

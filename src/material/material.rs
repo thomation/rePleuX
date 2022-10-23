@@ -1,7 +1,6 @@
 use super::scatter;
 use crate::hit::record::HitRecord;
-use crate::math::ray;
-use crate::math::vector;
+use crate::math::{random, ray, vector};
 
 pub trait Material: std::marker::Send + std::marker::Sync {
     fn scatter(&self, ray_in: &ray::Ray, hit_record: &HitRecord) -> Option<scatter::ScatterResult>;
@@ -27,4 +26,13 @@ pub fn random_in_half_sphere(normal: &vector::Dir3) -> vector::Vec3 {
         return -unit_sphere;
     }
     unit_sphere
+}
+pub fn random_cosine_direction() -> vector::Dir3 {
+    let r1 = random::generate();
+    let r2 = random::generate();
+    let z = (1.0 - r2).sqrt();
+    let phi = 2.0 * std::f64::consts::PI * r1;
+    let x = phi.cos() * r2.sqrt();
+    let y = phi.sin() * r2.sqrt();
+    vector::Dir3::new(x, y, z)
 }
