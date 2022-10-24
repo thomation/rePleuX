@@ -55,7 +55,13 @@ impl material::Material for Dielectric {
         }
     }
 
-    fn emitted(&self, u: f64, v: f64, p: &math::vector::Point3) -> math::vector::Color3 {
+    fn emitted(
+        &self,
+        hit_record: &hit::record::HitRecord,
+        u: f64,
+        v: f64,
+        p: &math::vector::Point3,
+    ) -> math::vector::Color3 {
         math::vector::Color3::zero()
     }
 

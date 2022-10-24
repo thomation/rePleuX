@@ -35,10 +35,16 @@ impl<T: texturable::Texturable> material::Material for Lambertian<T> {
             ray_out,
             self.albedo()
                 .value(hit_record.u(), hit_record.v(), hit_record.position()),
-            vector::Vec3::dot(uvw.w(), &scatter_dir) / std::f64::consts::PI
+            vector::Vec3::dot(uvw.w(), &scatter_dir) / std::f64::consts::PI,
         ))
     }
-    fn emitted(&self, u: f64, v: f64, p: &math::vector::Point3) -> math::vector::Color3 {
+    fn emitted(
+        &self,
+        hit_record: &HitRecord,
+        u: f64,
+        v: f64,
+        p: &math::vector::Point3,
+    ) -> math::vector::Color3 {
         math::vector::Color3::zero()
     }
 

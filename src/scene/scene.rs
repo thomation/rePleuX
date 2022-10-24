@@ -5,7 +5,8 @@ use crate::io::{bitmap, picture};
 use crate::material::lambertian;
 use crate::material::{self, diffuse_light, isotropic};
 use crate::math::{self, random, vector};
-use crate::object::{constant_medium, cubic, rect, rotate, sphere, translate};
+use crate::object::flip_face::FlipFace;
+use crate::object::{constant_medium, cubic, flip_face, rect, rotate, sphere, translate};
 use crate::texture::{checker_texture, image_texture, noise_texture, solid_texture};
 use std::sync::Arc;
 
@@ -267,9 +268,9 @@ impl Scene {
         objects.push(Arc::new(rect::YZRect::new(
             0.0, 555.0, 0.0, 555.0, 0.0, red,
         )));
-        objects.push(Arc::new(rect::XZRect::new(
+        objects.push(Arc::new(FlipFace::new(Arc::new(rect::XZRect::new(
             213.0, 343.0, 227.0, 332.0, 554.0, difflight,
-        )));
+        )))));
         objects.push(Arc::new(rect::XZRect::new(
             0.0,
             555.0,
@@ -330,32 +331,28 @@ impl Scene {
         //     ))),
         // )));
 
-        objects.push(
-            Arc::new(translate::Translate::new(
-                Arc::new(rotate::RotateY::new(
-                    Arc::new(cubic::Cubic::new(
-                        math::vector::Point3::new(0.0, 0.0, 0.0),
-                        math::vector::Point3::new(165.0, 330.0, 165.0),
-                        white.clone(),
-                    )),
-                    15.0,
+        objects.push(Arc::new(translate::Translate::new(
+            Arc::new(rotate::RotateY::new(
+                Arc::new(cubic::Cubic::new(
+                    math::vector::Point3::new(0.0, 0.0, 0.0),
+                    math::vector::Point3::new(165.0, 330.0, 165.0),
+                    white.clone(),
                 )),
-                math::vector::Dir3::new(265.0, 0.0, 295.0),
-            ))
-        );
-        objects.push(
-            Arc::new(translate::Translate::new(
-                Arc::new(rotate::RotateY::new(
-                    Arc::new(cubic::Cubic::new(
-                        math::vector::Point3::new(0.0, 0.0, 0.0),
-                        math::vector::Point3::new(165.0, 165.0, 165.0),
-                        white.clone(),
-                    )),
-                    -18.0,
+                15.0,
+            )),
+            math::vector::Dir3::new(265.0, 0.0, 295.0),
+        )));
+        objects.push(Arc::new(translate::Translate::new(
+            Arc::new(rotate::RotateY::new(
+                Arc::new(cubic::Cubic::new(
+                    math::vector::Point3::new(0.0, 0.0, 0.0),
+                    math::vector::Point3::new(165.0, 165.0, 165.0),
+                    white.clone(),
                 )),
-                math::vector::Dir3::new(130.0, 0.0, 65.0),
-            ))
-        );
+                -18.0,
+            )),
+            math::vector::Dir3::new(130.0, 0.0, 65.0),
+        )));
 
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
         let look_at = math::vector::Point3::new(278.0, 278.0, 0.0);
@@ -485,7 +482,7 @@ impl Scene {
         let write = Arc::new(lambertian::Lambertian::new(
             solid_texture::SolidTexture::new(vector::Color3::new(0.73, 0.73, 0.73)),
         ));
-        const NS:usize = 1000;
+        const NS: usize = 1000;
         for _ in 0..NS {
             boxes2.add(Arc::new(sphere::Sphere::new(
                 vector::Point3::random_range(0.0, 165.0),
@@ -493,15 +490,10 @@ impl Scene {
                 write.clone(),
             )));
         }
-        objects.push(
-            Arc::new(translate::Translate::new(
-                Arc::new(rotate::RotateY::new(
-                    Arc::new(boxes2),
-                    15.0,
-                )),
-                math::vector::Dir3::new(-100.0, 270.0, 395.0),
-            ),
-        ));
+        objects.push(Arc::new(translate::Translate::new(
+            Arc::new(rotate::RotateY::new(Arc::new(boxes2), 15.0)),
+            math::vector::Dir3::new(-100.0, 270.0, 395.0),
+        )));
 
         // camera
         let look_from = math::vector::Point3::new(478.0, 278.0, -600.0);

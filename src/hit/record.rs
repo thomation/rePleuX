@@ -2,6 +2,7 @@ use std::sync::Arc;
 use crate::math::vector;
 use crate::material::material;
 
+#[derive(Clone)]
 pub struct HitRecord {
     p: vector::Point3,
     normal: vector::Dir3,
@@ -40,6 +41,9 @@ impl HitRecord {
     }
     pub fn front_face(&self) -> bool {
         self.front_face
+    }
+    pub fn set_front_face(&mut self, front_face: bool) {
+        self.front_face = front_face
     }
     pub fn material (&self) -> Arc<dyn material::Material>{
         self.material.clone()

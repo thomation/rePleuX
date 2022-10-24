@@ -30,11 +30,21 @@ impl<T: texturable::Texturable> material::Material for Isotropic<T> {
         ))
     }
 
-    fn emitted(&self, u: f64, v: f64, p: &crate::math::vector::Point3) -> vector::Color3 {
+    fn emitted(
+        &self,
+        hit_record: &crate::hit::record::HitRecord,
+        u: f64,
+        v: f64,
+        p: &crate::math::vector::Point3,
+    ) -> vector::Color3 {
         vector::Color3::zero()
     }
 
-    fn scatting_pdf(&self, hit_record: &crate::hit::record::HitRecord, scattered: &ray::Ray) -> f64 {
+    fn scatting_pdf(
+        &self,
+        hit_record: &crate::hit::record::HitRecord,
+        scattered: &ray::Ray,
+    ) -> f64 {
         todo!()
     }
 }

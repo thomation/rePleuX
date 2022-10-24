@@ -162,7 +162,9 @@ impl RayTracing {
         match hit {
             Option::Some(rec) => {
                 let scatter = rec.material().scatter(&ray, &rec);
-                let emit = rec.material().emitted(rec.u(), rec.v(), rec.position());
+                let emit = rec
+                    .material()
+                    .emitted(&rec, rec.u(), rec.v(), rec.position());
                 match scatter {
                     Option::Some(sr) => {
                         let on_light = vector::Point3::new(
@@ -176,14 +178,18 @@ impl RayTracing {
                         if vector::Vec3::dot(&to_light, rec.normal()) < 0.0 {
                             return emit;
                         }
-                        let light_area = (343-213)*(332-227);
+                        let light_area = (343 - 213) * (332 - 227);
                         let light_cosine = to_light.y().abs();
                         if light_cosine < 0.000001 {
                             return emit;
                         }
                         let pdf = distance_squared / (light_cosine * light_area as f64);
                         let scattered = ray::Ray::new(rec.position().clone(), to_light, ray.time());
-                        return emit + RayTracing::ray_color(&scattered, &world, depth - 1) * rec.material().scatting_pdf(&rec, &scattered) * sr.attenuation() / pdf;
+                        return emit
+                            + RayTracing::ray_color(&scattered, &world, depth - 1)
+                                * rec.material().scatting_pdf(&rec, &scattered)
+                                * sr.attenuation()
+                                / pdf;
                         // return emit
                         //     + rec.material().scatting_pdf(&rec, sr.ray())
                         //         * RayTracing::ray_color(sr.ray(), &world, depth - 1)
