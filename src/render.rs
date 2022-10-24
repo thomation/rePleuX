@@ -1,6 +1,5 @@
 use crate::io;
-use crate::math;
-use crate::math::ray;
+use crate::math::{self, random, ray, vector};
 use crate::scene::scene;
 use core::time;
 use std::sync::Arc;
@@ -66,7 +65,7 @@ impl RayTracing {
         }
         println!("Threads finished");
     }
-    
+
     pub fn render2(
         image_width: usize,
         image_height: usize,
@@ -86,7 +85,7 @@ impl RayTracing {
             thread_handles.push(spawn(move || {
                 let one_milli = time::Duration::from_millis(1);
                 'thread: loop {
-                    let check = current_row_for_chile.lock().unwrap().get_and_increase(); 
+                    let check = current_row_for_chile.lock().unwrap().get_and_increase();
                     match check {
                         Some(start_row) => {
                             RayTracing::render_rows(
@@ -130,10 +129,10 @@ impl RayTracing {
         for h in start_row..end_row {
             let row_time = Instant::now();
             for w in 0..image_width {
-                let mut color = math::vector::Color3::new(0.0, 0.0, 0.0);
+                let mut color = vector::Color3::new(0.0, 0.0, 0.0);
                 for _ in 0..samples_per_pixels {
-                    let rw: f64 = math::random::generate();
-                    let rh: f64 = math::random::generate();
+                    let rw: f64 = random::generate();
+                    let rh: f64 = random::generate();
                     let u = (w as f64 + rw) / (image_width as f64 - 1.0);
                     let v = ((image_height - h - 1) as f64 + rh) / (image_height as f64 - 1.0);
                     let ray = world.camera().get_ray(u, v);
@@ -155,9 +154,9 @@ impl RayTracing {
             .unwrap()
             .write_row_colors(start_row, end_row, colors);
     }
-    fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: usize) -> math::vector::Color3 {
+    fn ray_color(ray: &ray::Ray, world: &scene::Scene, depth: usize) -> vector::Color3 {
         if depth <= 0 {
-            return math::vector::Color3::new(0.0, 0.0, 0.0);
+            return vector::Color3::new(0.0, 0.0, 0.0);
         }
         let hit = world.hit(&ray, 0.0001, f64::INFINITY); // t_max is infinity
         match hit {
@@ -166,9 +165,30 @@ impl RayTracing {
                 let emit = rec.material().emitted(rec.u(), rec.v(), rec.position());
                 match scatter {
                     Option::Some(sr) => {
-                        return emit
-                            + rec.material().scatting_pdf(&rec, sr.ray()) * RayTracing::ray_color(sr.ray(), &world, depth - 1)
-                                * sr.attenuation() / sr.pdf();
+                        let on_light = vector::Point3::new(
+                            random::generate_range(213.0, 343.0),
+                            554.0,
+                            random::generate_range(227.0, 332.0),
+                        );
+                        let mut to_light = on_light - rec.position();
+                        let distance_squared = to_light.length_squared();
+                        to_light.normalize();
+                        if vector::Vec3::dot(&to_light, rec.normal()) < 0.0 {
+                            return emit;
+                        }
+                        let light_area = (343-213)*(332-227);
+                        let light_cosine = to_light.y().abs();
+                        if light_cosine < 0.000001 {
+                            return emit;
+                        }
+                        let pdf = distance_squared / (light_cosine * light_area as f64);
+                        let scattered = ray::Ray::new(rec.position().clone(), to_light, ray.time());
+                        return emit + RayTracing::ray_color(&scattered, &world, depth - 1) * rec.material().scatting_pdf(&rec, &scattered) * sr.attenuation() / pdf;
+                        // return emit
+                        //     + rec.material().scatting_pdf(&rec, sr.ray())
+                        //         * RayTracing::ray_color(sr.ray(), &world, depth - 1)
+                        //         * sr.attenuation()
+                        //         / sr.pdf();
                     }
                     Option::None => emit,
                 }
