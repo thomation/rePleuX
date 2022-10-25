@@ -5,3 +5,5 @@ pub mod metal;
 pub mod dielectric;
 pub mod diffuse_light;
 pub mod isotropic;
+pub mod pdf;
+pub mod cosine_pdf;
