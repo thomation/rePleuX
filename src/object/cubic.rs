@@ -78,4 +78,12 @@ impl hittable::Hittable for Cubic {
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
         Option::Some(aabb::AABB::new(self.box_min, self.box_max))
     }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        todo!()
+    }
 }

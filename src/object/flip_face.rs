@@ -24,4 +24,12 @@ impl hittable::Hittable for FlipFace {
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<crate::hit::aabb::AABB> {
         self.hittable.bounding_box(time0, time1)
     }
+
+    fn pdf_value(&self, o: &crate::math::vector::Point3, v: &crate::math::vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &crate::math::vector::Point3) -> crate::math::vector::Dir3 {
+        todo!()
+    }
 }

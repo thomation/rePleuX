@@ -1,8 +1,6 @@
-use crate::hit::aabb;
-use crate::hit::hittable;
-use crate::hit::record;
+use crate::hit::{aabb, hittable, record};
 use crate::material::material;
-use crate::math::vector;
+use crate::math::{random, ray, vector};
 use std::sync::Arc;
 pub struct XYRect {
     x0: f64,
@@ -32,12 +30,7 @@ impl XYRect {
     }
 }
 impl hittable::Hittable for XYRect {
-    fn hit(
-        &self,
-        ray: &crate::math::ray::Ray,
-        t_min: f64,
-        t_max: f64,
-    ) -> Option<crate::hit::record::HitRecord> {
+    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> Option<record::HitRecord> {
         let t = (self.k - ray.origin().z()) / ray.dir().z();
         if t < t_min || t > t_max {
             return Option::None;
@@ -67,6 +60,14 @@ impl hittable::Hittable for XYRect {
             vector::Point3::new(self.x0, self.y0, self.k - 0.0001),
             vector::Point3::new(self.x1, self.y1, self.k + 0.0001),
         ))
+    }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        todo!()
     }
 }
 
@@ -98,12 +99,7 @@ impl XZRect {
     }
 }
 impl hittable::Hittable for XZRect {
-    fn hit(
-        &self,
-        ray: &crate::math::ray::Ray,
-        t_min: f64,
-        t_max: f64,
-    ) -> Option<crate::hit::record::HitRecord> {
+    fn hit(&self, ray: &ray::Ray, t_min: f64, t_max: f64) -> Option<crate::hit::record::HitRecord> {
         let t = (self.k - ray.origin().y()) / ray.dir().y();
         if t < t_min || t > t_max {
             return Option::None;
@@ -133,6 +129,29 @@ impl hittable::Hittable for XZRect {
             vector::Point3::new(self.x0, self.k - 0.0001, self.z0),
             vector::Point3::new(self.x1, self.k + 0.0001, self.z1),
         ))
+    }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        match self.hit(&ray::Ray::new(*o, *v, 0.0), 0.00001, std::f64::INFINITY) {
+            Some(rec) => {
+                let area = (self.x1 - self.x0) * (self.z1 - self.z0);
+                let distance_squared = rec.t() * rec.t() * v.length_squared();
+                let cosine = vector::Vec3::dot(v, rec.normal()).abs() / v.length();
+                return distance_squared / (cosine * area);
+            }
+            None => {
+                return 0.0;
+            }
+        }
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        let random_point = vector::Point3::new(
+            random::generate_range(self.x0, self.x1),
+            self.k,
+            random::generate_range(self.z0, self.z1),
+        );
+        random_point - o
     }
 }
 pub struct YZRect {
@@ -198,5 +217,13 @@ impl hittable::Hittable for YZRect {
             vector::Point3::new(self.k - 0.0001, self.y0, self.z0),
             vector::Point3::new(self.k + 0.0001, self.y1, self.z1),
         ))
+    }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        todo!()
     }
 }

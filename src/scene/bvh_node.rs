@@ -116,6 +116,14 @@ impl hittable::Hittable for BvhNode {
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<aabb::AABB> {
         Option::Some(self.bounding_box)
     }
+
+    fn pdf_value(&self, o: &math::vector::Point3, v: &math::vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &math::vector::Point3) -> math::vector::Dir3 {
+        todo!()
+    }
 }
 
 use crate::material;

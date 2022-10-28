@@ -96,4 +96,12 @@ impl hittable::Hittable for RotateY {
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<aabb::AABB> {
         self.bbox
     }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        todo!()
+    }
 }

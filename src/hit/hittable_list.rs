@@ -56,4 +56,12 @@ impl hittable::Hittable for HittableList {
         }
         Option::Some(final_box)
     }
+
+    fn pdf_value(&self, o: &math::vector::Point3, v: &math::vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &math::vector::Point3) -> math::vector::Dir3 {
+        todo!()
+    }
 }

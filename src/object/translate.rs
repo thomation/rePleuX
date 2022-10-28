@@ -44,4 +44,12 @@ impl hittable::Hittable for Translate {
             None => None,
         }
     }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        todo!()
+    }
 }

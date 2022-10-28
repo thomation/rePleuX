@@ -115,6 +115,14 @@ impl hittable::Hittable for Sphere {
         );
         Option::Some(aabb::AABB::surrounding_box(box0, box1))
     }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        todo!()
+    }
 }
 #[test]
 fn uv() {

@@ -71,4 +71,12 @@ impl hittable::Hittable for ConstantMedium {
     fn bounding_box(&self, time0: f64, time1: f64) -> Option<aabb::AABB> {
         self.boundary.bounding_box(time0, time1)
     }
+
+    fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
+        todo!()
+    }
+
+    fn random(&self, o: &vector::Point3) -> vector::Dir3 {
+        todo!()
+    }
 }
