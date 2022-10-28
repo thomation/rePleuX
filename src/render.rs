@@ -1,6 +1,6 @@
 use crate::io;
 use crate::math::{random, ray, vector};
-use crate::pdf::{self, hittable_pdf, pdf::Pdf};
+use crate::pdf::{cosine_pdf, hittable_pdf, mixture_pdf, pdf::Pdf};
 use crate::scene::scene;
 use core::time;
 use std::sync::Arc;
@@ -168,42 +168,20 @@ impl RayTracing {
                     .emitted(&rec, rec.u(), rec.v(), rec.position());
                 match scatter {
                     Option::Some(sr) => {
-                        // let on_light = vector::Point3::new(
-                        //     random::generate_range(213.0, 343.0),
-                        //     554.0,
-                        //     random::generate_range(227.0, 332.0),
-                        // );
-                        // let mut to_light = on_light - rec.position();
-                        // let distance_squared = to_light.length_squared();
-                        // to_light.normalize();
-                        // if vector::Vec3::dot(&to_light, rec.normal()) < 0.0 {
-                        //     return emit;
-                        // }
-                        let pdf = hittable_pdf::HittablePdf::new(world.lights(), rec.position().clone());
-                        let to_light = pdf.generate();
+                        let pdf0 = hittable_pdf::HittablePdf::new(world.lights(), rec.position().clone());
+                        let pdf1 = cosine_pdf::CosinePdf::new(rec.normal());
+                        let pdf = mixture_pdf::MixturePdf::new(pdf0, pdf1);
                         let scattered = ray::Ray::new(
                             rec.position().clone(),
-                            to_light,
+                            pdf.generate(),
                             ray.time(),
                         );
                         let pdf_val = pdf.value(scattered.dir());
-                        // let light_area = (343 - 213) * (332 - 227);
-                        // let light_cosine = to_light.y().abs();
-                        // if light_cosine < 0.000001 {
-                        //     return emit;
-                        // }
-                        // let pdf = distance_squared / (light_cosine * light_area as f64);
-                        // let scattered = ray::Ray::new(rec.position().clone(), to_light, ray.time());
                         return emit
                             + RayTracing::ray_color(&scattered, &world, depth - 1)
                                 * rec.material().scatting_pdf(&rec, &scattered)
                                 * sr.attenuation()
                                 / pdf_val;
-                        // return emit
-                        //     + rec.material().scatting_pdf(&rec, sr.ray())
-                        //         * RayTracing::ray_color(sr.ray(), &world, depth - 1)
-                        //         * sr.attenuation()
-                        //         / sr.pdf();
                     }
                     Option::None => emit,
                 }
