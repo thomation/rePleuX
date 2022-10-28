@@ -180,8 +180,7 @@ impl RayTracing {
                         //     return emit;
                         // }
                         let pdf = hittable_pdf::HittablePdf::new(world.lights(), rec.position().clone());
-                        let mut to_light = pdf.generate();
-                        to_light.normalize();
+                        let to_light = pdf.generate();
                         let scattered = ray::Ray::new(
                             rec.position().clone(),
                             to_light,

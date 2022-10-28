@@ -151,7 +151,9 @@ impl hittable::Hittable for XZRect {
             self.k,
             random::generate_range(self.z0, self.z1),
         );
-        random_point - o
+        let mut dir = random_point - o;
+        dir.normalize();
+        dir
     }
 }
 pub struct YZRect {
