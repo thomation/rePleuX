@@ -136,7 +136,7 @@ impl hittable::Hittable for XZRect {
             Some(rec) => {
                 let area = (self.x1 - self.x0) * (self.z1 - self.z0);
                 let distance_squared = rec.t() * rec.t() * v.length_squared();
-                let cosine = vector::Vec3::dot(v, rec.normal()).abs() / v.length();
+                let cosine = vector::Vec3::dot(v, rec.normal()).abs();
                 return distance_squared / (cosine * area);
             }
             None => {

@@ -15,6 +15,7 @@ pub struct Scene {
     bvh: bvh_node::BvhNode,
     camera: camera::Camera,
     backgound: math::vector::Color3,
+    lights: Arc<dyn Hittable>,
 }
 impl Scene {
     pub fn new() -> Scene {
@@ -23,9 +24,10 @@ impl Scene {
         let bvh = bvh_node::BvhNode::new(&mut ret.0, 0.0, 1.0);
         Scene {
             objects: ret.0,
+            lights: ret.1,
             bvh: bvh,
-            camera: ret.1,
-            backgound: ret.2,
+            camera: ret.2,
+            backgound: ret.3,
         }
     }
     fn random_spheres() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
@@ -248,7 +250,12 @@ impl Scene {
         );
         (objects, cam, math::vector::Color3::new(0.0, 0.0, 0.0))
     }
-    fn cornell_box() -> (Vec<Arc<dyn Hittable>>, camera::Camera, math::vector::Color3) {
+    fn cornell_box() -> (
+        Vec<Arc<dyn Hittable>>,
+        Arc<dyn Hittable>,
+        camera::Camera,
+        math::vector::Color3,
+    ) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
         let red = Arc::new(material::lambertian::Lambertian::new(
             solid_texture::SolidTexture::new(math::vector::Color3::new(0.65, 0.05, 0.05)),
@@ -269,8 +276,9 @@ impl Scene {
             0.0, 555.0, 0.0, 555.0, 0.0, red,
         )));
         objects.push(Arc::new(FlipFace::new(Arc::new(rect::XZRect::new(
-            213.0, 343.0, 227.0, 332.0, 554.0, difflight,
+            213.0, 343.0, 227.0, 332.0, 554.0, difflight.clone(),
         )))));
+
         objects.push(Arc::new(rect::XZRect::new(
             0.0,
             555.0,
@@ -354,6 +362,9 @@ impl Scene {
             math::vector::Dir3::new(130.0, 0.0, 65.0),
         )));
 
+        let lights = Arc::new(rect::XZRect::new(
+            213.0, 343.0, 227.0, 332.0, 554.0, difflight,
+        ));
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
         let look_at = math::vector::Point3::new(278.0, 278.0, 0.0);
         let focus_dist = 50.0;
@@ -367,7 +378,12 @@ impl Scene {
             0.0,
             1.0,
         );
-        (objects, cam, math::vector::Color3::new(0.0, 0.0, 0.0))
+        (
+            objects,
+            lights,
+            cam,
+            math::vector::Color3::new(0.0, 0.0, 0.0),
+        )
     }
     fn final_scene() -> (Vec<Arc<dyn Hittable>>, camera::Camera, vector::Color3) {
         let mut objects: Vec<Arc<dyn Hittable>> = vec![];
@@ -540,5 +556,8 @@ impl Scene {
     }
     pub fn background(&self) -> &math::vector::Color3 {
         &self.backgound
+    }
+    pub fn lights(&self) -> Arc<dyn Hittable> {
+        self.lights.clone()
     }
 }

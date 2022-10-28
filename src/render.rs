@@ -1,6 +1,6 @@
 use crate::io;
-use crate::pdf::{self, cosine_pdf, pdf::Pdf};
 use crate::math::{random, ray, vector};
+use crate::pdf::{self, hittable_pdf, pdf::Pdf};
 use crate::scene::scene;
 use core::time;
 use std::sync::Arc;
@@ -179,10 +179,12 @@ impl RayTracing {
                         // if vector::Vec3::dot(&to_light, rec.normal()) < 0.0 {
                         //     return emit;
                         // }
-                        let pdf = cosine_pdf::CosinePdf::new(rec.normal());
+                        let pdf = hittable_pdf::HittablePdf::new(world.lights(), rec.position().clone());
+                        let mut to_light = pdf.generate();
+                        to_light.normalize();
                         let scattered = ray::Ray::new(
                             rec.position().clone(),
-                            pdf.generate().clone(),
+                            to_light,
                             ray.time(),
                         );
                         let pdf_val = pdf.value(scattered.dir());
