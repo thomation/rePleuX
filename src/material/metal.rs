@@ -1,9 +1,7 @@
 use super::material;
 use super::scatter;
 use crate::hit::record::HitRecord;
-use crate::math;
-use crate::math::vector;
-use crate::math::vector::Vec3;
+use crate::math::{self, vector, random};
 
 pub struct Metal {
     albedo: vector::Color3,
@@ -31,12 +29,12 @@ impl material::Material for Metal {
         ray_in: &math::ray::Ray,
         hit_record: &HitRecord,
     ) -> std::option::Option<scatter::ScatterResult> {
-        let ray_dir = Vec3::unit(&ray_in.dir());
+        let ray_dir = vector::Vec3::unit(&ray_in.dir());
         let reflected = ray_dir.reflect(hit_record.normal().clone());
-        if Vec3::dot(&reflected, hit_record.normal()) > 0.0 {
+        if vector::Vec3::dot(&reflected, hit_record.normal()) > 0.0 {
             let scattered = math::ray::Ray::new(
                 hit_record.position().clone(),
-                reflected + material::random_in_unit_sphere() * self.fuzz(),
+                reflected + random::random_in_unit_sphere() * self.fuzz(),
                 ray_in.time(),
             );
             Option::Some(scatter::ScatterResult::new(

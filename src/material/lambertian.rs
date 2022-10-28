@@ -1,8 +1,7 @@
-use super::material::random_in_half_sphere;
-use super::material::{self, random_cosine_direction};
+use super::material;
 use super::scatter;
 use crate::hit::record::HitRecord;
-use crate::math::{self, onb, vector};
+use crate::math::{self, onb, vector, random};
 use crate::texture::texturable;
 
 #[derive(Debug, Clone, Copy)]
@@ -24,7 +23,7 @@ impl<T: texturable::Texturable> material::Material for Lambertian<T> {
         hit_record: &HitRecord,
     ) -> Option<scatter::ScatterResult> {
         let uvw = onb::Onb::build_from_w(hit_record.normal());
-        let mut scatter_dir = uvw.local(&random_cosine_direction());
+        let mut scatter_dir = uvw.local(&random::random_cosine_direction());
         scatter_dir.normalize();
         let ray_out = math::ray::Ray::new(
             hit_record.position().clone(),

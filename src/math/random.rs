@@ -1,4 +1,6 @@
 use rand::Rng;
+use super::vector;
+
 pub fn generate() -> f64 {
     let mut rng = rand::thread_rng();
     rng.gen()
@@ -12,6 +14,35 @@ pub fn generate_range_int(min: usize, max: usize) -> usize {
     r as usize
 }
 
+pub fn random_in_unit_sphere() -> vector::Vec3 {
+    loop {
+        let p = vector::Vec3::random_range(-1.0, 1.0);
+        if p.length_squared() < 1.0 {
+            return p;
+        }
+    }
+}
+pub fn random_in_unit_vector() -> vector::Vec3 {
+    let mut r = random_in_unit_sphere();
+    r.normalize();
+    r
+}
+pub fn random_in_half_sphere(normal: &vector::Dir3) -> vector::Vec3 {
+    let unit_sphere = random_in_unit_sphere();
+    if vector::Vec3::dot(&unit_sphere, normal) < 0.0 {
+        return -unit_sphere;
+    }
+    unit_sphere
+}
+pub fn random_cosine_direction() -> vector::Dir3 {
+    let r1 = generate();
+    let r2 = generate();
+    let z = (1.0 - r2).sqrt();
+    let phi = 2.0 * std::f64::consts::PI * r1;
+    let x = phi.cos() * r2.sqrt();
+    let y = phi.sin() * r2.sqrt();
+    vector::Dir3::new(x, y, z)
+}
 #[test]
 fn test_random() {
     let mut has_min = false;

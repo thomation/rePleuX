@@ -1,8 +1,5 @@
-use super::{
-    material::{self, random_in_unit_sphere},
-    scatter,
-};
-use crate::math::{ray, vector};
+use super::{material, scatter};
+use crate::math::{ray, vector, random};
 use crate::texture::texturable;
 pub struct Isotropic<T: texturable::Texturable> {
     albedo: T,
@@ -21,7 +18,7 @@ impl<T: texturable::Texturable> material::Material for Isotropic<T> {
         Option::Some(scatter::ScatterResult::new(
             ray::Ray::new(
                 hit_record.position().clone(),
-                random_in_unit_sphere(),
+                random::random_in_unit_sphere(),
                 ray_in.time(),
             ),
             self.albedo

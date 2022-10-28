@@ -1,5 +1,5 @@
 use crate::io;
-use crate::material::{cosine_pdf, pdf::Pdf};
+use crate::pdf::{self, cosine_pdf, pdf::Pdf};
 use crate::math::{random, ray, vector};
 use crate::scene::scene;
 use core::time;

@@ -1,8 +1,5 @@
-use super::{
-    material::{self, random_cosine_direction},
-    pdf,
-};
-use crate::math::{onb, vector};
+use crate::math::{onb, vector, random};
+use super::pdf;
 pub struct CosinePdf {
     uvw: onb::Onb,
 }
@@ -24,6 +21,6 @@ impl pdf::Pdf for CosinePdf {
     }
 
     fn generate(&self) -> vector::Dir3 {
-        self.uvw.local(&random_cosine_direction())
+        self.uvw.local(&random::random_cosine_direction())
     }
 }

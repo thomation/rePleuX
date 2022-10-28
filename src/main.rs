@@ -6,6 +6,7 @@ mod object;
 mod render;
 mod scene;
 mod texture;
+mod pdf;
 
 use std::sync::Arc;
 use std::sync::Mutex;
