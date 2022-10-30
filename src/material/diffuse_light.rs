@@ -21,6 +21,7 @@ impl<T: texturable::Texturable> material::Material for DiffuseLight<T> {
 
     fn emitted(
         &self,
+        ray_in: &crate::math::ray::Ray,
         hit_record: &crate::hit::record::HitRecord,
         u: f64,
         v: f64,
@@ -35,6 +36,7 @@ impl<T: texturable::Texturable> material::Material for DiffuseLight<T> {
 
     fn scatting_pdf(
         &self,
+        ray_in: &crate::math::ray::Ray,
         hit_record: &crate::hit::record::HitRecord,
         scattered: &crate::math::ray::Ray,
     ) -> f64 {

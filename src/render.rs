@@ -1,6 +1,6 @@
 use crate::io;
 use crate::math::{random, ray, vector};
-use crate::pdf::{cosine_pdf, hittable_pdf, mixture_pdf, pdf::Pdf};
+use crate::pdf::{hittable_pdf, mixture_pdf, pdf::Pdf, pdf::PdfNode};
 use crate::scene::scene;
 use core::time;
 use std::sync::Arc;
@@ -165,21 +165,21 @@ impl RayTracing {
                 let scatter = rec.material().scatter(&ray, &rec);
                 let emit = rec
                     .material()
-                    .emitted(&rec, rec.u(), rec.v(), rec.position());
+                    .emitted(&ray, &rec, rec.u(), rec.v(), rec.position());
                 match scatter {
                     Option::Some(sr) => {
-                        let pdf0 = hittable_pdf::HittablePdf::new(world.lights(), rec.position().clone());
-                        let pdf1 = cosine_pdf::CosinePdf::new(rec.normal());
-                        let pdf = mixture_pdf::MixturePdf::new(pdf0, pdf1);
-                        let scattered = ray::Ray::new(
+                        let pdf0 = PdfNode::Node(Arc::new(hittable_pdf::HittablePdf::new(
+                            world.lights(),
                             rec.position().clone(),
-                            pdf.generate(),
-                            ray.time(),
-                        );
+                        )));
+                        let pdf1 = sr.pdf();
+                        let pdf = mixture_pdf::MixturePdf::new(pdf0, (*pdf1).clone());
+                        let scattered =
+                            ray::Ray::new(rec.position().clone(), pdf.generate(), ray.time());
                         let pdf_val = pdf.value(scattered.dir());
                         return emit
                             + RayTracing::ray_color(&scattered, &world, depth - 1)
-                                * rec.material().scatting_pdf(&rec, &scattered)
+                                * rec.material().scatting_pdf(&ray, &rec, &scattered)
                                 * sr.attenuation()
                                 / pdf_val;
                     }

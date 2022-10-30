@@ -2,6 +2,8 @@ use super::material;
 use super::scatter;
 use crate::hit;
 use crate::math;
+use crate::pdf::pdf;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Dielectric {
     index_of_fraction: f64,
@@ -43,20 +45,23 @@ impl material::Material for Dielectric {
             Option::Some(scatter::ScatterResult::new(
                 math::ray::Ray::new(hit_record.position().clone(), reflected, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
-                0.0,
+                false,
+                pdf::PdfNode::Null,
             ))
         } else {
             let refracted = unit_dir.refract(normal, refraction_ratio);
             Option::Some(scatter::ScatterResult::new(
                 math::ray::Ray::new(hit_record.position().clone(), refracted, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
-                0.0,
+                false,
+                pdf::PdfNode::Null,
             ))
         }
     }
 
     fn emitted(
         &self,
+        ray_in: &math::ray::Ray,
         hit_record: &hit::record::HitRecord,
         u: f64,
         v: f64,
@@ -65,7 +70,12 @@ impl material::Material for Dielectric {
         math::vector::Color3::zero()
     }
 
-    fn scatting_pdf(&self, hit_record: &hit::record::HitRecord, scattered: &math::ray::Ray) -> f64 {
+    fn scatting_pdf(
+        &self,
+        ray_in: &math::ray::Ray,
+        hit_record: &hit::record::HitRecord,
+        scattered: &math::ray::Ray,
+    ) -> f64 {
         todo!()
     }
 }

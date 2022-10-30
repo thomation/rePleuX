@@ -1,6 +1,7 @@
 use super::{material, scatter};
-use crate::math::{ray, vector, random};
+use crate::math::{random, ray, vector};
 use crate::texture::texturable;
+use crate::pdf::pdf;
 pub struct Isotropic<T: texturable::Texturable> {
     albedo: T,
 }
@@ -23,12 +24,14 @@ impl<T: texturable::Texturable> material::Material for Isotropic<T> {
             ),
             self.albedo
                 .value(hit_record.u(), hit_record.v(), hit_record.position()),
-            0.0,
+            false,
+            pdf::PdfNode::Null,
         ))
     }
 
     fn emitted(
         &self,
+        ray_in: &ray::Ray,
         hit_record: &crate::hit::record::HitRecord,
         u: f64,
         v: f64,
@@ -39,6 +42,7 @@ impl<T: texturable::Texturable> material::Material for Isotropic<T> {
 
     fn scatting_pdf(
         &self,
+        ray_in: &ray::Ray,
         hit_record: &crate::hit::record::HitRecord,
         scattered: &ray::Ray,
     ) -> f64 {

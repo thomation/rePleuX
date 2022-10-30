@@ -1,7 +1,8 @@
 use super::material;
 use super::scatter;
 use crate::hit::record::HitRecord;
-use crate::math::{self, vector, random};
+use crate::math::{self, random, vector};
+use crate::pdf::pdf;
 
 pub struct Metal {
     albedo: vector::Color3,
@@ -40,7 +41,8 @@ impl material::Material for Metal {
             Option::Some(scatter::ScatterResult::new(
                 scattered,
                 self.albedo().clone(),
-                0.0,
+                false,
+                pdf::PdfNode::Null,
             ))
         } else {
             Option::None
@@ -48,6 +50,7 @@ impl material::Material for Metal {
     }
     fn emitted(
         &self,
+        ray_in: &math::ray::Ray,
         hit_record: &HitRecord,
         u: f64,
         v: f64,
@@ -56,7 +59,12 @@ impl material::Material for Metal {
         math::vector::Color3::zero()
     }
 
-    fn scatting_pdf(&self, hit_record: &HitRecord, scattered: &math::ray::Ray) -> f64 {
+    fn scatting_pdf(
+        &self,
+        ray_in: &math::ray::Ray,
+        hit_record: &HitRecord,
+        scattered: &math::ray::Ray,
+    ) -> f64 {
         todo!()
     }
 }
