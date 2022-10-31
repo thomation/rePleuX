@@ -1,11 +1,11 @@
-use super::pdf::{Pdf, PdfNode};
+use super::pdf::{Pdf, PdfValue};
 use crate::math::{random, vector};
 pub struct MixturePdf {
-    p0: PdfNode,
-    p1: PdfNode,
+    p0: PdfValue,
+    p1: PdfValue,
 }
 impl MixturePdf {
-    pub fn new(p0: PdfNode, p1: PdfNode) -> Self {
+    pub fn new(p0: PdfValue, p1: PdfValue) -> Self {
         MixturePdf { p0, p1 }
     }
 }
@@ -14,12 +14,12 @@ impl Pdf for MixturePdf {
         let mut v0 = 0.0;
         let mut v1 = 0.0;
         match &self.p0 {
-            PdfNode::Node(p) => v0 = p.value(dir),
-            PdfNode::Null => v0 = 0.0,
+            PdfValue::Value(p) => v0 = p.value(dir),
+            PdfValue::Null => v0 = 0.0,
         }
         match &self.p1 {
-            PdfNode::Node(p) => v1 = p.value(dir),
-            PdfNode::Null => v1 = 0.0,
+            PdfValue::Value(p) => v1 = p.value(dir),
+            PdfValue::Null => v1 = 0.0,
         }
         0.5 * v0 + 0.5 * v1 
     }
@@ -32,8 +32,8 @@ impl Pdf for MixturePdf {
             p = &self.p1;
         }
         match p {
-            PdfNode::Node(p) => p.generate(),
-            PdfNode::Null => vector::Dir3::new(1.0, 0.0, 0.0),
+            PdfValue::Value(p) => p.generate(),
+            PdfValue::Null => vector::Dir3::new(1.0, 0.0, 0.0),
         }
     }
 }

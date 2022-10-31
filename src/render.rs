@@ -1,6 +1,6 @@
 use crate::io;
 use crate::math::{random, ray, vector};
-use crate::pdf::{hittable_pdf, mixture_pdf, pdf::Pdf, pdf::PdfNode};
+use crate::pdf::{hittable_pdf, mixture_pdf, pdf::Pdf, pdf::PdfValue};
 use crate::scene::scene;
 use core::time;
 use std::sync::Arc;
@@ -168,7 +168,7 @@ impl RayTracing {
                     .emitted(&ray, &rec, rec.u(), rec.v(), rec.position());
                 match scatter {
                     Option::Some(sr) => {
-                        let pdf0 = PdfNode::Node(Arc::new(hittable_pdf::HittablePdf::new(
+                        let pdf0 = PdfValue::Value(Arc::new(hittable_pdf::HittablePdf::new(
                             world.lights(),
                             rec.position().clone(),
                         )));

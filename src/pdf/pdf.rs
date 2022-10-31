@@ -7,8 +7,8 @@ pub trait Pdf {
 
 
 #[derive(Clone)]
-pub enum PdfNode
+pub enum PdfValue
 {
-    Node(Arc<dyn Pdf>),
+    Value(Arc<dyn Pdf>),
     Null,
 }

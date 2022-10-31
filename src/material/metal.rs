@@ -40,7 +40,7 @@ impl material::Material for Metal {
             );
             Option::Some(scatter::ScatterResult::new(
                 self.albedo().clone(),
-                pdf::PdfNode::Null,
+                pdf::PdfValue::Null,
                 scatter::SpecularValue::Value(scattered),
             ))
         } else {

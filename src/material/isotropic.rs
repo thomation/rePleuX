@@ -19,7 +19,7 @@ impl<T: texturable::Texturable> material::Material for Isotropic<T> {
         Option::Some(scatter::ScatterResult::new(
             self.albedo
                 .value(hit_record.u(), hit_record.v(), hit_record.position()),
-            pdf::PdfNode::Null,
+            pdf::PdfValue::Null,
             scatter::SpecularValue::Value(ray::Ray::new(
                 hit_record.position().clone(),
                 random::random_in_unit_sphere(),

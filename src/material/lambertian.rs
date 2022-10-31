@@ -27,7 +27,7 @@ impl<T: texturable::Texturable> material::Material for Lambertian<T> {
         Option::Some(scatter::ScatterResult::new(
             self.albedo()
                 .value(hit_record.u(), hit_record.v(), hit_record.position()),
-            pdf::PdfNode::Node(Arc::new(cosine_pdf::CosinePdf::new(hit_record.normal()))),
+            pdf::PdfValue::Value(Arc::new(cosine_pdf::CosinePdf::new(hit_record.normal()))),
             scatter::SpecularValue::Null,
         ))
     }

@@ -7,10 +7,10 @@ pub enum SpecularValue {
 pub struct ScatterResult{
     specular: SpecularValue,
     attenuation: math::vector::Color3,
-    pdf: pdf::PdfNode,
+    pdf: pdf::PdfValue,
 }
 impl ScatterResult {
-    pub fn new(attenuation: math::vector::Color3, pdf: pdf::PdfNode, specular: SpecularValue) -> Self{
+    pub fn new(attenuation: math::vector::Color3, pdf: pdf::PdfValue, specular: SpecularValue) -> Self{
         ScatterResult {
             specular,
             attenuation,
@@ -20,7 +20,7 @@ impl ScatterResult {
     pub fn attenuation(&self) -> &math::vector::Color3 {
         &self.attenuation
     }
-    pub fn pdf(&self) -> &pdf::PdfNode {
+    pub fn pdf(&self) -> &pdf::PdfValue {
         &self.pdf
     }
 }
