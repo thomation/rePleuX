@@ -1,22 +1,21 @@
 use crate::math;
 use crate::pdf::pdf;
+pub enum SpecularValue {
+    Value(math::ray::Ray),
+    Null,
+}
 pub struct ScatterResult{
-    ray: math::ray::Ray,
+    specular: SpecularValue,
     attenuation: math::vector::Color3,
-    is_specular: bool,
     pdf: pdf::PdfNode,
 }
 impl ScatterResult {
-    pub fn new(ray: math::ray::Ray, attenuation: math::vector::Color3, is_specular: bool, pdf: pdf::PdfNode) -> Self{
+    pub fn new(attenuation: math::vector::Color3, pdf: pdf::PdfNode, specular: SpecularValue) -> Self{
         ScatterResult {
-            ray,
+            specular,
             attenuation,
-            is_specular,
             pdf,
         }
-    }
-    pub fn ray(&self) -> &math::ray::Ray {
-        &self.ray
     }
     pub fn attenuation(&self) -> &math::vector::Color3 {
         &self.attenuation

@@ -39,10 +39,9 @@ impl material::Material for Metal {
                 ray_in.time(),
             );
             Option::Some(scatter::ScatterResult::new(
-                scattered,
                 self.albedo().clone(),
-                false,
                 pdf::PdfNode::Null,
+                scatter::SpecularValue::Value(scattered),
             ))
         } else {
             Option::None

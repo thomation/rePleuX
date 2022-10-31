@@ -43,18 +43,22 @@ impl material::Material for Dielectric {
         {
             let reflected = unit_dir.clone().reflect(normal);
             Option::Some(scatter::ScatterResult::new(
-                math::ray::Ray::new(hit_record.position().clone(), reflected, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
-                false,
                 pdf::PdfNode::Null,
+                scatter::SpecularValue::Value(math::ray::Ray::new(
+                    hit_record.position().clone(),
+                    reflected,
+                    ray_in.time(),
+                )),
             ))
         } else {
             let refracted = unit_dir.refract(normal, refraction_ratio);
             Option::Some(scatter::ScatterResult::new(
-                math::ray::Ray::new(hit_record.position().clone(), refracted, ray_in.time()),
                 math::vector::Color3::new(1.0, 1.0, 1.0),
-                false,
                 pdf::PdfNode::Null,
+                scatter::SpecularValue::Value(
+                    (math::ray::Ray::new(hit_record.position().clone(), refracted, ray_in.time())),
+                ),
             ))
         }
     }

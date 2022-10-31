@@ -1,7 +1,7 @@
 use super::{material, scatter};
 use crate::math::{random, ray, vector};
-use crate::texture::texturable;
 use crate::pdf::pdf;
+use crate::texture::texturable;
 pub struct Isotropic<T: texturable::Texturable> {
     albedo: T,
 }
@@ -17,15 +17,14 @@ impl<T: texturable::Texturable> material::Material for Isotropic<T> {
         hit_record: &crate::hit::record::HitRecord,
     ) -> Option<scatter::ScatterResult> {
         Option::Some(scatter::ScatterResult::new(
-            ray::Ray::new(
+            self.albedo
+                .value(hit_record.u(), hit_record.v(), hit_record.position()),
+            pdf::PdfNode::Null,
+            scatter::SpecularValue::Value(ray::Ray::new(
                 hit_record.position().clone(),
                 random::random_in_unit_sphere(),
                 ray_in.time(),
-            ),
-            self.albedo
-                .value(hit_record.u(), hit_record.v(), hit_record.position()),
-            false,
-            pdf::PdfNode::Null,
+            )),
         ))
     }
 
