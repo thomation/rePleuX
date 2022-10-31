@@ -276,7 +276,12 @@ impl Scene {
             0.0, 555.0, 0.0, 555.0, 0.0, red,
         )));
         objects.push(Arc::new(FlipFace::new(Arc::new(rect::XZRect::new(
-            213.0, 343.0, 227.0, 332.0, 554.0, difflight.clone(),
+            213.0,
+            343.0,
+            227.0,
+            332.0,
+            554.0,
+            difflight.clone(),
         )))));
 
         objects.push(Arc::new(rect::XZRect::new(
@@ -303,48 +308,16 @@ impl Scene {
             555.0,
             white.clone(),
         )));
-
-        // objects.push(Arc::new(constant_medium::ConstantMedium::new(
-        //     Arc::new(translate::Translate::new(
-        //         Arc::new(rotate::RotateY::new(
-        //             Arc::new(cubic::Cubic::new(
-        //                 math::vector::Point3::new(0.0, 0.0, 0.0),
-        //                 math::vector::Point3::new(165.0, 330.0, 165.0),
-        //                 white.clone(),
-        //             )),
-        //             15.0,
-        //         )),
-        //         math::vector::Dir3::new(265.0, 0.0, 295.0),
-        //     )),
-        //     0.01,
-        //     Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
-        //         math::vector::Color3::zero(),
-        //     ))),
-        // )));
-        // objects.push(Arc::new(constant_medium::ConstantMedium::new(
-        //     Arc::new(translate::Translate::new(
-        //         Arc::new(rotate::RotateY::new(
-        //             Arc::new(cubic::Cubic::new(
-        //                 math::vector::Point3::new(0.0, 0.0, 0.0),
-        //                 math::vector::Point3::new(165.0, 165.0, 165.0),
-        //                 white.clone(),
-        //             )),
-        //             -18.0,
-        //         )),
-        //         math::vector::Dir3::new(130.0, 0.0, 65.0),
-        //     )),
-        //     0.01,
-        //     Arc::new(isotropic::Isotropic::new(solid_texture::SolidTexture::new(
-        //         math::vector::Color3::one(),
-        //     ))),
-        // )));
-
+        let metal = Arc::new(material::metal::Metal::new(
+            vector::Color3::new(0.8, 0.85, 0.88),
+            0.0,
+        ));
         objects.push(Arc::new(translate::Translate::new(
             Arc::new(rotate::RotateY::new(
                 Arc::new(cubic::Cubic::new(
                     math::vector::Point3::new(0.0, 0.0, 0.0),
                     math::vector::Point3::new(165.0, 330.0, 165.0),
-                    white.clone(),
+                    metal,
                 )),
                 15.0,
             )),
@@ -361,7 +334,12 @@ impl Scene {
             )),
             math::vector::Dir3::new(130.0, 0.0, 65.0),
         )));
-
+        // let glass = Arc::new(material::dielectric::Dielectric::new(1.5));
+        // objects.push(Arc::new(sphere::Sphere::new(
+        //     vector::Point3::new(190.0, 90.0, 190.0),
+        //     90.0,
+        //     glass,
+        // )));
         let lights = Arc::new(rect::XZRect::new(
             213.0, 343.0, 227.0, 332.0, 554.0, difflight,
         ));

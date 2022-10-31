@@ -38,46 +38,6 @@ impl RayTracing {
     ) {
         let mut thread_handles = vec![];
         let rows_per_thead = image_height / thread_count;
-        for t in 0..thread_count {
-            let world_for_child = world.clone();
-            let output_for_child = output.clone();
-            thread_handles.push(spawn(move || {
-                let start_row = t * rows_per_thead;
-                let end_row = if t + 1 == thread_count {
-                    image_height
-                } else {
-                    start_row + rows_per_thead
-                };
-                RayTracing::render_rows(
-                    t,
-                    image_width,
-                    image_height,
-                    start_row,
-                    end_row,
-                    samples_per_pixels,
-                    max_depth,
-                    &world_for_child,
-                    &output_for_child,
-                );
-            }));
-        }
-        for handle in thread_handles {
-            handle.join().unwrap();
-        }
-        println!("Threads finished");
-    }
-
-    pub fn render2(
-        image_width: usize,
-        image_height: usize,
-        samples_per_pixels: usize,
-        max_depth: usize,
-        thread_count: usize,
-        world: Arc<scene::Scene>,
-        output: Arc<Mutex<io::bitmap::Bitmap>>,
-    ) {
-        let mut thread_handles = vec![];
-        let rows_per_thead = image_height / thread_count;
         let mut current_row = Arc::new(Mutex::new(CurrentRow::new(image_height - 1)));
         for t in 0..thread_count {
             let world_for_child = world.clone();
@@ -167,22 +127,28 @@ impl RayTracing {
                     .material()
                     .emitted(&ray, &rec, rec.u(), rec.v(), rec.position());
                 match scatter {
-                    Option::Some(sr) => {
-                        let pdf0 = PdfValue::Value(Arc::new(hittable_pdf::HittablePdf::new(
-                            world.lights(),
-                            rec.position().clone(),
-                        )));
-                        let pdf1 = sr.pdf();
-                        let pdf = mixture_pdf::MixturePdf::new(pdf0, (*pdf1).clone());
-                        let scattered =
-                            ray::Ray::new(rec.position().clone(), pdf.generate(), ray.time());
-                        let pdf_val = pdf.value(scattered.dir());
-                        return emit
-                            + RayTracing::ray_color(&scattered, &world, depth - 1)
-                                * rec.material().scatting_pdf(&ray, &rec, &scattered)
-                                * sr.attenuation()
-                                / pdf_val;
-                    }
+                    Option::Some(sr) => match sr.specular() {
+                        crate::material::scatter::SpecularValue::Value(specular_ray) => {
+                            return RayTracing::ray_color(specular_ray, world, depth - 1)
+                                * sr.attenuation();
+                        }
+                        crate::material::scatter::SpecularValue::Null => {
+                            let pdf0 = PdfValue::Value(Arc::new(hittable_pdf::HittablePdf::new(
+                                world.lights(),
+                                rec.position().clone(),
+                            )));
+                            let pdf1 = sr.pdf();
+                            let pdf = mixture_pdf::MixturePdf::new(pdf0, (*pdf1).clone());
+                            let scattered =
+                                ray::Ray::new(rec.position().clone(), pdf.generate(), ray.time());
+                            let pdf_val = pdf.value(scattered.dir());
+                            return emit
+                                + RayTracing::ray_color(&scattered, &world, depth - 1)
+                                    * rec.material().scatting_pdf(&ray, &rec, &scattered)
+                                    * sr.attenuation()
+                                    / pdf_val;
+                        }
+                    },
                     Option::None => emit,
                 }
             }

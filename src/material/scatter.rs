@@ -23,4 +23,7 @@ impl ScatterResult {
     pub fn pdf(&self) -> &pdf::PdfValue {
         &self.pdf
     }
+    pub fn specular(&self) -> &SpecularValue {
+        &self.specular
+    }
 }
