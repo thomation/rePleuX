@@ -317,32 +317,38 @@ impl Scene {
                 Arc::new(cubic::Cubic::new(
                     math::vector::Point3::new(0.0, 0.0, 0.0),
                     math::vector::Point3::new(165.0, 330.0, 165.0),
-                    metal,
+                    // metal,
+                    white.clone(),
                 )),
                 15.0,
             )),
             math::vector::Dir3::new(265.0, 0.0, 295.0),
         )));
-        objects.push(Arc::new(translate::Translate::new(
-            Arc::new(rotate::RotateY::new(
-                Arc::new(cubic::Cubic::new(
-                    math::vector::Point3::new(0.0, 0.0, 0.0),
-                    math::vector::Point3::new(165.0, 165.0, 165.0),
-                    white.clone(),
-                )),
-                -18.0,
-            )),
-            math::vector::Dir3::new(130.0, 0.0, 65.0),
-        )));
-        // let glass = Arc::new(material::dielectric::Dielectric::new(1.5));
-        // objects.push(Arc::new(sphere::Sphere::new(
-        //     vector::Point3::new(190.0, 90.0, 190.0),
-        //     90.0,
-        //     glass,
+        // objects.push(Arc::new(translate::Translate::new(
+        //     Arc::new(rotate::RotateY::new(
+        //         Arc::new(cubic::Cubic::new(
+        //             math::vector::Point3::new(0.0, 0.0, 0.0),
+        //             math::vector::Point3::new(165.0, 165.0, 165.0),
+        //             white.clone(),
+        //         )),
+        //         -18.0,
+        //     )),
+        //     math::vector::Dir3::new(130.0, 0.0, 65.0),
         // )));
+        let glass = Arc::new(material::dielectric::Dielectric::new(1.5));
+        objects.push(Arc::new(sphere::Sphere::new(
+            vector::Point3::new(190.0, 90.0, 190.0),
+            90.0,
+            glass.clone(),
+        )));
         let lights = Arc::new(rect::XZRect::new(
             213.0, 343.0, 227.0, 332.0, 554.0, difflight,
         ));
+        // let lights = Arc::new(sphere::Sphere::new(
+        //     vector::Point3::new(190.0, 90.0, 190.0),
+        //     90.0,
+        //     glass,
+        // ));
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
         let look_at = math::vector::Point3::new(278.0, 278.0, 0.0);
         let focus_dist = 50.0;

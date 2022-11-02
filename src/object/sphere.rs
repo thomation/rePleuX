@@ -2,8 +2,7 @@ use crate::hit::aabb;
 use crate::hit::hittable;
 use crate::hit::record;
 use crate::material::material;
-use crate::math::ray;
-use crate::math::vector;
+use crate::math::{onb, ray, vector, random};
 use std::sync::Arc;
 
 pub struct Sphere {
@@ -117,11 +116,26 @@ impl hittable::Hittable for Sphere {
     }
 
     fn pdf_value(&self, o: &vector::Point3, v: &vector::Dir3) -> f64 {
-        todo!()
+        match self.hit(
+            &ray::Ray::new(o.clone(), v.clone(), 0.0),
+            0.001,
+            std::f64::consts::PI,
+        ) {
+            Some(_) => {
+                let cos_theta_max =
+                    (1.0 - self.radius * self.radius / (self.center(0.0)).length_squared()).sqrt();
+                let solid_angle = 2.0 * std::f64::consts::PI * (1.0 - cos_theta_max);
+                1.0 / solid_angle
+            }
+            None => 0.0,
+        }
     }
 
     fn random(&self, o: &vector::Point3) -> vector::Dir3 {
-        todo!()
+        let direction = self.center(0.0) - o;
+        let distance_squared = direction.length_squared();
+        let uvw = onb::Onb::build_from_w(&direction);
+        uvw.local(&random::random_to_sphere(self.radius, distance_squared))
     }
 }
 #[test]

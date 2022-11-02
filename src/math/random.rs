@@ -43,6 +43,17 @@ pub fn random_cosine_direction() -> vector::Dir3 {
     let y = phi.sin() * r2.sqrt();
     vector::Dir3::new(x, y, z)
 }
+pub fn random_to_sphere(radius: f64, distance_squared: f64) -> vector::Dir3 {
+    let r1 = generate();
+    let r2 = generate();
+    let z = 1.0 + r2*((1.0-radius*radius/distance_squared).sqrt() - 1.0);
+
+    let phi = 2.0*std::f64::consts::PI*r1;
+    let x = phi.cos()*(1.0-z*z).sqrt();
+    let y = phi.cos()*(1.0-z*z).sqrt();
+
+    vector::Dir3::new(x, y, z)
+}
 #[test]
 fn test_random() {
     let mut has_min = false;
