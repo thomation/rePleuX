@@ -50,7 +50,7 @@ pub fn random_to_sphere(radius: f64, distance_squared: f64) -> vector::Dir3 {
 
     let phi = 2.0*std::f64::consts::PI*r1;
     let x = phi.cos()*(1.0-z*z).sqrt();
-    let y = phi.cos()*(1.0-z*z).sqrt();
+    let y = phi.sin()*(1.0-z*z).sqrt();
 
     vector::Dir3::new(x, y, z)
 }

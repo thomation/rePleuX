@@ -119,11 +119,11 @@ impl hittable::Hittable for Sphere {
         match self.hit(
             &ray::Ray::new(o.clone(), v.clone(), 0.0),
             0.001,
-            std::f64::consts::PI,
+            std::f64::INFINITY,
         ) {
             Some(_) => {
                 let cos_theta_max =
-                    (1.0 - self.radius * self.radius / (self.center(0.0)).length_squared()).sqrt();
+                    (1.0 - self.radius * self.radius / (self.center(0.0) - o).length_squared()).sqrt();
                 let solid_angle = 2.0 * std::f64::consts::PI * (1.0 - cos_theta_max);
                 1.0 / solid_angle
             }
