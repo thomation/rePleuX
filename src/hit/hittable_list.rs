@@ -1,22 +1,27 @@
-use super::hittable::{self, Hittable};
-use crate::math;
-use super::record;
-use std::sync::Arc;
 use super::aabb::AABB;
+use super::hittable::{self, Hittable};
+use super::record;
+use crate::math::{self, random};
+use std::sync::Arc;
 pub struct HittableList {
     objects: Vec<Arc<dyn hittable::Hittable>>,
 }
 impl HittableList {
-    pub fn new () -> HittableList {
+    pub fn new() -> HittableList {
         let objects = vec![];
         HittableList { objects: objects }
     }
-    pub fn add (&mut self, obj: Arc<dyn Hittable>) {
+    pub fn add(&mut self, obj: Arc<dyn Hittable>) {
         self.objects.push(obj);
     }
 }
 impl hittable::Hittable for HittableList {
-    fn hit(&self, ray: &math::ray::Ray, t_min: f64, t_max: f64) -> std::option::Option<record::HitRecord> {
+    fn hit(
+        &self,
+        ray: &math::ray::Ray,
+        t_min: f64,
+        t_max: f64,
+    ) -> std::option::Option<record::HitRecord> {
         let mut hit_anything = std::option::Option::<record::HitRecord>::None;
         let mut closest_so_far = t_max;
         for obj in &self.objects {
@@ -58,10 +63,18 @@ impl hittable::Hittable for HittableList {
     }
 
     fn pdf_value(&self, o: &math::vector::Point3, v: &math::vector::Dir3) -> f64 {
-        todo!()
+        let weight = 1.0 / self.objects.len() as f64;
+        let mut sum = 0.0;
+
+        for object in &self.objects {
+            sum += weight * object.pdf_value(o, v);
+        }
+
+        sum
     }
 
     fn random(&self, o: &math::vector::Point3) -> math::vector::Dir3 {
-        todo!()
+        let int_size = self.objects.len();
+        self.objects[random::generate_range_int(0, int_size-1)].random(o)
     }
 }

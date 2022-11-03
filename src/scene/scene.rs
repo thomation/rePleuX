@@ -341,14 +341,14 @@ impl Scene {
             90.0,
             glass.clone(),
         )));
-        let lights = Arc::new(rect::XZRect::new(
+        let light1 = Arc::new(rect::XZRect::new(
             213.0, 343.0, 227.0, 332.0, 554.0, difflight,
         ));
-        // let lights = Arc::new(sphere::Sphere::new(
-        //     vector::Point3::new(190.0, 90.0, 190.0),
-        //     90.0,
-        //     glass,
-        // ));
+        let light2 = Arc::new(sphere::Sphere::new(
+            vector::Point3::new(190.0, 90.0, 190.0),
+            90.0,
+            glass,
+        ));
         let look_from = math::vector::Point3::new(278.0, 278.0, -800.0);
         let look_at = math::vector::Point3::new(278.0, 278.0, 0.0);
         let focus_dist = 50.0;
@@ -362,9 +362,12 @@ impl Scene {
             0.0,
             1.0,
         );
+        let mut lights = HittableList::new();
+        lights.add(light1);
+        lights.add(light2);
         (
             objects,
-            lights,
+            Arc::new(lights),
             cam,
             math::vector::Color3::new(0.0, 0.0, 0.0),
         )
